@@ -103,7 +103,7 @@ def getCrestData(target_ip):
         
         gameState = crest_data['gameStates']['mGameState']
 
-        if gameState <= 1:
+        if gameState > 1:
         # 게임 플레이중
             current_time = str(datetime.datetime.now())
             gamedata = [current_time, crest_data]
