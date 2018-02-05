@@ -3,3 +3,4 @@
 *.pyc
 
 ./DataCollect/DataCollector/video/*
+*/.DS_Store
