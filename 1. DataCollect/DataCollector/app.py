@@ -60,7 +60,7 @@ app = create_app()
 recording = False
 collecting = False
 
-camera_number = 2
+camera_number = 3
 resolution = "1280x720"
 
 current_time = datetime.datetime.now()
