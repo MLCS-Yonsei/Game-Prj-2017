@@ -103,12 +103,14 @@ def getCrestData(target_ip):
         
         gameState = crest_data['gameStates']['mGameState']
 
+        r.publish('gameState', gameState)
+
         if gameState > 1:
         # 게임 플레이중
             current_time = str(datetime.datetime.now())
             gamedata = [current_time, crest_data]
 
-            #r.publish('message', gamedata)
+            r.publish('message', gamedata)
 
             if recording == False:
                 record_start()

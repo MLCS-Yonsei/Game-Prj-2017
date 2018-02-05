@@ -12,7 +12,7 @@ import signal
 
 class RecordWorker(mp.Process):
     def __init__(self,que,i,resolution,record_time):
-        super(Recorder,self).__init__()
+        super(RecordWorker,self).__init__()
         self.queue = que
         self.i = i
         self.resolution = resolution
