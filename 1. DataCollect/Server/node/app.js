@@ -13,10 +13,16 @@ var fs = require('fs');
 // });
 
 client.on("message", function(channel, message) {
-  console.log("Message '" + message + "' on channel '" + channel + "' arrived!")
+  //console.log("Message '" + message + "' on channel '" + channel + "' arrived!")
 });
 
 client.subscribe("message");
+
+client.on("gameState", function(channel, message) {
+  console.log("Game State : ", message)
+});
+
+client.subscribe("gameState");
 
 app.get('/', function (req, res) {
   res.send('Hello World!');

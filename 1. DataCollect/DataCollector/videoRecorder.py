@@ -74,7 +74,7 @@ class VideoRecorder():
 if __name__ == "__main__":
     current_time = datetime.datetime.now()
 
-    camera_number = 2
+    camera_number = 3
     resolution = "1280x720"
 
     vr = VideoRecorder(camera_number, resolution, current_time)
