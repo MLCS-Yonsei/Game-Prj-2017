@@ -27,6 +27,7 @@ logger = log_utils.init_logger()
 
 import subprocess as sp
 
+import json
 
 def init_args():
     """
@@ -34,15 +35,15 @@ def init_args():
     :return:
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument('--image_path', type=str, help='Where you store the image',
-                        default='data/test_images/test_01.jpg')
+    parser.add_argument('--video_path', type=str, help='Where you store the image',
+                        default='data/test_videos/sample1.mp4')
     parser.add_argument('--weights_path', type=str, help='Where you store the weights',
                         default='model/shadownet/shadownet_2017-10-17-11-47-46.ckpt-199999')
 
     return parser.parse_args()
 
 
-def recognize(image_path, weights_path, is_vis=False):
+def recognize(video_path, weights_path, is_vis=False):
 # def recognize():
     """
 
@@ -55,28 +56,41 @@ def recognize(image_path, weights_path, is_vis=False):
     z=0
 
     command = [ "ffmpeg",
-                '-i', '/home/jhp/Dropbox/sample2.mp4',
+                '-loglevel', 'quiet',
+                '-i', video_path,
                 '-f','image2pipe',
                 '-pix_fmt','rgb24',
                 '-vcodec','rawvideo','-']
     pipe = sp.Popen(command, stdout = sp.PIPE, bufsize=10**8)
-    
+
+    cmnd = ['ffprobe', '-print_format', 'json', '-show_entries', 'stream=width,height', '-pretty', '-loglevel', 'quiet', video_path]
+    p = sp.Popen(cmnd, stdout=sp.PIPE, stderr=sp.PIPE)
+
+    out, err =  p.communicate()
+
+    video_r = json.loads(out.decode('utf-8'))['streams'][0]
+    video_h = video_r['height']
+    video_w = video_r['width']
+
+
     for i in range (10):
         if z==0:
-            raw_image = pipe.stdout.read(286*158*3)
+            raw_image = pipe.stdout.read(video_h*video_w*3)
             image = np.fromstring(raw_image, dtype='uint8')
-            image = [image.reshape((286,158,3))]
+            image = [image.reshape((video_h,video_w,3))]
             z+=1
         else:
-            raw_image = pipe.stdout.read(286*158*3)
+            raw_image = pipe.stdout.read(video_h*video_w*3)
             cap = np.fromstring(raw_image, dtype='uint8')
-            cap = cap.reshape((286,158,3))
+            cap = cap.reshape((video_h,video_w,3))
             image = np.concatenate((image, [cap]),axis=0)
    
     pipe.stdout.flush()
     pipe.terminate()
+
+    p.terminate()
     # image=image[0]
-    inputdata = tf.placeholder(dtype=tf.float32, shape=[1, 10, 286, 158, 3], name='input')
+    inputdata = tf.placeholder(dtype=tf.float32, shape=[1, 10, video_h, video_w, 3], name='input')
     image = np.expand_dims(image, axis=0).astype(np.float32)
     
     
@@ -129,13 +143,13 @@ if __name__ == '__main__':
     # Inti args
     
     args = init_args()
-    if not ops.exists(args.image_path):
-        raise ValueError('{:s} doesn\'t exist'.format(args.image_path))
+    if not ops.exists(args.video_path):
+        raise ValueError('{:s} doesn\'t exist'.format(args.video_path))
     
     
     # recognize the image
     # recognize()
-    recognize(image_path=args.image_path, weights_path=args.weights_path)
+    recognize(video_path=args.video_path, weights_path=args.weights_path)
     
     
 

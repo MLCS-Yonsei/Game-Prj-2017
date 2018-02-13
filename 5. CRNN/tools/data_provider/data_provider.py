@@ -19,15 +19,18 @@ except ImportError:
 
 from data_provider import base_data_provider
 
+import subprocess as sp
+
+import json
 
 class TextDataset(base_data_provider.Dataset):
     """
         Implement a dataset class providing the image and it's corresponding text
     """
-    def __init__(self, images, labels, imagenames, shuffle=None, normalization=None):
+    def __init__(self, videos, labels, videonames, shuffle=None, normalization=None):
         """
 
-        :param images: image datasets [nums, H, W, C] 4D ndarray
+        :param videos: image datasets [nums, H, W, C] 4D ndarray
         :param labels: label dataset [nums, :] 2D ndarray
         :param shuffle: if need shuffle the dataset, 'once_prior_train' represent shuffle only once before training
                         'every_epoch' represent shuffle the data every epoch
@@ -42,20 +45,20 @@ class TextDataset(base_data_provider.Dataset):
         self.__normalization = normalization
         if self.__normalization not in [None, 'divide_255', 'divide_256']:
             raise ValueError('normalization parameter wrong')
-        self.__images = self.normalize_images(images, self.__normalization)
+        self.__videos = self.normalize_images(videos, self.__normalization)
 
         self.__labels = labels
-        self.__imagenames = imagenames
-        self._epoch_images = copy.deepcopy(self.__images)
+        self.__videonames = videonames
+        self._epoch_videos = copy.deepcopy(self.__videos)
         self._epoch_labels = copy.deepcopy(self.__labels)
-        self._epoch_imagenames = copy.deepcopy(self.__imagenames)
+        self._epoch_videonames = copy.deepcopy(self.__videonames)
 
         self.__shuffle = shuffle
         if self.__shuffle not in [None, 'once_prior_train', 'every_epoch']:
             raise ValueError('shuffle parameter wrong')
         if self.__shuffle == 'every_epoch' or 'once_prior_train':
-            self._epoch_images, self._epoch_labels, self._epoch_imagenames = self.shuffle_images_labels(
-                self._epoch_images, self._epoch_labels, self._epoch_imagenames)
+            self._epoch_videos, self._epoch_labels, self._epoch_videonames = self.shuffle_images_labels(
+                self._epoch_videos, self._epoch_labels, self._epoch_videonames)
 
         self.__batch_counter = 0
         return
@@ -66,16 +69,16 @@ class TextDataset(base_data_provider.Dataset):
 
         :return:
         """
-        assert self.__images.shape[0] == self.__labels.shape[0]
+        assert self.__videos.shape[0] == self.__labels.shape[0]
         return self.__labels.shape[0]
 
     @property
-    def images(self):
+    def videos(self):
         """
 
         :return:
         """
-        return self._epoch_images
+        return self._epoch_videos
 
     @property
     def labels(self):
@@ -86,12 +89,12 @@ class TextDataset(base_data_provider.Dataset):
         return self._epoch_labels
 
     @property
-    def imagenames(self):
+    def videonames(self):
         """
 
         :return:
         """
-        return self._epoch_imagenames
+        return self._epoch_videonames
 
     def next_batch(self, batch_size):
         """
@@ -102,15 +105,15 @@ class TextDataset(base_data_provider.Dataset):
         start = self.__batch_counter * batch_size
         end = (self.__batch_counter + 1) * batch_size
         self.__batch_counter += 1
-        images_slice = self._epoch_images[start:end]
+        videos_slice = self._epoch_videos[start:end]
         labels_slice = self._epoch_labels[start:end]
         imagenames_slice = self._epoch_imagenames[start:end]
         # if overflow restart from the begining
-        if images_slice.shape[0] != batch_size:
+        if videos_slice.shape[0] != batch_size:
             self.__start_new_epoch()
             return self.next_batch(batch_size)
         else:
-            return images_slice, labels_slice, imagenames_slice
+            return videos_slice, labels_slice, imagenames_slice
 
     def __start_new_epoch(self):
         """
@@ -120,8 +123,8 @@ class TextDataset(base_data_provider.Dataset):
         self.__batch_counter = 0
 
         if self.__shuffle == 'every_epoch':
-            self._epoch_images, self._epoch_labels, self._epoch_imagenames = self.shuffle_images_labels(
-                self._epoch_images, self._epoch_labels, self._epoch_imagenames)
+            self._epoch_videos, self._epoch_labels, self._epoch_imagenames = self.shuffle_videos_labels(
+                self._epoch_videos, self._epoch_labels, self._epoch_imagenames)
         else:
             pass
         return
@@ -166,15 +169,50 @@ class TextDataProvider(object):
         assert ops.exists(test_anno_path)
 
         with open(test_anno_path, 'r') as anno_file:
+            # sample.txt 불러옴
             info = np.array([tmp.strip().split() for tmp in anno_file.readlines()])
-            test_images = np.array([cv2.imread(ops.join(self.__test_dataset_dir, tmp), cv2.IMREAD_COLOR)
-                                   for tmp in info[:, 0]])
+
+            test_videos = np.empty([len(info)], dtype=object)
+            for index, video_path in enumerate(info[:,0]):
+                cmnd = ['ffprobe', '-print_format', 'json', '-show_entries', 'stream=width,height', '-pretty', '-loglevel', 'quiet', video_path]
+                p = sp.Popen(cmnd, stdout=sp.PIPE, stderr=sp.PIPE)
+
+                out, err =  p.communicate()
+
+                video_r = json.loads(out.decode('utf-8'))['streams'][0]
+                video_h = video_r['height']
+                video_w = video_r['width']
+
+                command = [ "ffmpeg",
+                    '-loglevel', 'quiet',
+                    '-i', video_path,
+                    '-f','image2pipe',
+                    '-pix_fmt','rgb24',
+                    '-vcodec','rawvideo','-']
+
+                pipe = sp.Popen(command, stdout = sp.PIPE, bufsize=10**8)
+
+                frames = [None] * 10
+                for i in range (10):
+                    raw_image = pipe.stdout.read(video_h*video_w*3)
+                    image = np.fromstring(raw_image, dtype='uint8')
+                    image = image.reshape((video_h,video_w,3))
+                    frames[i] = image
+
+                pipe.stdout.flush()
+                pipe.terminate()
+                np_frames = np.array([frame for frame in frames])
+                
+                test_videos[index] = np_frames
+
+            # test_videos = np.array([cv2.imread(ops.join(self.__test_dataset_dir, tmp), cv2.IMREAD_COLOR)
+            #                         for tmp in info[:, 0]])
             test_labels = np.array([tmp for tmp in info[:, 1]])
+            test_videonames = np.array([ops.basename(tmp) for tmp in info[:, 0]])
 
-            test_imagenames = np.array([ops.basename(tmp) for tmp in info[:, 0]])
-
-            self.test = TextDataset(test_images, test_labels, imagenames=test_imagenames,
+            self.test = TextDataset(test_videos, test_labels, videonames=test_videonames,
                                     shuffle=shuffle, normalization=normalization)
+
         anno_file.close()
 
         # add train and validation dataset
@@ -182,23 +220,60 @@ class TextDataProvider(object):
         assert ops.exists(train_anno_path)
 
         with open(train_anno_path, 'r') as anno_file:
+            # sample.txt 불러옴
             info = np.array([tmp.strip().split() for tmp in anno_file.readlines()])
-            train_images = np.array([cv2.imread(ops.join(self.__train_dataset_dir, tmp), cv2.IMREAD_COLOR)
-                                    for tmp in info[:, 0]])
+
+            train_videos = np.empty([len(info)], dtype=object)
+            for index, video_path in enumerate(info[:,0]):
+                cmnd = ['ffprobe', '-print_format', 'json', '-show_entries', 'stream=width,height', '-pretty', '-loglevel', 'quiet', video_path]
+                p = sp.Popen(cmnd, stdout=sp.PIPE, stderr=sp.PIPE)
+
+                out, err =  p.communicate()
+
+                video_r = json.loads(out.decode('utf-8'))['streams'][0]
+                video_h = video_r['height']
+                video_w = video_r['width']
+
+                command = [ "ffmpeg",
+                    '-loglevel', 'quiet',
+                    '-i', video_path,
+                    '-f','image2pipe',
+                    '-pix_fmt','rgb24',
+                    '-vcodec','rawvideo','-']
+
+                pipe = sp.Popen(command, stdout = sp.PIPE, bufsize=10**8)
+
+                frames = [None] * 10
+                for i in range (10):
+                    raw_image = pipe.stdout.read(video_h*video_w*3)
+                    image = np.fromstring(raw_image, dtype='uint8')
+                    image = image.reshape((video_h,video_w,3))
+                    frames[i] = image
+                    #frames[i] = cv2.imdecode(cap, cv2.IMREAD_COLOR)
+                    #print(cv2.imdecode(cap, cv2.IMREAD_COLOR))
+
+                pipe.stdout.flush()
+                pipe.terminate()
+                np_frames = np.array([frame for frame in frames])
+                
+                train_videos[index] = np_frames
+
+            # train_videos = np.array([cv2.imread(ops.join(self.__train_dataset_dir, tmp), cv2.IMREAD_COLOR)
+            #                         for tmp in info[:, 0]])
             train_labels = np.array([tmp for tmp in info[:, 1]])
-            train_imagenames = np.array([ops.basename(tmp) for tmp in info[:, 0]])
+            train_videonames = np.array([ops.basename(tmp) for tmp in info[:, 0]])
 
             if validation_set is not None and validation_split is not None:
-                split_idx = int(train_images.shape[0] * (1 - validation_split))
-                self.train = TextDataset(images=train_images[:split_idx], labels=train_labels[:split_idx],
+                split_idx = int(train_videos.shape[0] * (1 - validation_split))
+                self.train = TextDataset(videos=train_videos[:split_idx], labels=train_labels[:split_idx],
                                          shuffle=shuffle, normalization=normalization,
-                                         imagenames=train_imagenames[:split_idx])
-                self.validation = TextDataset(images=train_images[split_idx:], labels=train_labels[split_idx:],
+                                         videonames=train_videonames[:split_idx])
+                self.validation = TextDataset(videos=train_videos[split_idx:], labels=train_labels[split_idx:],
                                               shuffle=shuffle, normalization=normalization,
-                                              imagenames=train_imagenames[split_idx:])
+                                              videonames=train_videonames[split_idx:])
             else:
-                self.train = TextDataset(images=train_images, labels=train_labels, shuffle=shuffle,
-                                         normalization=normalization, imagenames=train_imagenames)
+                self.train = TextDataset(videos=train_videos, labels=train_labels, shuffle=shuffle,
+                                         normalization=normalization, videonames=train_videonames)
 
             if validation_set and not validation_split:
                 self.validation = self.test
@@ -206,7 +281,7 @@ class TextDataProvider(object):
         return
 
     def __str__(self):
-        provider_info = 'Dataset_dir: {:s} contain training images: {:d} validation images: {:d} testing images: {:d}'.\
+        provider_info = 'Dataset_dir: {:s} contain training videos: {:d} validation videos: {:d} testing videos: {:d}'.\
             format(self.__dataset_dir, self.train.num_examples, self.validation.num_examples, self.test.num_examples)
         return provider_info
 

@@ -16,7 +16,6 @@ import sys
 
 from local_utils import establish_char_dict
 
-
 class FeatureIO(object):
     """
         Implement the base writer class
@@ -78,7 +77,7 @@ class FeatureIO(object):
             if not isinstance(value, list):
                 value = value.encode('utf-8')
             else:
-                value = [val.encode('utf-8') for val in value]
+                value = [str(val,'ISO-8859-1').encode('utf-8') for val in value]
         if not isinstance(value, list):
             value = [value]
         return tf.train.Feature(bytes_list=tf.train.BytesList(value=value))
@@ -161,16 +160,16 @@ class TextFeatureWriter(FeatureIO):
         super(TextFeatureWriter, self).__init__()
         return
 
-    def write_features(self, tfrecords_path, labels, images, imagenames):
+    def write_features(self, tfrecords_path, labels, videos, videonames):
         """
 
         :param tfrecords_path:
         :param labels:
-        :param images:
-        :param imagenames:
+        :param videos:
+        :param videonames:
         :return:
         """
-        assert len(labels) == len(images) == len(imagenames)
+        assert len(labels) == len(videos) == len(videonames)
 
         labels, length = self.encode_labels(labels)
 
@@ -178,15 +177,20 @@ class TextFeatureWriter(FeatureIO):
             os.makedirs(ops.split(tfrecords_path)[0])
 
         with tf.python_io.TFRecordWriter(tfrecords_path) as writer:
-            for index, image in enumerate(images):
+            for index, video in enumerate(videos):
+                # for i, image in enumerate(video):
+                #     b_image = self.bytes_feature(image)
+                #     video[i] = b_image
+
                 features = tf.train.Features(feature={
                     'labels': self.int64_feature(labels[index]),
-                    'images': self.bytes_feature(image),
-                    'imagenames': self.bytes_feature(imagenames[index])
+                    'videos': self.bytes_feature(video),
+                    'videonames': self.bytes_feature(videonames[index])
                 })
+
                 example = tf.train.Example(features=features)
                 writer.write(example.SerializeToString())
-                sys.stdout.write('\r>>Writing {:d}/{:d} {:s} tfrecords'.format(index+1, len(images), imagenames[index]))
+                sys.stdout.write('\r>>Writing {:d}/{:d} {:s} tfrecords'.format(index+1, len(videos), videonames[index]))
                 sys.stdout.flush()
             sys.stdout.write('\n')
             sys.stdout.flush()

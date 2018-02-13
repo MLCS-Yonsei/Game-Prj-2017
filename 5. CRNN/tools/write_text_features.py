@@ -21,6 +21,8 @@ except ImportError:
 from data_provider import data_provider
 from local_utils import data_utils
 
+import subprocess as sp
+import json
 
 def init_args():
     """
@@ -55,41 +57,56 @@ def write_features(dataset_dir, save_dir):
     # write train tfrecords
     print('Start writing training tf records')
 
-    train_images = provider.train.images
-    train_images = [cv2.resize(tmp, (100, 32)) for tmp in train_images]
-    train_images = [bytes(list(np.reshape(tmp, [100 * 32 * 3]))) for tmp in train_images]
+    # print(provider.train.images)
+    train_videos = provider.train.videos
+    for index, train_video in enumerate(train_videos):
+        train_video = [cv2.resize(tmp, (100, 150)) for tmp in train_video]
+        train_video = [bytes(list(np.reshape(tmp, [100 * 150 * 3]))) for tmp in train_video]
+
+        train_videos[index] = train_video
+
     train_labels = provider.train.labels
-    train_imagenames = provider.train.imagenames
+    train_videonames = provider.train.videonames
 
     train_tfrecord_path = ops.join(save_dir, 'train_feature.tfrecords')
-    feature_io.writer.write_features(tfrecords_path=train_tfrecord_path, labels=train_labels, images=train_images,
-                                     imagenames=train_imagenames)
+    feature_io.writer.write_features(tfrecords_path=train_tfrecord_path, labels=train_labels, videos=train_videos,
+                                     videonames=train_videonames)
 
     # write test tfrecords
     print('Start writing testing tf records')
 
-    test_images = provider.test.images
-    test_images = [cv2.resize(tmp, (100, 32)) for tmp in test_images]
-    test_images = [bytes(list(np.reshape(tmp, [100 * 32 * 3]))) for tmp in test_images]
+    test_videos = provider.test.videos
+    for index, test_video in enumerate(test_videos):
+
+        test_video = [cv2.resize(tmp, (100, 150)) for tmp in test_video]
+        test_video = [bytes(list(np.reshape(tmp, [100 * 150 * 3]))) for tmp in test_video]
+
+        test_videos[index] = test_video
+
     test_labels = provider.test.labels
-    test_imagenames = provider.test.imagenames
+    test_videonames = provider.test.videonames
 
     test_tfrecord_path = ops.join(save_dir, 'test_feature.tfrecords')
-    feature_io.writer.write_features(tfrecords_path=test_tfrecord_path, labels=test_labels, images=test_images,
-                                     imagenames=test_imagenames)
+    feature_io.writer.write_features(tfrecords_path=test_tfrecord_path, labels=test_labels, videos=test_videos,
+                                     videonames=test_videonames)
 
     # write val tfrecords
     print('Start writing validation tf records')
 
-    val_images = provider.validation.images
-    val_images = [cv2.resize(tmp, (100, 32)) for tmp in val_images]
-    val_images = [bytes(list(np.reshape(tmp, [100 * 32 * 3]))) for tmp in val_images]
+    val_videos = provider.validation.videos
+    for index, val_video in enumerate(val_videos):
+        
+        val_video = [cv2.resize(tmp, (100, 150)) for tmp in val_video]
+        val_video = [bytes(list(np.reshape(tmp, [100 * 150 * 3]))) for tmp in val_video]
+
+        val_videos[index] = val_video
+
     val_labels = provider.validation.labels
-    val_imagenames = provider.validation.imagenames
+    val_videonames = provider.validation.videonames
 
     val_tfrecord_path = ops.join(save_dir, 'validation_feature.tfrecords')
-    feature_io.writer.write_features(tfrecords_path=val_tfrecord_path, labels=val_labels, images=val_images,
-                                     imagenames=val_imagenames)
+    feature_io.writer.write_features(tfrecords_path=val_tfrecord_path, labels=val_labels, videos=val_videos,
+                                     videonames=val_videonames)
 
     return
 

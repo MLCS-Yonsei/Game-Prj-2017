@@ -105,10 +105,11 @@ class ShadowNet(cnn_basenet.CNNBaseModel):
         :param inputdata:
         :return:
         """
-        # shape = inputdata.get_shape().as_list()
-        # inputdata = tf.reshape(inputdata,[shape[0],shape[1],shape[2],shape[3]*shape[4]))
+
         # assert shape[1] == 1  # H of the feature map must equal to 1
-        return self.squeeze(inputdata=inputdata)#, axis=1)
+        shape = inputdata.get_shape().as_list()
+        reshaped_input = tf.reshape(inputdata,[shape[0],shape[1],shape[2],shape[3]*shape[4]])
+        return self.squeeze(inputdata=reshaped_input)#, axis=1)
 
     def __sequence_label(self, inputdata):
         """
