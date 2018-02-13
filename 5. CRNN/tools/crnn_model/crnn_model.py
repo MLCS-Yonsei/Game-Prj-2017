@@ -74,28 +74,32 @@ class ShadowNet(cnn_basenet.CNNBaseModel):
         :param inputdata: eg. batch*32*100*3 NHWC format
         :return:
         """
-        conv1 = self.__conv_stage(inputdata=inputdata, out_dims=64, name='conv1')  # batch*16*50*64 #132*55*64
-        conv2 = self.__conv_stage(inputdata=conv1, out_dims=128, name='conv2')  # batch*8*25*128  #66*27*128
-        conv3 = self.conv3d(inputdata=conv2, out_channel=256, kernel_size=3, stride=1, use_bias=False, name='conv3')  # batch*8*25*256 #66*27*256
+        conv1 = self.__conv_stage(inputdata=inputdata, out_dims=32, name='conv1')  # batch*16*50*64 #132*55*64
+        conv2 = self.__conv_stage(inputdata=conv1, out_dims=64, name='conv2')  # batch*8*25*128  #66*27*128
+        print(inputdata)
+        print(conv1)
+        print(conv2)
+        conv3 = self.conv3d(inputdata=conv2, out_channel=128, kernel_size=3, stride=1, use_bias=False, name='conv3')  # batch*8*25*256 #66*27*256
         relu3 = self.relu(conv3) # batch*8*25*256
-        conv4 = self.conv3d(inputdata=relu3, out_channel=256, kernel_size=3, stride=1, use_bias=False, name='conv4')  # batch*8*25*256 #66*27*256
+        conv4 = self.conv3d(inputdata=relu3, out_channel=128, kernel_size=3, stride=1, use_bias=False, name='conv4')  # batch*8*25*256 #66*27*256
         relu4 = self.relu(conv4)  # batch*8*25*256
         max_pool4 = self.maxpooling(inputdata=relu4, kernel_size=[1, 4, 1], stride=[1, 4, 1], padding='VALID')  # batch*4*25*256 #16*27*256
-        conv5 = self.conv3d(inputdata=max_pool4, out_channel=512, kernel_size=3, stride=1, use_bias=False, name='conv5')  # batch*4*25*512 #16*27*512 
+        conv5 = self.conv3d(inputdata=max_pool4, out_channel=256, kernel_size=3, stride=1, use_bias=False, name='conv5')  # batch*4*25*512 #16*27*512 
         relu5 = self.relu(conv5)  # batch*4*25*512 #16*27*512
         if self.phase.lower() == 'train':
             bn5 = self.layerbn(inputdata=relu5, is_training=True)
         else:
             bn5 = self.layerbn(inputdata=relu5, is_training=False)  # batch*4*25*512 #16*27*512
-        conv6 = self.conv3d(inputdata=bn5, out_channel=512, kernel_size=3, stride=1, use_bias=False, name='conv6')  # batch*4*25*512 #16*27*512
+        conv6 = self.conv3d(inputdata=bn5, out_channel=256, kernel_size=3, stride=1, use_bias=False, name='conv6')  # batch*4*25*512 #16*27*512
         relu6 = self.relu(conv6)  # batch*4*25*512 #16*27*512
         if self.phase.lower() == 'train':
             bn6 = self.layerbn(inputdata=relu6, is_training=True)
         else:
             bn6 = self.layerbn(inputdata=relu6, is_training=False)  # batch*4*25*512 #16*27*512
         max_pool6 = self.maxpooling(inputdata=bn6, kernel_size=[1, 4, 1], stride=[1, 4, 1])  # batch*2*25*512 #4*27*512
-        conv7 = self.conv3d(inputdata=max_pool6, out_channel=512, kernel_size=[1,2,2], stride=[1, 4, 1], use_bias=False, name='conv7')  # batch*1*25*512 #1*27*512
+        conv7 = self.conv3d(inputdata=max_pool6, out_channel=256, kernel_size=[1,2,2], stride=[1, 4, 1], use_bias=False, name='conv7')  # batch*1*25*512 #1*27*512
         relu7 = self.relu(conv7)  # batch*1*25*512
+        print(relu7)
         return relu7
 
     def __map_to_sequence(self, inputdata):
@@ -109,6 +113,7 @@ class ShadowNet(cnn_basenet.CNNBaseModel):
         # assert shape[1] == 1  # H of the feature map must equal to 1
         shape = inputdata.get_shape().as_list()
         reshaped_input = tf.reshape(inputdata,[shape[0],shape[1],shape[2],shape[3]*shape[4]])
+        print(reshaped_input.shape)
         return self.squeeze(inputdata=reshaped_input)#, axis=1)
 
     def __sequence_label(self, inputdata):
@@ -137,7 +142,7 @@ class ShadowNet(cnn_basenet.CNNBaseModel):
             # Doing the affine projection
 
             logits = tf.matmul(rnn_reshaped, w)
-
+            print(rnn_reshaped)
             logits = tf.reshape(logits, [batch_s, -1, self.__num_classes])
 
             raw_pred = tf.argmax(tf.nn.softmax(logits), axis=2, name='raw_prediction')

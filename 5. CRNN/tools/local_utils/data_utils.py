@@ -189,6 +189,7 @@ class TextFeatureWriter(FeatureIO):
                 })
 
                 example = tf.train.Example(features=features)
+
                 writer.write(example.SerializeToString())
                 sys.stdout.write('\r>>Writing {:d}/{:d} {:s} tfrecords'.format(index+1, len(videos), videonames[index]))
                 sys.stdout.flush()
@@ -221,16 +222,16 @@ class TextFeatureReader(FeatureIO):
 
         features = tf.parse_single_example(serialized_example,
                                            features={
-                                               'images': tf.FixedLenFeature((), tf.string),
-                                               'imagenames': tf.FixedLenFeature([1], tf.string),
+                                               'videos': tf.FixedLenFeature((), tf.string),
+                                               'videonames': tf.FixedLenFeature([1], tf.string),
                                                'labels': tf.VarLenFeature(tf.int64),
                                            })
-        image = tf.decode_raw(features['images'], tf.uint8)
-        images = tf.reshape(image, [32, 100, 3])
+        video = tf.decode_raw(features['videos'], tf.uint8)
+        videos = tf.reshape(video, [10, 200, 300, 3])
         labels = features['labels']
         labels = tf.cast(labels, tf.int32)
-        imagenames = features['imagenames']
-        return images, labels, imagenames
+        videonames = features['videonames']
+        return videos, labels, videonames
 
 
 class TextFeatureIO(object):

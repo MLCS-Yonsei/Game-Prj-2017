@@ -57,11 +57,13 @@ def write_features(dataset_dir, save_dir):
     # write train tfrecords
     print('Start writing training tf records')
 
+    out_x = 200
+    out_y = 300
     # print(provider.train.images)
     train_videos = provider.train.videos
     for index, train_video in enumerate(train_videos):
-        train_video = [cv2.resize(tmp, (100, 150)) for tmp in train_video]
-        train_video = [bytes(list(np.reshape(tmp, [100 * 150 * 3]))) for tmp in train_video]
+        train_video = [cv2.resize(tmp, (out_x, out_y)) for tmp in train_video]
+        train_video = [bytes(list(np.reshape(tmp, [out_x * out_y * 3]))) for tmp in train_video]
 
         train_videos[index] = train_video
 
@@ -78,8 +80,8 @@ def write_features(dataset_dir, save_dir):
     test_videos = provider.test.videos
     for index, test_video in enumerate(test_videos):
 
-        test_video = [cv2.resize(tmp, (100, 150)) for tmp in test_video]
-        test_video = [bytes(list(np.reshape(tmp, [100 * 150 * 3]))) for tmp in test_video]
+        test_video = [cv2.resize(tmp, (out_x, out_y)) for tmp in test_video]
+        test_video = [bytes(list(np.reshape(tmp, [out_x * out_y * 3]))) for tmp in test_video]
 
         test_videos[index] = test_video
 
@@ -96,8 +98,8 @@ def write_features(dataset_dir, save_dir):
     val_videos = provider.validation.videos
     for index, val_video in enumerate(val_videos):
         
-        val_video = [cv2.resize(tmp, (100, 150)) for tmp in val_video]
-        val_video = [bytes(list(np.reshape(tmp, [100 * 150 * 3]))) for tmp in val_video]
+        val_video = [cv2.resize(tmp, (out_x, out_y)) for tmp in val_video]
+        val_video = [bytes(list(np.reshape(tmp, [out_x * out_y * 3]))) for tmp in val_video]
 
         val_videos[index] = val_video
 

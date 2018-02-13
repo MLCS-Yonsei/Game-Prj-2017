@@ -168,6 +168,7 @@ class TextDataProvider(object):
         test_anno_path = ops.join(self.__test_dataset_dir, annotation_name)
         assert ops.exists(test_anno_path)
 
+        frame_number = 10
         with open(test_anno_path, 'r') as anno_file:
             # sample.txt 불러옴
             info = np.array([tmp.strip().split() for tmp in anno_file.readlines()])
@@ -192,8 +193,8 @@ class TextDataProvider(object):
 
                 pipe = sp.Popen(command, stdout = sp.PIPE, bufsize=10**8)
 
-                frames = [None] * 10
-                for i in range (10):
+                frames = [None] * frame_number
+                for i in range (frame_number):
                     raw_image = pipe.stdout.read(video_h*video_w*3)
                     image = np.fromstring(raw_image, dtype='uint8')
                     image = image.reshape((video_h,video_w,3))
@@ -243,8 +244,8 @@ class TextDataProvider(object):
 
                 pipe = sp.Popen(command, stdout = sp.PIPE, bufsize=10**8)
 
-                frames = [None] * 10
-                for i in range (10):
+                frames = [None] * frame_number
+                for i in range (frame_number):
                     raw_image = pipe.stdout.read(video_h*video_w*3)
                     image = np.fromstring(raw_image, dtype='uint8')
                     image = image.reshape((video_h,video_w,3))

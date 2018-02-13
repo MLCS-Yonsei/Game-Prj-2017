@@ -26,7 +26,7 @@ class CNNBaseModel(metaclass=ABCMeta):
         """
         Packing the tensorflow conv2d function.
         :param name: op name
-        :param inputdata: A 4D tensorflow tensor which ust have known number of channels, but can have other
+        :param inputdata: A 4D tensorflow tensor which must have known number of channels, but can have other
         unknown dimensions.
         :param out_channel: number of output channel.
         :param kernel_size: int so only support square kernel convolution
@@ -42,7 +42,9 @@ class CNNBaseModel(metaclass=ABCMeta):
         """
         with tf.variable_scope(name):
             in_shape = inputdata.get_shape().as_list()
+
             channel_axis = 4 if data_format == 'NDHWC' else 1
+
             in_channel = in_shape[channel_axis]
             assert in_channel is not None, "[Conv2D] Input cannot have unknown channel!"
             assert in_channel % split == 0
