@@ -34,7 +34,7 @@ class TextDataset(base_data_provider.Dataset):
         :param labels: label dataset [nums, :] 2D ndarray
         :param shuffle: if need shuffle the dataset, 'once_prior_train' represent shuffle only once before training
                         'every_epoch' represent shuffle the data every epoch
-        :param imagenames:
+        :param videonames:
         :param normalization: if need do normalization to the dataset,
                               'None': no any normalization
                               'divide_255': divide all pixels by 255
@@ -107,13 +107,13 @@ class TextDataset(base_data_provider.Dataset):
         self.__batch_counter += 1
         videos_slice = self._epoch_videos[start:end]
         labels_slice = self._epoch_labels[start:end]
-        imagenames_slice = self._epoch_imagenames[start:end]
+        videonames_slice = self._epoch_videonames[start:end]
         # if overflow restart from the begining
         if videos_slice.shape[0] != batch_size:
             self.__start_new_epoch()
             return self.next_batch(batch_size)
         else:
-            return videos_slice, labels_slice, imagenames_slice
+            return videos_slice, labels_slice, videonames_slice
 
     def __start_new_epoch(self):
         """
@@ -123,8 +123,8 @@ class TextDataset(base_data_provider.Dataset):
         self.__batch_counter = 0
 
         if self.__shuffle == 'every_epoch':
-            self._epoch_videos, self._epoch_labels, self._epoch_imagenames = self.shuffle_videos_labels(
-                self._epoch_videos, self._epoch_labels, self._epoch_imagenames)
+            self._epoch_videos, self._epoch_labels, self._epoch_videonames = self.shuffle_videos_labels(
+                self._epoch_videos, self._epoch_labels, self._epoch_videonames)
         else:
             pass
         return
@@ -205,7 +205,8 @@ class TextDataProvider(object):
                 np_frames = np.array([frame for frame in frames])
                 
                 test_videos[index] = np_frames
-
+                # test_videos[index] = frames
+            print(test_videos[0].shape)
             # test_videos = np.array([cv2.imread(ops.join(self.__test_dataset_dir, tmp), cv2.IMREAD_COLOR)
             #                         for tmp in info[:, 0]])
             test_labels = np.array([tmp for tmp in info[:, 1]])

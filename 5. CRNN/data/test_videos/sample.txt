@@ -1,4 +1,0 @@
-/Users/hwanmooy/code/Game-Prj-2017/5.CRNN/data/test_videos/sample1.mp4 3
-/Users/hwanmooy/code/Game-Prj-2017/5.CRNN/data/test_videos/sample2.mp4 1
-/Users/hwanmooy/code/Game-Prj-2017/5.CRNN/data/test_videos/sample3.mp4 4
-/Users/hwanmooy/code/Game-Prj-2017/5.CRNN/data/test_videos/sample4.mp4 5
