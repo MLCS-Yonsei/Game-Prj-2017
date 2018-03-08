@@ -48,6 +48,7 @@ def create_app():
             crestThread.cancel()    
 
         listener.stop()
+        player.stop()
     
     def getPcarsData():
         global crestThreads
