@@ -21,8 +21,9 @@ import atexit
 import datetime
 
 # global Variables
-collecting = False
 crestThreads = {}
+c = controller()
+
 # DB for config
 conn = sqlite3.connect("./config/db/test.db")
 cur = conn.cursor()
@@ -69,8 +70,9 @@ def create_app():
         while True:
             message = channels.get_message()
             if message:
-                print()
-                print(message)
+                # 컨트롤러 분기
+                for sim in sims:
+                    c.checkOvertake(r,sim[0])
 
     def audioPlayer(r, sims):
         l_channels = r.pubsub()
@@ -83,8 +85,11 @@ def create_app():
                 print(message)
     
     getPcarsData()
-    listener = Process(target=listenPcarsData, args=(r, sims)).start()
+    # listener = Process(target=listenPcarsData, args=(r, sims)).start()
     player = Process(target=audioPlayer, args=(r, sims)).start()
+
+    for sim in sims:
+        c.checkOvertake(r,sim[0])
 
     atexit.register(interrupt)
     return app
@@ -94,7 +99,7 @@ app = create_app()
 # Add routes
 app.register_blueprint(get_overtake_blueprint)
 
-c = controller()
+
 @app.route('/status', methods=['GET'])
 def status():
     global c

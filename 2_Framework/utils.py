@@ -44,7 +44,7 @@ def get_crest_data(target_ip, r):
             current_time = str(datetime.datetime.now())
             gamedata = [current_time, crest_data]
 
-            #r.publish(target_ip, gamedata)
+            r.publish(target_ip, gamedata)
 
         else:
         # 플레이 종료

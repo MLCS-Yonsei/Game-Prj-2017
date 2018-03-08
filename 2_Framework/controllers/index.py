@@ -22,9 +22,16 @@ class overtakeChecker(mp.Process):
         self.r = r
         self.target_ip = target_ip
 
+        self.channels = self.r.pubsub()
+        self.channels.subscribe([self.target_ip])
+
     def run(self):
         #print(self.target_ip, '추우우우우월!')
-        self.r.publish('results', self.target_ip + '/추우우우우월')
+        while True:
+            message = self.channels.get_message()
+            if message:
+                self.r.publish('results', self.target_ip + '/추우우우우월')
+        
 
 class controller():
 
