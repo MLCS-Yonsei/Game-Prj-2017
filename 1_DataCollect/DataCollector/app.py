@@ -123,6 +123,8 @@ def getCrestData(target_ip):
     crestThread = threading.Timer(POOL_TIME, getCrestData, [target_ip])
     crestThread.start()   
 
+    return crestThread
+
 @app.route('/signal/gamedata', methods=['GET'])
 def get_data_signal():
     global collecting
