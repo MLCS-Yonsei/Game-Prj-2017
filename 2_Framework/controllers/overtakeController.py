@@ -30,7 +30,6 @@ class overtakeChecker(mp.Process):
         return ranks
 
     def run(self):
-        #self.r.publish('results', self.target_ip + '/추우우우우월')
         while True:
             time.sleep(0.1)
             message = self.r.hgetall(self.target_ip)
