@@ -52,7 +52,7 @@ class overtakeChecker(mp.Process):
                         self.c = ranks.index(r0_t1 - 1)
                         self.status = False
                     else:
-                        self.c = True #False
+                        self.c = False
 
                 if self.c:
                     c_name = gamedata["participants"]["mParticipantInfo"][self.c]["mName"]
