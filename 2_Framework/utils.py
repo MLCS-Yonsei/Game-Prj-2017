@@ -42,9 +42,9 @@ def get_crest_data(target_ip, r):
         if gameState > 1:
         # 게임 플레이중
             current_time = str(datetime.datetime.now())
-            gamedata = [current_time, crest_data]
+            gamedata = {'current_time': current_time, 'gamedata': crest_data}
 
-            r.publish(target_ip, gamedata)
+            r.hmset(target_ip, gamedata)
 
         else:
         # 플레이 종료

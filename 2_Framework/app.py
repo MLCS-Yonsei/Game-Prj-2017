@@ -5,7 +5,7 @@ sys.path.insert(0, './controllers')
 from index import controller
 
 from flask import Flask, jsonify, request
-from overtake import get_overtake_blueprint
+# from overtake import get_overtake_blueprint
 
 from urllib.parse import urlparse
 
@@ -80,9 +80,9 @@ def create_app():
 
         while True:
             message = l_channels.get_message()
-            if message:
-                print()
-                print(message)
+            # if message:
+            #     print()
+            #     print(message)
     
     getPcarsData()
     # listener = Process(target=listenPcarsData, args=(r, sims)).start()
@@ -97,7 +97,7 @@ def create_app():
 app = create_app()  
 
 # Add routes
-app.register_blueprint(get_overtake_blueprint)
+# app.register_blueprint(get_overtake_blueprint)
 
 
 @app.route('/status', methods=['GET'])
