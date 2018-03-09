@@ -20,12 +20,10 @@ class overtakeChecker(mp.Process):
         self.r = r
         self.target_ip = target_ip
 
-        self.channels = self.r.pubsub()
-        self.channels.subscribe([self.target_ip])
-
         # Variables
         self.r0_t0 = 0
         self.c = False
+        self.status = False
         
     def get_rank(self, data):
         ranks = [info['mRacePosition'] for info in data["participants"]["mParticipantInfo"]]
@@ -48,14 +46,26 @@ class overtakeChecker(mp.Process):
                     if self.r0_t0 > r0_t1:
                         # Overtaked
                         self.c = ranks.index(r0_t1 + 1)
+                        self.status = True
                     elif self.r0_t0 < r0_t1:
                         # Overtaken
                         self.c = ranks.index(r0_t1 - 1)
+                        self.status = False
                     else:
-                        self.c = False
+                        self.c = True #False
 
                 if self.c:
                     c_name = gamedata["participants"]["mParticipantInfo"][self.c]["mName"]
+                    
+                    result = {}
+                    result['target_ip'] = self.target_ip
+                    result['flag'] = 'overtake'
+                    result['data'] = {
+                        'status': self.status,
+                        'rank': r0_t1
+                    }
+
+                    self.r.hmset('results', result)
 
                 self.r0_t0 = r0_t1
 

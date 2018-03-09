@@ -19,6 +19,9 @@ import redis
 
 import atexit
 import datetime
+import time
+
+from audioPlayer import audioPlayer
 
 # global Variables
 crestThreads = {}
@@ -74,19 +77,19 @@ def create_app():
                 for sim in sims:
                     c.checkOvertake(r,sim[0])
 
-    def audioPlayer(r, sims):
-        l_channels = r.pubsub()
-        l_channels.subscribe('results')
-
+    def aPlayer(r, sims):
         while True:
-            message = l_channels.get_message()
-            # if message:
-            #     print()
-            #     print(message)
-    
+            
+            time.sleep(0.1)
+            message = r.hgetall('results')
+            if message:
+                result = {key.decode(): value.decode() for (key, value) in message.items()}
+                p = audioPlayer(result)
+                    
     getPcarsData()
+    
     # listener = Process(target=listenPcarsData, args=(r, sims)).start()
-    player = Process(target=audioPlayer, args=(r, sims)).start()
+    player = Process(target=aPlayer, args=(r, sims)).start()
 
     for sim in sims:
         c.checkOvertake(r,sim[0])
