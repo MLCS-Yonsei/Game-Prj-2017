@@ -64,31 +64,26 @@ def create_app():
 
         return sims
 
-    def listenPcarsData(r, sims):
+    def aPlayer(r, sims):
         channels = r.pubsub()
         for sim in sims:
             # 여러 채널이 가능한지 추가 확인 필요
-            channels.subscribe([sim[0]])
+            channels.subscribe('results')
 
         while True:
-            message = channels.get_message()
-            if message:
-                # 컨트롤러 분기
-                for sim in sims:
-                    c.checkOvertake(r,sim[0])
-
-    def aPlayer(r, sims):
-        while True:
-            
             time.sleep(0.1)
             message = r.hgetall('results')
             if message:
                 result = {key.decode(): value.decode() for (key, value) in message.items()}
-                p = audioPlayer(result)
+                # 2초보다 오래된 메세지 제거
+                msg_time = datetime.datetime.strptime(result['current_time'], '%Y-%m-%d %H:%M:%S.%f')
+                ref_time = datetime.datetime.now() - datetime.timedelta(seconds=2)
+
+                if msg_time > ref_time:
+                    p = audioPlayer(result)
                     
     getPcarsData()
     
-    # listener = Process(target=listenPcarsData, args=(r, sims)).start()
     player = Process(target=aPlayer, args=(r, sims)).start()
 
     for sim in sims:
@@ -101,7 +96,6 @@ app = create_app()
 
 # Add routes
 # app.register_blueprint(get_overtake_blueprint)
-
 
 @app.route('/status', methods=['GET'])
 def status():

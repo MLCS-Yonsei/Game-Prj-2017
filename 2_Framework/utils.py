@@ -45,6 +45,7 @@ def get_crest_data(target_ip, r):
             gamedata = {'current_time': current_time, 'gamedata': crest_data}
 
             r.hmset(target_ip, gamedata)
+            # r.publish(target_ip, gamedata)
 
         else:
         # 플레이 종료
