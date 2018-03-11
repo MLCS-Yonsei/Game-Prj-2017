@@ -20,6 +20,9 @@ class overtakeChecker(mp.Process):
         self.r = r
         self.target_ip = target_ip
 
+        self.channels = self.r.pubsub()
+        self.channels.subscribe(self.target_ip)
+
         # Variables
         self.r0_t0 = 0
         self.c = False
@@ -33,6 +36,7 @@ class overtakeChecker(mp.Process):
         while True:
             time.sleep(0.1)
             message = self.r.hgetall(self.target_ip)
+
             if message:
                 data = {key.decode(): value.decode() for (key, value) in message.items()}
                 gamedata = eval(data['gamedata'])
@@ -40,14 +44,17 @@ class overtakeChecker(mp.Process):
                 # Codes
                 ranks = self.get_rank(gamedata)
                 r0_t1 = ranks[0]
-
+                
                 if self.r0_t0 != 0:
+                    
                     if self.r0_t0 > r0_t1:
                         # Overtaked
+                        print('추월')
                         self.c = ranks.index(r0_t1 + 1)
                         self.status = True
                     elif self.r0_t0 < r0_t1:
                         # Overtaken
+                        print('추월당함')
                         self.c = ranks.index(r0_t1 - 1)
                         self.status = False
                     else:
@@ -55,8 +62,10 @@ class overtakeChecker(mp.Process):
 
                 if self.c:
                     c_name = gamedata["participants"]["mParticipantInfo"][self.c]["mName"]
-                    
+                    current_time = str(datetime.datetime.now())
+
                     result = {}
+                    result['current_time'] = current_time
                     result['target_ip'] = self.target_ip
                     result['flag'] = 'overtake'
                     result['data'] = {
