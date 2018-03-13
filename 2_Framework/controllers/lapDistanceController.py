@@ -45,12 +45,13 @@ class lapDistanceChecker(mp.Process):
                 lap_length = gamedata["eventInformation"]["mTrackLength"] # 랩 길이
                 lap_completed = gamedata["participants"]["mParticipantInfo"][0]["mLapsCompleted"]
                 lap_distance = gamedata["participants"]["mParticipantInfo"][0]["mCurrentLapDistance"] + lap_length * lap_completed
-                
+                gamestate= gamedata["gameStates"]["mRaceState"]
+
                 result['data'] = {
                     'lapDistance' : lap_distance,
                 }
                 
-                if 0 < lap_distance < 80:
+                if gamestate ==2 :
                     print('start')
                     result['data']['event'] = 'start'
                 elif 790 < lap_distance < 810:
