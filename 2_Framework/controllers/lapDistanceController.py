@@ -27,6 +27,7 @@ class lapDistanceChecker(mp.Process):
 
 
     def run(self):
+        t = 0
         while True:
             message = self.r.hgetall(self.target_ip)
 
@@ -51,8 +52,9 @@ class lapDistanceChecker(mp.Process):
                     'lapDistance' : lap_distance,
                 }
                 
-                if gamestate ==2 :
+                if t = 0 and gamestate ==2 :
                     print('start')
+                    t +=1
                     result['data']['event'] = 'start'
 
                 elif 90 < lap_distance < 110 :
