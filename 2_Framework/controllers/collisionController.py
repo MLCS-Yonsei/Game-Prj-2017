@@ -40,47 +40,22 @@ class collisionChecker(mp.Process):
                 result = {}
                 result['current_time'] = current_time      
                 result['target_ip'] = self.target_ip
-                result['flag'] = 'lapDistance'
+                result['flag'] = 'collision'
 
-                lap_length = gamedata["eventInformation"]["mTrackLength"] # 랩 길이
-                lap_completed = gamedata["participants"]["mParticipantInfo"][0]["mLapsCompleted"]
-                lap_distance = gamedata["participants"]["mParticipantInfo"][0]["mCurrentLapDistance"] + lap_length * lap_completed
-                gamestate= gamedata["gameStates"]["mRaceState"]
+                
+                
+                collision = gamedata["wheelsAndTyres"]["mTerrain"][0] != 0 and gamedata["wheelsAndTyres"]["mTerrain"][2] !=0
+                velocity = sum( i*i for i in gamedata["motionAndDeviceRelated"]["mLocalVelocity"])
 
-                result['data'] = {
-                    'lapDistance' : lap_distance,
+                if collision and velocity < 5 :
+                    print('collision')
+                    result['data'] = {
+                    'collision' : True,
                 }
                 
-                if gamestate ==2 :
-                    print('start')
-                    result['data']['event'] = 'start'
-
-                elif 90 < lap_distance < 110 :
-                    print('터널입니다')
-                    result['data']['event'] = 'tunnel'
-
-                elif 790 < lap_distance < 810 :
-                    print('앞에 급한 커브입니다')
-                    result['data']['event'] = 'deepcurve'
-                
-                elif 1240 < lap_distance < 1260 :
-                    print('앞에 급한 커브입니다')
-                    result['data']['event'] = 'deepcurve'
-
-                elif 1890 < lap_distance < 1910 :
-                    print('앞에 완만한 s자 커브입니다')
-                    result['data']['event'] = 'curve'
-
-                elif 2490 < lap_distance < 2510 :
-                    print('앞에 완만한 s자 커브입니다')
-                    result['data']['event'] = 'curve'
-
-                elif 3290 < lap_distance < 3310 :
-                    print('이제부터 직선 구간입니다')
-                    result['data']['event'] = 'straight'
 
                 self.r.hmset('results', result)
 
-            time.sleep(0.5)
+            time.sleep(0.1)
                 
                 

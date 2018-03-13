@@ -83,6 +83,6 @@ class lapDistanceChecker(mp.Process):
 
                 self.r.hmset('results', result)
 
-            time.sleep(0.5)
+            time.sleep(0.1)
                 
                 
