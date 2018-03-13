@@ -41,11 +41,11 @@ class collisionChecker(mp.Process):
                 result['current_time'] = current_time      
                 result['target_ip'] = self.target_ip
                 result['flag'] = 'collision'
-                    
+
                 collision = gamedata["wheelsAndTyres"]["mTerrain"][0] != 0 and gamedata["wheelsAndTyres"]["mTerrain"][2] !=0
                 velocity = sum( i*i for i in gamedata["motionAndDeviceRelated"]["mLocalVelocity"])
 
-                if collision and velocity < 5 :
+                if collision and velocity < 1.5 :
                     print('collision')
                     result['data'] = {
                     'collision' : True,
