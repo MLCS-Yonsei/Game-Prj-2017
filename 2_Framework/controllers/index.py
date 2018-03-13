@@ -15,6 +15,8 @@ import signal
 import redis
 
 from overtakeController import overtakeChecker
+from chaseController import chaseChecker
+from lapDistanceController import lapDistanceChecker
 
 class controller():
 
@@ -25,6 +27,20 @@ class controller():
     def checkOvertake(self, r, target_ip):
         q = mp.Queue()
         job = overtakeChecker(q,r,target_ip)
+        self.queues.append(q)
+        self.jobs.append(job)
+        job.start()
+
+    def chaseChecker(self, r, target_ip):
+        q = mp.Queue()
+        job = chaseChecker(q,r,target_ip)
+        self.queues.append(q)
+        self.jobs.append(job)
+        job.start()
+
+    def lapDistanceChecker(self, r, target_ip):
+        q = mp.Queue()
+        job = lapDistanceChecker(q,r,target_ip)
         self.queues.append(q)
         self.jobs.append(job)
         job.start()
