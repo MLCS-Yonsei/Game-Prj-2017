@@ -18,7 +18,7 @@ class audioPlayer():
 
     def playFile(self, file_path):
         
-        sound = AudioSegment.from_mp3(file_path)
+        sound = AudioSegment.from_wav(dir + file_path)
         play(sound)
         time.sleep(sound.duration_seconds)
 
@@ -27,11 +27,11 @@ class audioPlayer():
 
         if status:
             # 추월함
-            audio_files = [dir + '/audio/choowal.mp3']
+            audio_files = ['/audio/overtake-01.wav','/audio/overtake-02.wav','/audio/overtake-03.wav']
             
         else:
             # 추월당함
-            audio_files = [dir + '/audio/choowaldang.mp3']
+            audio_files = ['/audio/overtake-04.wav','/audio/overtake-05.wav','/audio/overtake-06.wav']
 
         audio_file = random.choice(audio_files)
         self.playFile(audio_file)
