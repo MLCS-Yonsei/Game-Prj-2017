@@ -54,10 +54,28 @@ class lapDistanceChecker(mp.Process):
                 if gamestate ==2 :
                     print('start')
                     result['data']['event'] = 'start'
-                elif 790 < lap_distance < 810:
-                    print('300미터 앞 오른쪽 커브, 이어서 왼쪽 커브입니다')
+
+                elif 90 < lap_distance < 110 :
+                    print('터널입니다')
+                    result['data']['event'] = 'tunnel'
+
+                elif 790 < lap_distance < 810 :
+                    print('앞에 급한 커브입니다')
+                    result['data']['event'] = 'deepcurve'
+                
+                elif 1240 < lap_distance < 1260 :
+                    print('앞에 급한 커브입니다')
+                    result['data']['event'] = 'deepcurve'
+
+                elif 1890 < lap_distance < 1910 :
+                    print('앞에 완만한 s자 커브입니다')
                     result['data']['event'] = 'curve'
-                elif 3290 < lap_distance < 3310:
+
+                elif 2490 < lap_distance < 2510 :
+                    print('앞에 완만한 s자 커브입니다')
+                    result['data']['event'] = 'curve'
+
+                elif 3290 < lap_distance < 3310 :
                     print('이제부터 직선 구간입니다')
                     result['data']['event'] = 'straight'
 
