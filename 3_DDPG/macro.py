@@ -1,5 +1,6 @@
 from pywinauto.application import Application
 from pywinauto.keyboard import SendKeys
+import win32ui
 
 import serial
 import serial.tools.list_ports
@@ -20,14 +21,28 @@ import signal
 class pCarsController(mp.Process):
     def __init__(self):
         super(pCarsController,self).__init__()
-        self.queue = que
+        #self.queue = que
 
         self.get_focus()
         self.status = 'active'
 
         self.target_ip = 'localhost:8080'
-
+        
+        self.connect_arduino()
         self.prevLapDistance = 0
+
+        self.run()
+
+    def connect_arduino(self):
+        # Scan for arduino ports
+        ports = list(serial.tools.list_ports.comports())
+        for p in ports:
+            if "Arduino" in p[1]:
+                port = p[0]
+                break
+
+        self.ard = serial.Serial(port,9600,timeout=5)
+        time.sleep(2)
 
     def get_focus(self):
         # Make Pcars window focused
@@ -36,36 +51,27 @@ class pCarsController(mp.Process):
         PyCWnd1.SetFocus()
 
     def trigger_esc(self):
-        # Scan for arduino ports
-        ports = list(serial.tools.list_ports.comports())
-        for p in ports:
-            if "Arduino" in p[1]:
-                port = p[0]
-                break
-
-        ard = serial.Serial(port,9600,timeout=5)
-        time.sleep(2)
-
+        
         # Make Pcars focused just in case
         self.get_focus()
         while True:
             # Send Signal
-            ard.write(b"esc")
+            self.ard.write(b"esc")
             time.sleep(0.3)
-            # msg = ard.readline()
+            msg = self.ard.readline()
 
-            # # Finish if sec signal succeed
-            # if msg == b'esc\r\n':
-            #     break
-
-            # check if menu pops up
-            gameData = send_crest_requset(self.target_ip, "crest-monitor", {})
-            gameState = gameData["gameStates"]["mRaceState"]
-
-            if gameState == 3:
+            # Finish if sec signal succeed
+            if msg == b'esc\r\n':
                 break
 
-        ard.close()
+            # check if menu pops up
+            # gameData = send_crest_requset(self.target_ip, "crest-monitor", {})
+            # gameState = gameData["gameStates"]["mRaceState"]
+
+            # if gameState == 3:
+            #     break
+
+        
         return True
 
     def restart_type_1(self):
@@ -102,6 +108,8 @@ class pCarsController(mp.Process):
             if gameState == 2:
                 break
 
+        self.ard.close()
+        self.connect_arduino()
         return True
 
     def restart_type_2(self):
@@ -160,20 +168,24 @@ class pCarsController(mp.Process):
                     
                     # Case
                     if raceState == 3:
+                        print(1)
                         self.restart_type_2()
-                    elif crashState >= 1:
+                    elif crashState > 1:
+                        print(2)
                         self.restart_type_1()
-                    elif currentLapDistance < self.prevLapDistance:
+                    elif self.prevLapDistance != 0 and currentLapDistance != 0 and currentLapDistance <= self.prevLapDistance:
+                        print(3)
                         self.restart_type_1()
-                    elif self.prevLapDistance != 0 && currentLapDistance == self.prevLapDistance:
-                        self.restart_type_1()
-                    elif tireTerrain.count(1) != 4:
+                    elif tireTerrain.count(0) != 4:
+                        print(4)
                         self.restart_type_1()
 
                     self.prevLapDistance = currentLapDistance
 
 if __name__ == '__main__':
     pc = pCarsController()
+    while True:
+        123
 
 
 

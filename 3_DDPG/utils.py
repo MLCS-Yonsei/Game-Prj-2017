@@ -6,7 +6,7 @@ import os.path
 
 import threading
 import datetime
-import redis
+#import redis
 
 def send_crest_requset(url, flag, option):
     global standaloneWriter
