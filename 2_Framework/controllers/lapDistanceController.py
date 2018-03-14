@@ -46,13 +46,13 @@ class lapDistanceChecker(mp.Process):
                 lap_length = gamedata["eventInformation"]["mTrackLength"] # 랩 길이
                 lap_completed = gamedata["participants"]["mParticipantInfo"][0]["mLapsCompleted"]
                 lap_distance = gamedata["participants"]["mParticipantInfo"][0]["mCurrentLapDistance"] + lap_length * lap_completed
-                gamestate= gamedata["gameStates"]["mRaceState"]
+                racestate= gamedata["gameStates"]["mRaceState"]
 
                 result['data'] = {
                     'lapDistance' : lap_distance,
                 }
                 
-                if t = 0 and gamestate ==2 :
+                if t = 0 and racestate ==2 :
                     print('start')
                     t +=1
                     result['data']['event'] = 'start'
@@ -85,7 +85,8 @@ class lapDistanceChecker(mp.Process):
                     print('거의 다 왔습니다')
                     result['data']['event'] = 'almost_finish'
 
-                elif 5800 < lap_distance < 5810 :
+                elif racestate == 3 and t ==1 :
+                    t +=1
                     print('끝났습니다')
                     result['data']['event'] = 'finish'
 
