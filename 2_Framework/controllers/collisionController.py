@@ -48,7 +48,7 @@ class collisionChecker(mp.Process):
                 if collision and velocity < 1.5 :
                     print('collision')
                     result['data'] = {
-                    'collision' : True,
+                    'collision' : True
                 }
                 
 
