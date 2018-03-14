@@ -81,6 +81,14 @@ class lapDistanceChecker(mp.Process):
                     print('이제부터 직선 구간입니다')
                     result['data']['event'] = 'straight'
 
+                elif 4800 < lap_distance < 4810 :
+                    print('거의 다 왔습니다')
+                    result['data']['event'] = 'almost_finish'
+
+                elif 5800 < lap_distance < 5810 :
+                    print('끝났습니다')
+                    result['data']['event'] = 'finish'
+
                 self.r.hmset('results', result)
 
             time.sleep(0.1)
