@@ -72,7 +72,7 @@ class pCarsController(mp.Process):
         self.trigger_esc()
 
         time.sleep(0.5)
-
+        self.get_focus()
         # Move to bottom of the menu
         cmd = '{DOWN}'
         for i in range(1,11):
@@ -107,7 +107,7 @@ class pCarsController(mp.Process):
     def restart_type_2(self):
         # Wait for session results screen shows up
         time.sleep(9)
-
+        self.get_focus()
         # Move to bottom of the menu
         cmd = '{UP}'
         for i in range(1,6):
