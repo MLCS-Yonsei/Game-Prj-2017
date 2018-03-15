@@ -52,10 +52,11 @@ class lapDistanceChecker(mp.Process):
                     'lapDistance' : lap_distance,
                 }
                 
-                if t = 0 and racestate ==2 :
+                if t == 0 and racestate ==2 :
                     print('start')
                     t +=1
                     result['data']['event'] = 'start'
+                    t = 0
 
                 elif 90 < lap_distance < 110 :
                     print('터널입니다')
