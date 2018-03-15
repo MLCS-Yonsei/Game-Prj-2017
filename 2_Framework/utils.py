@@ -49,7 +49,7 @@ def get_crest_data(target_ip, r):
 
         else:
         # 플레이 종료
-            print()
+            pass
     
     # Set the next thread to happen
     POOL_TIME = 0.1
