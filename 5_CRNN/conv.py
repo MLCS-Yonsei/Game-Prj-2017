@@ -5,6 +5,7 @@ class conv():
     def __init__(self):
         self.n_classes = 10
         self.keep_rate = 0.8
+        
 
     def conv2d(self,x, W):
         return tf.nn.conv2d(x, W, strides=[1,1,1,1], padding='SAME')
@@ -16,7 +17,7 @@ class conv():
 
         weights = {'W_conv1':tf.Variable(tf.random_normal([5,5,1,32])),
                 'W_conv2':tf.Variable(tf.random_normal([5,5,32,64])),
-                'W_fc':tf.Variable(tf.random_normal([25*31*128,1024])),
+                'W_fc':tf.Variable(tf.random_normal([35*125*256,1024])),
                 'out':tf.Variable(tf.random_normal([1024, self.n_classes]))}
 
         biases = {'b_conv1':tf.Variable(tf.random_normal([32])),
@@ -24,7 +25,7 @@ class conv():
                 'b_fc':tf.Variable(tf.random_normal([1024])),
                 'out':tf.Variable(tf.random_normal([self.n_classes]))}
 
-        x = tf.reshape(x, shape=[-1, 198, 124, 1])
+        x = tf.reshape(x, shape=[-1, 700, 400, 1])
 
         conv1 = tf.nn.relu(self.conv2d(x, weights['W_conv1']) + biases['b_conv1'])
         conv1 = self.maxpool2d(conv1)
@@ -32,7 +33,7 @@ class conv():
         conv2 = tf.nn.relu(self.conv2d(conv1, weights['W_conv2']) + biases['b_conv2'])
         conv2 = self.maxpool2d(conv2)
 
-        fc = tf.reshape(conv2,[-1, 25*31*128])
+        fc = tf.reshape(conv2,[-1, 35*125*256])
         fc = tf.nn.relu(tf.matmul(fc, weights['W_fc'])+biases['b_fc'])
         fc = tf.nn.dropout(fc, self.keep_rate)
 
