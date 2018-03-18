@@ -22,6 +22,7 @@ class conv():
                 'out':tf.Variable(tf.random_normal([self.n_classes]))}
 
         x = tf.reshape(x, shape=[-1, 700, 400, 1])
+        x = tf.cast(x, tf.float32)
 
         conv1 = tf.nn.relu(self.conv2d(x, weights['W_conv1']) + biases['b_conv1'])
         conv1 = self.maxpool2d(conv1)
