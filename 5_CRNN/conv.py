@@ -6,7 +6,6 @@ class conv():
         self.n_classes = 10
         self.keep_rate = 0.8
         
-
     def conv2d(self,x, W):
         return tf.nn.conv2d(x, W, strides=[1,1,1,1], padding='SAME')
     def maxpool2d(self,x):
