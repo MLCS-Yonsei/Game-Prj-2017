@@ -5,38 +5,35 @@ import json
 import conv
 import tensorflow as tf
 import cv2
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 train_x = np.load('train_x.npz')['a']
 train_y = np.load('train_y.npz')['a']
-# c = conv.conv()
-# output = c.convolutional_neural_network(image)
-# print(output.shape)
 
-# keep_prob = tf.placeholder(tf.float32)
-
-'''
 def train_neural_network(x,y):
     x = tf.placeholder('float', [None, 700*400])
-    y = tf.placeholder('float') 
+    y = tf.placeholder('float',[None, 10]) 
+    c = conv.conv()
 
     prediction = c.convolutional_neural_network(x)
-    cost = tf.reduce_mean( tf.nn.softmax_cross_entropy_with_logits(prediction,y) )
+    cost = tf.reduce_mean( tf.nn.softmax_cross_entropy_with_logits_v2(logits = prediction, labels = y) )
     optimizer = tf.train.AdamOptimizer().minimize(cost)
     
     hm_epochs = 10
     with tf.Session() as sess:
-        sess.run(tf.initialize_all_variables())
-        train_x = x; train_y = y
+        sess.run(tf.global_variables_initializer())
+        # train_x = x; train_y = y
         for epoch in range(hm_epochs):
-            epoch_loss = 0
-             
             _, c = sess.run([optimizer, cost], feed_dict={x: train_x, y: train_y})
-            print('Epoch', epoch, 'completed out of',hm_epochs,'loss:',epoch_loss)
+            print('Epoch', epoch, 'completed out of',hm_epochs,'loss:',c)
 
         correct = tf.equal(tf.argmax(prediction, 1), tf.argmax(y, 1))
 
         accuracy = tf.reduce_mean(tf.cast(correct, 'float'))
-        print('Accuracy:',accuracy.eval({x:mnist.test.images, y:mnist.test.labels}))
-'''
+        print(accuracy.eval())
+        # print('Accuracy:',accuracy.eval({x:mnist.test.images, y:mnist.test.labels}))
 
+
+train_neural_network(train_x,train_y)
 

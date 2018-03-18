@@ -12,9 +12,6 @@ class conv():
     def maxpool2d(self,x):
         return tf.nn.max_pool(x, ksize=[1,2,2,1], strides=[1,2,2,1], padding='SAME')
     def convolutional_neural_network(self,x):
-        
-
-
         weights = {'W_conv1':tf.Variable(tf.random_normal([5,5,1,32])),
                 'W_conv2':tf.Variable(tf.random_normal([5,5,32,64])),
                 'W_fc':tf.Variable(tf.random_normal([35*125*256,1024])),

@@ -12,7 +12,7 @@ dir = '/Users/jehyun/Dropbox/videos/'
 # dir = '/home/jhp/Dropbox/videos/'
 filenames = os.listdir(dir)
 frame_number = 10; index = 0; train_x=np.zeros((1,280000))
-
+num_classes = 10
 '''
 for filename in filenames:
     full_filename = os.path.join(dir,filename)
@@ -51,8 +51,24 @@ train_x = train_x[1:,:]
 np.savez_compressed('train_x',a=train_x)
 '''
 
-train_y = np.empty([])
-for i in range (len(filenames)):
+a = np.ones(frame_number)[:,np.newaxis]; b = np.zeros(frame_number)[:,np.newaxis]
+l1 = np.concatenate((a,b,b,b,b,b,b,b,b,b), axis = 1)
+l2 = np.concatenate((b,a,b,b,b,b,b,b,b,b), axis = 1)
+l3 = np.concatenate((b,b,a,b,b,b,b,b,b,b), axis = 1)
+l4 = np.concatenate((b,b,b,a,b,b,b,b,b,b), axis = 1)
+l5 = np.concatenate((b,b,b,b,a,b,b,b,b,b), axis = 1)
+l6 = np.concatenate((b,b,b,b,b,a,b,b,b,b), axis = 1)
+l7 = np.concatenate((b,b,b,b,b,b,a,b,b,b), axis = 1)
+l8 = np.concatenate((b,b,b,b,b,b,b,a,b,b), axis = 1)
+l9 = np.concatenate((b,b,b,b,b,b,b,b,a,b), axis = 1)
+l10 = np.concatenate((b,b,b,b,b,b,b,b,b,a), axis = 1)
+train_y = np.concatenate((l1,l2,l3,l4,l5,l6,l7,l8,l9,l10),axis = 0)
+np.savez_compressed('train_y',a=train_y)
+
+'''
+for i in range (num_classes):
+    np.concatenate(())
     train_y = np.append(train_y, (i+1)*np.ones(frame_number))
 train_y = train_y[1:]
 np.savez_compressed('train_y',a=train_y)
+'''
