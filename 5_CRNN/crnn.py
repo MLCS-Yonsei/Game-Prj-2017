@@ -106,8 +106,9 @@ if __name__ == "__main__":
     x = tf.placeholder(tf.float32, [None, 700*400])
     y = tf.placeholder(tf.float32,[None, 10]) 
 
-    prediction, W, B, weights, biases = CRNN(train_x, config)
     '''
+    prediction, W, B, weights, biases = CRNN(train_x, config)
+    
     cost_cnn = tf.reduce_mean( tf.nn.softmax_cross_entropy_with_logits_v2(labels = y, logits = prediction) )
     optimizer = tf.train.AdamOptimizer().minimize(cost_cnn)
     
@@ -165,18 +166,18 @@ if __name__ == "__main__":
     
     '''save weights and biases'''
     
-    np.savez_compressed('./data/W_hidden',W['hidden'])
-    np.savez_compressed('./data/W_output',W['output'])
-    np.savez_compressed('./data/b_hidden',B['hidden'])
-    np.savez_compressed('./data/b_output',B['output'])
-    np.savez_compressed('./data/W_conv1',weights['W_conv1'])
-    np.savez_compressed('./data/W_conv2',weights['W_conv2'])
-    np.savez_compressed('./data/W_fc',weights['W_fc'])
-    np.savez_compressed('./data/W_out',weights['out'])
-    np.savez_compressed('./data/b_conv1',biases['b_conv1'])
-    np.savez_compressed('./data/b_conv2',biases['b_conv2'])
-    np.savez_compressed('./data/b_fc',biases['b_fc'])
-    np.savez_compressed('./data/b_out',biases['out'])
+    np.savez_compressed('./data/W_hidden',a=W['hidden'])
+    np.savez_compressed('./data/W_output',a=W['output'])
+    np.savez_compressed('./data/b_hidden',a=B['hidden'])
+    np.savez_compressed('./data/b_output',a=B['output'])
+    np.savez_compressed('./data/W_conv1',a=weights['W_conv1'])
+    np.savez_compressed('./data/W_conv2',a=weights['W_conv2'])
+    np.savez_compressed('./data/W_fc',a=weights['W_fc'])
+    np.savez_compressed('./data/W_out',a=weights['out'])
+    np.savez_compressed('./data/b_conv1',a=biases['b_conv1'])
+    np.savez_compressed('./data/b_conv2',a=biases['b_conv2'])
+    np.savez_compressed('./data/b_fc',a=biases['b_fc'])
+    np.savez_compressed('./data/b_out',a=biases['out'])
 
 
     print("")
