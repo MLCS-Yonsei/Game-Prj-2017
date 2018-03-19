@@ -45,8 +45,8 @@ class pCarsAutoController(mp.Process):
 
     def get_focus(self):
         # Make Pcars window focused
-        PyCWnd1 = win32gui.FindWindow( None, "Project CARS™" )
-        PyCWnd1.SetForegroundWindow()
+        PyCWnd1 = win32ui.FindWindow( None, "Project CARS™" )
+        PyCWnd1..SetForegroundWindow()
         PyCWnd1.SetFocus()
 
         return PyCWnd1
@@ -57,7 +57,8 @@ class pCarsAutoController(mp.Process):
         elif n < -1:
             n = -1
 
-        rect = win32gui.GetWindowRect(self.get_focus())
+        self.get_focus()
+        rect = win32gui.GetWindowRect(win32gui.FindWindow( None, "Project CARS™" ))
         x = rect[0]
         y = rect[1]
         w = rect[2] - x
