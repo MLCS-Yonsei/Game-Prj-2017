@@ -19,8 +19,8 @@ while True:
         print(i)
         i = i + 1
 
-        n = i / 10000
-        if n < 50:
+        n = i / 20
+        if n < 0.5:
             controlState = {
                 'acc': False,
                 'brake': False,
@@ -35,4 +35,4 @@ while True:
         
         json_str = json.dumps(controlState)
 
-        csock.sendto(json_str.encode(), ('',54545)) # 대상 서버 , 목적지 포트
+        csock.sendto(json_str.encode(), ('192.168.0.49',54545)) # 대상 서버 , 목적지 포트
