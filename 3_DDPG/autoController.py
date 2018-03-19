@@ -21,6 +21,9 @@ import datetime
 import os
 import signal
 
+from socket import *
+import json
+
 class pCarsAutoController(mp.Process):
     def __init__(self):
         super(pCarsAutoController,self).__init__()
@@ -35,6 +38,10 @@ class pCarsAutoController(mp.Process):
             'brake': False,
             'steer': 0
         }
+
+        self.svrsock = socket(AF_INET, SOCK_DGRAM)
+        self.svrsock.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
+        self.svrsock.bind(('', 54545))               #로컬호스트에 5001포트로 바인딩
 
     def get_focus(self):
         # Make Pcars window focused
@@ -97,7 +104,15 @@ class pCarsAutoController(mp.Process):
                 gameState = gameData["gameStates"]["mGameState"]
 
                 if gameState > 1:
-                    pass
+                    s, addr = self.svrsock.recvfrom(1024)
+
+                    if s == b'Connect':
+                        self.svrsock.sendto('OK'.encode(),addr)
+                    else:
+                        control = json.loads(s.decode())
+                        n = control['steer']
+
+                        self.move_steer(n)
 
 if __name__ == '__main__':
     pc = pCarsAutoController()
