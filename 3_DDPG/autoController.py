@@ -109,10 +109,16 @@ class pCarsAutoController(mp.Process):
                     if s == b'Connect':
                         self.svrsock.sendto('OK'.encode(),addr)
                     else:
-                        control = json.loads(s.decode())
-                        n = control['steer']
+                        self.controlState = json.loads(s.decode())
+                        n = self.controlState['steer']
 
                         self.move_steer(n)
+                        
+                        if self.controlState['acc'] == True:
+                            self.accOn()
+                        
+                        if self.controlState['acc'] == False:
+                            self.accOff()
 
 if __name__ == '__main__':
     pc = pCarsAutoController()

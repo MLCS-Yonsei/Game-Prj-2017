@@ -17,12 +17,21 @@ while True:
         status = True
     else:
         i = i + 1
-        print(i / 10000)
-        controlState = {
-            'acc': False,
-            'brake': False,
-            'steer': i / 200
-        }
+
+        n = i / 10000
+        if n < 50:
+            controlState = {
+                'acc': False,
+                'brake': False,
+                'steer': n
+            }
+        else:
+            controlState = {
+                'acc': True,
+                'brake': False,
+                'steer': n
+            }
+        
         json_str = json.dumps(controlState)
 
         csock.sendto(json_str.encode(), ('',54545)) # 대상 서버 , 목적지 포트
