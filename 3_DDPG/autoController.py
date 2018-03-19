@@ -45,7 +45,7 @@ class pCarsAutoController(mp.Process):
 
     def get_focus(self):
         # Make Pcars window focused
-        PyCWnd1 = win32ui.FindWindow( None, "Project CARS™" )
+        PyCWnd1 = win32gui.FindWindow( None, "Project CARS™" )
         PyCWnd1.SetForegroundWindow()
         PyCWnd1.SetFocus()
 
@@ -104,7 +104,6 @@ class pCarsAutoController(mp.Process):
                 gameState = gameData["gameStates"]["mGameState"]
 
                 if gameState > 1:
-                    print('123')
                     s, addr = self.svrsock.recvfrom(1024)
 
                     if s == b'Connect':
