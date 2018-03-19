@@ -41,7 +41,7 @@ class pCarsAutoController(mp.Process):
 
         self.svrsock = socket(AF_INET, SOCK_DGRAM)
         self.svrsock.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
-        self.svrsock.bind(('', 54545))               #로컬호스트에 5001포트로 바인딩
+        self.svrsock.bind(('192.168.0.49', 54545))               #로컬호스트에 5001포트로 바인딩
 
     def get_focus(self):
         # Make Pcars window focused
