@@ -18,9 +18,9 @@ import datetime
 import os
 import signal
 
-class pCarsController(mp.Process):
+class pCarsAutoKiller(mp.Process):
     def __init__(self):
-        super(pCarsController,self).__init__()
+        super(pCarsAutoKiller,self).__init__()
         #self.queue = que
 
         self.get_focus()
