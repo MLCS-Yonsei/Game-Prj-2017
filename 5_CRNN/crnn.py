@@ -17,10 +17,11 @@ class Config(object):
 
     def __init__(self, X_train):
         # Input data
-        
         self.train_count = len(X_train[0])  # 7352 training series
         # self.test_data_count = len(X_test)  # 2947 testing series
         self.n_steps = 1#len(X_train[0])  # 128 time_steps per series
+        self.img_h = 700
+        self.img_w = 400
 
         # Training
         self.learning_rate = 0.0025
@@ -29,11 +30,11 @@ class Config(object):
         self.batch_size = 1#90
 
         # LSTM structure
-        self.n_inputs = 10#len(X_train[0])  # Features count is of 9: 3 * 3D sensors features over time
-        self.n_hidden = 32#32  # nb of neurons inside the neural network
+        self.n_lstm_input = 10#len(X_train[0])  # Features count is of 9: 3 * 3D sensors features over time
+        self.n_hidden = 32  # nb of neurons inside the neural network
         self.n_classes = 10  # Final output classes
         self.W = {
-            'hidden': tf.Variable(tf.random_normal([self.n_inputs, self.n_hidden])),
+            'hidden': tf.Variable(tf.random_normal([self.n_lstm_input, self.n_hidden])),
             'output': tf.Variable(tf.random_normal([self.n_hidden, self.n_classes]))
         }
         self.b = {
@@ -60,7 +61,7 @@ def CRNN(_X, config):
     # _X = tf.reshape(_X, [-1, config.n_inputs])
     # _X = tf.cast(_X, tf.float32)
     # new shape: (n_steps*batch_size, n_input)
-    _X = tf.reshape(_X, shape=[-1, 700, 400, 1])
+    _X = tf.reshape(_X, shape=[-1, config.img_h, config.img_w, 1])
     _X = tf.cast(_X, tf.float32)
     conv1 = tf.nn.relu(tf.nn.conv2d(_X, config.weights['W_conv1'], strides=[1,1,1,1], padding='SAME') + config.biases['b_conv1'])
     conv1 = tf.nn.max_pool(conv1, ksize=[1,2,2,1], strides=[1,2,2,1], padding='SAME')
@@ -102,8 +103,8 @@ if __name__ == "__main__":
     train_y = np.load('./data/train_y.npz')['a']
     config = Config(train_x)
         
-    x = tf.placeholder(tf.float32, [None, 700*400])
-    y = tf.placeholder(tf.float32,[None, 10]) 
+    x = tf.placeholder(tf.float32, [None, config.img_h*config.img_w])
+    y = tf.placeholder(tf.float32,[None, config.n_classes]) 
 
     '''
     prediction, W, B, weights, biases = CRNN(train_x, config)
