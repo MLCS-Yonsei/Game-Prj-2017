@@ -11,7 +11,7 @@ status = False
 i = 0
 while True:
     if status == False:
-        csock.sendto('Connect'.encode(), ('',54545)) # 대상 서버 , 목적지 포트
+        csock.sendto('Connect'.encode(), ('192.168.0.49',54545)) # 대상 서버 , 목적지 포트
         s, addr = csock.recvfrom(1024)
         print('Connected!')
         status = True
