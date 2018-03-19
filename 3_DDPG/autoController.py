@@ -1,0 +1,113 @@
+from pywinauto.application import Application
+from pywinauto.keyboard import SendKeys
+import pywinauto
+
+import win32ui
+import win32gui
+
+import serial
+import serial.tools.list_ports
+
+from utils import send_crest_requset
+
+import subprocess 
+import multiprocessing as mp
+from threading import Thread
+from multiprocessing import Pool
+from queue import Empty
+
+import time
+import datetime
+import os
+import signal
+
+class pCarsAutoController(mp.Process):
+    def __init__(self):
+        super(pCarsAutoController,self).__init__()
+
+        self.get_focus()
+        self.status = 'active'
+
+        self.target_ip = 'localhost:8080'
+
+        self.controlState = {
+            'acc': False,
+            'brake': False,
+            'steer': 0
+        }
+
+    def get_focus(self):
+        # Make Pcars window focused
+        PyCWnd1 = win32ui.FindWindow( None, "Project CARS™" )
+        PyCWnd1.SetForegroundWindow()
+        PyCWnd1.SetFocus()
+
+        return PyCWnd1
+
+    def steer_converter(self, n):
+        if n > 1:
+            n = 1
+        elif n < -1:
+            n = -1
+
+        rect = win32gui.GetWindowRect(self.get_focus())
+        x = rect[0]
+        y = rect[1]
+        w = rect[2] - x
+        h = rect[3] - y
+        zero = [x + int(w/2), y + int(h/2)]
+        d = int(w/2 * n)
+
+        t = [zero[0] + d, zero[1]]
+
+        return t
+
+    def move_steer(self, n):
+        self.controlState['steer'] = n
+        t = self.steer_converter(n)
+
+        pywinauto.mouse.move(coords=(t[0], t[1]))
+
+    def accOn(self):
+        self.controlState['acc'] = True
+        t = self.steer_converter(self.controlState['steer'])
+        pywinauto.mouse.press(button='left', coords=(t[0], t[1]))
+
+    def accOff(self):
+        self.controlState['acc'] = False
+        t = self.steer_converter(self.controlState['steer'])
+        pywinauto.mouse.release(button='left', coords=(t[0], t[1]))
+
+    def brakeOn(self):
+        self.controlState['brake'] = True
+        t = self.steer_converter(self.controlState['steer'])
+        pywinauto.mouse.press(button='right', coords=(t[0], t[1]))
+
+    def brakeOff(self):
+        self.controlState['brake'] = False
+        t = self.steer_converter(self.controlState['steer'])
+        pywinauto.mouse.release(button='right', coords=(t[0], t[1]))
+
+    def run(self):
+        while True:
+            if self.status == 'active':
+                gameData = send_crest_requset(self.target_ip, "crest-monitor", {})
+
+                # parse Game Data
+                gameState = gameData["gameStates"]["mGameState"]
+
+                if gameState > 1:
+                    pass
+
+if __name__ == '__main__':
+    pc = pCarsAutoController()
+
+
+
+
+
+
+
+
+
+
