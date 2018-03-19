@@ -69,7 +69,7 @@ def CRNN(_X, config):
 
     # (NOTE: This step could be greatly optimised by shaping the dataset once
     # input shape: (batch_size, n_steps, n_input)
-    out = tf.reshape(out, [10,10,10])
+    out = tf.reshape(out, [-1,10,config.n_classes])
     out = tf.transpose(out, [1, 0, 2])  # permute n_steps and batch_size
     # Reshape to prepare input to hidden activation
     out = tf.reshape(out, [-1, config.n_inputs])
@@ -105,6 +105,8 @@ if __name__ == "__main__":
     config = Config(train_x)
     x = tf.placeholder(tf.float32, [None, config.img_h*config.img_w])
     y = tf.placeholder(tf.float32,[None, config.n_classes])
+    # a,b,c,d,e = CRNN(train_x,config)
+    # print(a.shape)
     '''
     prediction, W, B, weights, biases = CRNN(train_x, config)
     
@@ -126,10 +128,10 @@ if __name__ == "__main__":
         # print('Accuracy:',accuracy.eval({x:mnist.test.images, y:mnist.test.labels}))
     ###################################################################################################
     
-    '''
+    
     X = tf.placeholder(tf.float32, [None, config.n_steps, config.n_inputs])
     Y = tf.placeholder(tf.float32, [None, config.n_classes])    
-    
+    '''
     prediction, W, B, weights, biases = CRNN(train_x, config)
     # Loss,optimizer,evaluation
     l2 = config.lambda_loss_amount * sum(tf.nn.l2_loss(tf_var) for tf_var in tf.trainable_variables())
