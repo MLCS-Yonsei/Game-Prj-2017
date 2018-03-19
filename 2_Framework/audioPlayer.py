@@ -28,7 +28,7 @@ class audioPlayer():
         if status:
             # 추월함
             audio_files = ['/audio/nayoung/overtake/c-01.wav','/audio/nayoung/overtake/c-02.wav',
-            '/audionayoung/overtake/c-03.wav','/audio/nayoung/overtake/c-04.wav','/audio/nayoung/overtake/c-05.wav']
+            '/audio/nayoung/overtake/c-03.wav','/audio/nayoung/overtake/c-04.wav','/audio/nayoung/overtake/c-05.wav']
             
         else:
             # 추월당함

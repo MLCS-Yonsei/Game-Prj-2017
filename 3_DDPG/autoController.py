@@ -21,6 +21,9 @@ import datetime
 import os
 import signal
 
+from socket import *
+import json
+
 class pCarsAutoController(mp.Process):
     def __init__(self):
         super(pCarsAutoController,self).__init__()
@@ -36,6 +39,10 @@ class pCarsAutoController(mp.Process):
             'steer': 0
         }
 
+        self.svrsock = socket(AF_INET, SOCK_DGRAM)
+        self.svrsock.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
+        self.svrsock.bind(('192.168.0.49', 54545))               #로컬호스트에 5001포트로 바인딩
+
     def get_focus(self):
         # Make Pcars window focused
         PyCWnd1 = win32ui.FindWindow( None, "Project CARS™" )
@@ -50,7 +57,8 @@ class pCarsAutoController(mp.Process):
         elif n < -1:
             n = -1
 
-        rect = win32gui.GetWindowRect(self.get_focus())
+        self.get_focus()
+        rect = win32gui.GetWindowRect(win32gui.FindWindow( None, "Project CARS™" ))
         x = rect[0]
         y = rect[1]
         w = rect[2] - x
@@ -97,10 +105,27 @@ class pCarsAutoController(mp.Process):
                 gameState = gameData["gameStates"]["mGameState"]
 
                 if gameState > 1:
-                    pass
+                    s, addr = self.svrsock.recvfrom(1024)
+
+                    if s == b'Connect':
+                        print('Connected')
+                        self.svrsock.sendto('OK'.encode(),addr)
+                    else:
+                        print(s.decode())
+                        self.controlState = json.loads(s.decode())
+                        n = self.controlState['steer']
+
+                        self.move_steer(n)
+                        
+                        if self.controlState['acc'] == True:
+                            self.accOn()
+                        
+                        if self.controlState['acc'] == False:
+                            self.accOff()
 
 if __name__ == '__main__':
     pc = pCarsAutoController()
+    pc.run()
 
 
 
