@@ -100,8 +100,8 @@ def CRNN(_X, config):
     
 
 if __name__ == "__main__":
-    train_x = np.load('./data/train_x.npz')['a']
-    train_y = np.load('./data/train_y.npz')['a']
+    train_x = np.load('./data/train_x.npz')['a'][:10]
+    train_y = np.load('./data/train_y.npz')['a'][:10]
     config = Config(train_x)
     x = tf.placeholder(tf.float32, [None, config.img_h*config.img_w])
     y = tf.placeholder(tf.float32,[None, config.n_classes])
