@@ -70,31 +70,31 @@ class audioPlayer():
     def lapDistance(self):
         event = eval(self.data)['event']
 
-        if event = 'start':
+        if event == 'start':
             # 시작
             audio_files = ['/audio/nayoung/start/c-34.wav','/audio/nayoung/start/c-35.wav','/audio/nayoung/start/c-36.wav']
             
-        elif event = 'tunnel':
+        elif event == 'tunnel':
             # 터널
             audio_files = ['/audio/nayoung/tunnel/c-52.wav','/audio/nayoung/tunnel/c-53.wav']
         
-        elif event = 'deep_curve':
+        elif event == 'deep_curve':
             # 급한커브
             audio_files = ['/audio/nayoung/deep_curve/c-47.wav','/audio/nayoung/deep_curve/c-48.wav',
             '/audio/nayoung/deep_curve/c-49.wav','/audio/nayoung/deep_curve/c-50.wav','/audio/nayoung/deep_curve/c-51.wav']
 
-        elif event = 'curve':
+        elif event == 'curve':
             # 커브
             audio_files = ['/audio/nayoung/curve/c-40.wav','/audio/nayoung/curve/c-41.wav','/audio/nayoung/curve/c-42.wav',
             '/audio/nayoung/curve/c-43.wav','/audio/nayoung/curve/c-44.wav','/audio/nayoung/curve/c-45.wav',
             '/audio/nayoung/curve/c-46.wav']
 
-        elif event = 'straignt':
+        elif event == 'straignt':
             # 직선
             audio_files = ['/audio/nayoung/straight/c-54.wav','/audio/nayoung/straight/c-55.wav',
             '/audio/nayoung/straight/c-56.wav','/audio/nayoung/straight/c-57.wav']
 
-        elif event = 'finish':
+        elif event == 'finish':
             # 종료
             audio_files = ['/audio/nayoung/finish/c-37.wav','/audio/nayoung/finish/c-38.wav',
             '/audio/nayoung/finish/c-39.wav']
