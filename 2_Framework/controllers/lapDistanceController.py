@@ -50,13 +50,13 @@ class lapDistanceChecker(mp.Process):
 
                 result['data'] = {
                     'lapDistance' : lap_distance,
+                    'event' : ''
                 }
                 
-                if t == 0 and racestate ==2 :
+                if t == 0 and racestate == 2 :
                     print('start')
                     t +=1
                     result['data']['event'] = 'start'
-                    t = 0
 
                 elif 90 < lap_distance < 110 :
                     print('터널입니다')
@@ -86,12 +86,13 @@ class lapDistanceChecker(mp.Process):
                     print('거의 다 왔습니다')
                     result['data']['event'] = 'finish'
 
-                elif racestate == 3 and t ==1 :
-                    t +=1
-                    print('끝났습니다')
-                    result['data']['event'] = 'finish'
+                # if racestate == 3 and t ==1 :
+                #     t += 1
+                #     print('끝났습니다')
+                #     result['data']['event'] = 'finish'
 
-                self.r.hmset('results', result)
+                if result['data']['event'] != '':
+                    self.r.hmset('results', result)
 
             time.sleep(0.1)
                 

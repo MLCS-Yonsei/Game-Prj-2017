@@ -13,7 +13,7 @@ class audioPlayer():
         
         self.data = result['data']
         self.target_ip = result['target_ip']
-
+        print(result)
         self.method()
 
     def playFile(self, file_path):
@@ -68,6 +68,7 @@ class audioPlayer():
         self.playFile(audio_file)
 
     def lapDistance(self):
+        print(self.data)
         event = eval(self.data)['event']
 
         if event == 'start':
@@ -89,7 +90,7 @@ class audioPlayer():
             '/audio/nayoung/curve/c-43.wav','/audio/nayoung/curve/c-44.wav','/audio/nayoung/curve/c-45.wav',
             '/audio/nayoung/curve/c-46.wav']
 
-        elif event == 'straignt':
+        elif event == 'straight':
             # 직선
             audio_files = ['/audio/nayoung/straight/c-54.wav','/audio/nayoung/straight/c-55.wav',
             '/audio/nayoung/straight/c-56.wav','/audio/nayoung/straight/c-57.wav']

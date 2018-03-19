@@ -85,6 +85,7 @@ class chaseChecker(mp.Process):
                                 result['data'] = {
                                     'chasing': True,
                                     'rank': rank,
+                                    'acc': ''
                                 }  
 
                                 if self.recent_fcar_distances[0] - self.recent_fcar_distances[19] < 40 and self.recent_fcar_distances[19] < 100:
@@ -96,8 +97,8 @@ class chaseChecker(mp.Process):
                                     print('잘 못쫒아감!')
                                     result['data']['acc'] = False
 
-                            
-                                self.r.hmset('results', result)
+                                if result['data']['acc'] != '':
+                                    self.r.hmset('results', result)
                             
                         elif len(self.recent_fcar_distances) < 20:
                             self.recent_fcar_distances.append(fcar_distance)
@@ -135,7 +136,8 @@ class chaseChecker(mp.Process):
                                     print('쫓아와!')
                                     result['data']['acc'] = False
 
-                                self.r.hmset('results', result)
+                                if result['data']['acc'] != '':
+                                    self.r.hmset('results', result)
                             
                         elif len(self.recent_scar_distances) < 20:
                             self.recent_scar_distances.append(fcar_distance)

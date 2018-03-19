@@ -43,38 +43,40 @@ class overtakeChecker(mp.Process):
                 
                 # Codes
                 ranks = self.get_rank(gamedata)
-                r0_t1 = ranks[0]
-                
-                if self.r0_t0 != 0:
+
+                if len(ranks) > 1:
+                    r0_t1 = ranks[0]
                     
-                    if self.r0_t0 > r0_t1:
-                        # Overtaked
-                        print('추월')
-                        self.c = ranks.index(r0_t1 + 1)
-                        self.status = True
-                    elif self.r0_t0 < r0_t1:
-                        # Overtaken
-                        print('추월당함')
-                        self.c = ranks.index(r0_t1 - 1)
-                        self.status = False
-                    else:
-                        self.c = False
+                    if self.r0_t0 != 0:
+                        
+                        if self.r0_t0 > r0_t1:
+                            # Overtaked
+                            print('추월')
+                            self.c = ranks.index(r0_t1 + 1)
+                            self.status = True
+                        elif self.r0_t0 < r0_t1:
+                            # Overtaken
+                            print('추월당함')
+                            self.c = ranks.index(r0_t1 - 1)
+                            self.status = False
+                        else:
+                            self.c = False
 
-                if self.c:
-                    c_name = gamedata["participants"]["mParticipantInfo"][self.c]["mName"]
-                    current_time = str(datetime.datetime.now())
+                    if self.c:
+                        c_name = gamedata["participants"]["mParticipantInfo"][self.c]["mName"]
+                        current_time = str(datetime.datetime.now())
 
-                    result = {}
-                    result['current_time'] = current_time
-                    result['target_ip'] = self.target_ip
-                    result['flag'] = 'overtake'
-                    result['data'] = {
-                        'status': self.status,
-                        'rank': r0_t1
-                    }
+                        result = {}
+                        result['current_time'] = current_time
+                        result['target_ip'] = self.target_ip
+                        result['flag'] = 'overtake'
+                        result['data'] = {
+                            'status': self.status,
+                            'rank': r0_t1
+                        }
 
-                    self.r.hmset('results', result)
+                        self.r.hmset('results', result)
 
-                self.r0_t0 = r0_t1
+                    self.r0_t0 = r0_t1
 
             
