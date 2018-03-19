@@ -149,11 +149,12 @@ if __name__ == "__main__":
     best_accuracy = 0.0
     # Start training for each batch and loop epochs
     for i in range(config.training_epochs):
+        '''
         for start, end in zip(range(0, config.train_count, config.batch_size),
                               range(config.batch_size, config.train_count + 1, config.batch_size)):
             sess.run(optimizer, feed_dict={x: train_x[start:end],
                                            y: train_y[start:end]})
-
+        '''
         # Test completely at every epoch: calculate accuracy
         pred_out, accuracy_out, loss_out, W, B, weights, biases = sess.run(
             [prediction, accuracy, cost, W, B, weights, biases], feed_dict={x: train_x, y: train_y}
