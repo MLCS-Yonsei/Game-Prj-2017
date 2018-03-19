@@ -16,6 +16,7 @@ while True:
         print('Connected!')
         status = True
     else:
+        print(i)
         i = i + 1
 
         n = i / 10000

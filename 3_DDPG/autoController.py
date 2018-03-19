@@ -104,6 +104,7 @@ class pCarsAutoController(mp.Process):
                 gameState = gameData["gameStates"]["mGameState"]
 
                 if gameState > 1:
+                    print('123')
                     s, addr = self.svrsock.recvfrom(1024)
 
                     if s == b'Connect':
