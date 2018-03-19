@@ -64,11 +64,11 @@ class lapDistanceChecker(mp.Process):
 
                 elif 790 < lap_distance < 810 :
                     print('앞에 급한 커브입니다')
-                    result['data']['event'] = 'deepcurve'
+                    result['data']['event'] = 'deep_curve'
                 
                 elif 1240 < lap_distance < 1260 :
                     print('앞에 급한 커브입니다')
-                    result['data']['event'] = 'deepcurve'
+                    result['data']['event'] = 'deep_curve'
 
                 elif 1890 < lap_distance < 1910 :
                     print('앞에 완만한 s자 커브입니다')
@@ -84,7 +84,7 @@ class lapDistanceChecker(mp.Process):
 
                 elif 4800 < lap_distance < 4810 :
                     print('거의 다 왔습니다')
-                    result['data']['event'] = 'almost_finish'
+                    result['data']['event'] = 'finish'
 
                 elif racestate == 3 and t ==1 :
                     t +=1

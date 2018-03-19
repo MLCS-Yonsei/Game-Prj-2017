@@ -90,7 +90,6 @@ def create_app():
         c.checkOvertake(r,sim[0])
         c.chaseChecker(r,sim[0])
         c.lapDistanceChecker(r,sim[0])
-        c.collisionChecker(r,sim[0])
 
     atexit.register(interrupt)
     return app
@@ -107,6 +106,8 @@ def status():
 
     for sim in sims:
         c.checkOvertake(r,sim[0])
+        c.chaseChecker(r,sim[0])
+        c.lapDistanceChecker(r,sim[0])
 
     return jsonify({}), 200
 
