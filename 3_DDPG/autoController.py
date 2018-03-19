@@ -122,6 +122,7 @@ class pCarsAutoController(mp.Process):
 
 if __name__ == '__main__':
     pc = pCarsAutoController()
+    pc.run()
 
 
 
