@@ -142,10 +142,10 @@ if __name__ == "__main__":
     correct_pred = tf.equal(tf.argmax(prediction, 1), tf.argmax(y, 1))
     accuracy = tf.reduce_mean(tf.cast(correct_pred, dtype=tf.float32))
 
-    # sess = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
-    cfg = tf.ConfigProto()
-    cfg.gpu_options.allocator_type = 'BFC'
-    sess = tf.InteractiveSession(config= cfg)
+    sess = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=True))
+    # cfg = tf.ConfigProto()
+    # cfg.gpu_options.allocator_type = 'BFC'
+    # sess = tf.InteractiveSession(config= cfg)
     init = tf.global_variables_initializer()
     sess.run(init)
 
