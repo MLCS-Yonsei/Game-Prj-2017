@@ -43,12 +43,12 @@ class Config(object):
         }
         self.weights = {'W_conv1':tf.Variable(tf.random_normal([5,5,1,32])),
                 'W_conv2':tf.Variable(tf.random_normal([5,5,32,64])),
-                'W_fc':tf.Variable(tf.random_normal([35*125*256,1024])),
-                'out':tf.Variable(tf.random_normal([1024, self.n_classes]))}
+                'W_fc':tf.Variable(tf.random_normal([35*125*256,512])),
+                'out':tf.Variable(tf.random_normal([512, self.n_classes]))}
 
         self.biases = {'b_conv1':tf.Variable(tf.random_normal([32])),
                 'b_conv2':tf.Variable(tf.random_normal([64])),
-                'b_fc':tf.Variable(tf.random_normal([1024])),
+                'b_fc':tf.Variable(tf.random_normal([512])),
                 'out':tf.Variable(tf.random_normal([self.n_classes]))}
         self.keep_rate = 0.8
 
@@ -105,8 +105,8 @@ if __name__ == "__main__":
     config = Config(train_x)
     x = tf.placeholder(tf.float32, [None, config.img_h*config.img_w])
     y = tf.placeholder(tf.float32,[None, config.n_classes])
-    # a,b,c,d,e = CRNN(train_x,config)
-    # print(a.shape)
+    a,b,c,d,e = CRNN(train_x,config)
+    print(a.shape)
     '''
     prediction, W, B, weights, biases = CRNN(train_x, config)
     
@@ -128,7 +128,7 @@ if __name__ == "__main__":
         # print('Accuracy:',accuracy.eval({x:mnist.test.images, y:mnist.test.labels}))
     ###################################################################################################
     
-    '''
+    
     X = tf.placeholder(tf.float32, [None, config.n_steps, config.n_inputs])
     Y = tf.placeholder(tf.float32, [None, config.n_classes])    
     
@@ -145,27 +145,27 @@ if __name__ == "__main__":
     sess = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
     init = tf.global_variables_initializer()
     sess.run(init)
-    print(12313)
+
     best_accuracy = 0.0
     # Start training for each batch and loop epochs
     for i in range(config.training_epochs):
-        print(12313)
+        
         for start, end in zip(range(0, config.train_count, config.batch_size),
                               range(config.batch_size, config.train_count + 1, config.batch_size)):
             sess.run(optimizer, feed_dict={x: train_x[start:end],
                                            y: train_y[start:end]})
-        print(12313)
+        
         # Test completely at every epoch: calculate accuracy
         pred_out, accuracy_out, loss_out, W, B, weights, biases = sess.run(
             [prediction, accuracy, cost, W, B, weights, biases], feed_dict={x: train_x, y: train_y}
         )
-        print(12313)
+
         print("training iter: {},".format(i) +
               " test accuracy : {},".format(accuracy_out) +
               " loss : {}".format(loss_out))
         best_accuracy = max(best_accuracy, accuracy_out)
     
-    
+    '''
     '''save weights and biases'''
     '''
     np.savez_compressed('./data/W_hidden',a=W['hidden'])
