@@ -141,7 +141,7 @@ if __name__ == "__main__":
     
     X = tf.placeholder(tf.float32, [None, config.n_steps, config.n_inputs])
     Y = tf.placeholder(tf.float32, [None, config.n_classes])    
-    
+    '''
     prediction, Y, W, B, weights, biases = CRNN(X, Y, config)
     # Loss,optimizer,evaluation
     l2 = config.lambda_loss_amount * sum(tf.nn.l2_loss(tf_var) for tf_var in tf.trainable_variables())
@@ -205,7 +205,7 @@ if __name__ == "__main__":
     
     
     sess.close()
-    '''
+    
     '''save weights and biases'''
     
  
