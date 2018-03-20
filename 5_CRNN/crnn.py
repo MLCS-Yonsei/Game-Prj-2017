@@ -148,7 +148,7 @@ if __name__ == "__main__":
 
     # sess = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
     cfg = tf.ConfigProto()
-    cfg.gpu_options.per_process_gpu_memory_fraction = 0.85
+    # cfg.gpu_options.per_process_gpu_memory_fraction = 0.85
     cfg.gpu_options.allow_growth = True
     sess = tf.Session(config= cfg)
 
@@ -167,7 +167,7 @@ if __name__ == "__main__":
             
             # Test completely at every epoch: calculate accuracy
             pred_out, accuracy_out, loss_out, W, B, weights, biases = sess.run(
-                [prediction, accuracy, cost, W, B, weights, biases], feed_dict={x: train_x, y: train_y}
+                [prediction, accuracy, cost, W, B, weights, biases], feed_dict={x: train_x[start:end], y: train_y[start:end]}
             )
 
             print("training iter: {},".format(i) +
