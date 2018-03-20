@@ -100,8 +100,8 @@ def CRNN(_X, config):
     
 
 if __name__ == "__main__":
-    train_x = np.load('./data/train_x.npz')['a'][:10]
-    train_y = np.load('./data/train_y.npz')['a'][:10]
+    train_x = np.load('./data/train_x.npz')['a']
+    train_y = np.load('./data/train_y.npz')['a']
     config = Config(train_x)
     x = tf.placeholder(tf.float32, [None, config.img_h*config.img_w])
     y = tf.placeholder(tf.float32,[None, config.n_classes])
@@ -128,10 +128,10 @@ if __name__ == "__main__":
         # print('Accuracy:',accuracy.eval({x:mnist.test.images, y:mnist.test.labels}))
     ###################################################################################################
     
-    
+    '''
     X = tf.placeholder(tf.float32, [None, config.n_steps, config.n_inputs])
     Y = tf.placeholder(tf.float32, [None, config.n_classes])    
-    '''
+    
     prediction, W, B, weights, biases = CRNN(train_x, config)
     # Loss,optimizer,evaluation
     l2 = config.lambda_loss_amount * sum(tf.nn.l2_loss(tf_var) for tf_var in tf.trainable_variables())
@@ -145,21 +145,21 @@ if __name__ == "__main__":
     sess = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
     init = tf.global_variables_initializer()
     sess.run(init)
-
+    print(12313)
     best_accuracy = 0.0
     # Start training for each batch and loop epochs
     for i in range(config.training_epochs):
-        '''
+        print(12313)
         for start, end in zip(range(0, config.train_count, config.batch_size),
                               range(config.batch_size, config.train_count + 1, config.batch_size)):
             sess.run(optimizer, feed_dict={x: train_x[start:end],
                                            y: train_y[start:end]})
-        '''
+        print(12313)
         # Test completely at every epoch: calculate accuracy
         pred_out, accuracy_out, loss_out, W, B, weights, biases = sess.run(
             [prediction, accuracy, cost, W, B, weights, biases], feed_dict={x: train_x, y: train_y}
         )
-
+        print(12313)
         print("training iter: {},".format(i) +
               " test accuracy : {},".format(accuracy_out) +
               " loss : {}".format(loss_out))
