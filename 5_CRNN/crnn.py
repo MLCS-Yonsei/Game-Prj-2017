@@ -145,7 +145,7 @@ if __name__ == "__main__":
     # sess = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
     cfg = tf.ConfigProto()
     cfg.gpu_options.allocator_type = 'BFC'
-    sess = tf.InteractiveSession(config= config)
+    sess = tf.InteractiveSession(config= cfg)
     init = tf.global_variables_initializer()
     sess.run(init)
 
