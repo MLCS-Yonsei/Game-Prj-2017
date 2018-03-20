@@ -74,7 +74,7 @@ def CRNN(_X, config):
 
     # (NOTE: This step could be greatly optimised by shaping the dataset once
     # input shape: (batch_size, n_steps, n_input)
-    out = tf.reshape(out, [-1,10,config.n_classes])
+    out = tf.reshape(out, [-1,config.n_steps,config.n_classes])
     out = tf.transpose(out, [1, 0, 2])  # permute n_steps and batch_size
     # Reshape to prepare input to hidden activation
     out = tf.reshape(out, [-1, config.n_inputs])
@@ -139,9 +139,9 @@ if __name__ == "__main__":
     '''
     prediction, W, B, weights, biases = CRNN(train_x, config)
     # Loss,optimizer,evaluation
-    l2 = config.lambda_loss_amount * sum(tf.nn.l2_loss(tf_var) for tf_var in tf.trainable_variables())
+    # l2 = config.lambda_loss_amount * sum(tf.nn.l2_loss(tf_var) for tf_var in tf.trainable_variables())
     # Softmax loss and L2
-    cost = tf.reduce_mean( tf.nn.softmax_cross_entropy_with_logits(labels=y, logits=prediction) ) + l2
+    cost = tf.reduce_mean( tf.nn.softmax_cross_entropy_with_logits(labels=y, logits=prediction) ) #+ l2
     optimizer = tf.train.AdamOptimizer(learning_rate=config.learning_rate).minimize(cost)
 
     correct_pred = tf.equal(tf.argmax(prediction, 1), tf.argmax(y, 1))
