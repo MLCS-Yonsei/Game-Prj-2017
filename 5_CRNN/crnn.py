@@ -59,7 +59,6 @@ def CRNN(_X, _Y, config):
     _X = tf.cast(_X, tf.float32)
     conv1 = tf.nn.relu(tf.nn.conv2d(_X, config.weights['W_conv1'], strides=[1,1,1,1], padding='SAME') + config.biases['b_conv1'])
     conv1 = tf.nn.max_pool(conv1, ksize=[1,2,2,1], strides=[1,2,2,1], padding='SAME')
-    
     conv2 = tf.nn.relu(tf.nn.conv2d(conv1, config.weights['W_conv2'], strides=[1,1,1,1], padding='SAME') + config.biases['b_conv2'])
     conv2 = tf.nn.max_pool(conv2, ksize=[1,2,2,1], strides=[1,2,2,1], padding='SAME')
 
@@ -147,10 +146,11 @@ if __name__ == "__main__":
     correct_pred = tf.equal(tf.argmax(prediction, 1), tf.argmax(label, 1))
     accuracy = tf.reduce_mean(tf.cast(correct_pred, dtype=tf.float32))
 
-    sess = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
-    # cfg = tf.ConfigProto()
-    # cfg.gpu_options.allocator_type = 'BFC'
-    # sess = tf.InteractiveSession(config= cfg)
+    # sess = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
+    cfg = tf.ConfigProto()
+    cfg.gpu_options.per_process_gpu_memory_fraction = 1
+    cfg.gpu_options.allow_growth = True
+    sess = tf.Session(config= cfg)
     init = tf.global_variables_initializer()
     sess.run(init)
 
