@@ -44,13 +44,13 @@ class Config(object):
         self.weights = {'W_conv1':tf.Variable(tf.random_normal([5,5,1,16])),#[5,5,1,32]
                 'W_conv2':tf.Variable(tf.random_normal([5,5,16,16])),#[5,5,32,64]
                 # 'W_conv3':tf.Variable(tf.random_normal([10,10,64,128])),
-                'W_fc':tf.Variable(tf.random_normal([35*125*64,512])),#[35*125*256]
-                'out':tf.Variable(tf.random_normal([512, self.n_classes]))}
+                'W_fc':tf.Variable(tf.random_normal([35*20*16,256])),#[35*125*256]
+                'out':tf.Variable(tf.random_normal([256, self.n_classes]))}
 
         self.biases = {'b_conv1':tf.Variable(tf.random_normal([16])),
                 'b_conv2':tf.Variable(tf.random_normal([16])),
                 # 'b_conv3':tf.Variable(tf.random_normal([128])),
-                'b_fc':tf.Variable(tf.random_normal([512])),
+                'b_fc':tf.Variable(tf.random_normal([256])),
                 'out':tf.Variable(tf.random_normal([self.n_classes]))}
         self.keep_rate = 0.8
 
@@ -58,19 +58,24 @@ def CRNN(_X, _Y, config):
     _X = tf.reshape(_X, shape=[-1, config.img_h, config.img_w, 1])
     _X = tf.cast(_X, tf.float32)
     conv1 = tf.nn.relu(tf.nn.conv2d(_X, config.weights['W_conv1'], strides=[1,1,1,1], padding='SAME') + config.biases['b_conv1'])
-    conv1 = tf.nn.max_pool(conv1, ksize=[1,2,2,1], strides=[1,2,2,1], padding='SAME')
+    print(conv1)
+    conv1 = tf.nn.max_pool(conv1, ksize=[1,2,2,1], strides=[1,4,4,1], padding='SAME')
+    print(conv1)
     conv2 = tf.nn.relu(tf.nn.conv2d(conv1, config.weights['W_conv2'], strides=[1,1,1,1], padding='SAME') + config.biases['b_conv2'])
-    conv2 = tf.nn.max_pool(conv2, ksize=[1,2,2,1], strides=[1,2,2,1], padding='SAME')
-
+    print(conv2)
+    conv2 = tf.nn.max_pool(conv2, ksize=[1,2,2,1], strides=[1,5,5,1], padding='SAME')
+    print(conv2)
     # conv3 = tf.nn.relu(tf.nn.conv2d(conv2, config.weights['W_conv3'], strides=[1,1,1,1], padding='SAME') + config.biases['b_conv3'])
     # conv3 = tf.nn.max_pool(conv3, ksize=[1,2,2,1], strides=[1,2,2,1], padding='SAME')
 
-    fc = tf.reshape(conv2,[-1, 35*125*64])#[35*125*256]
+    fc = tf.reshape(conv2,[-1, 35*20*16])#[35*125*256]
+    print(fc)
     fc = tf.nn.relu(tf.matmul(fc, config.weights['W_fc']) + config.biases['b_fc'])
+    print(fc)
     fc = tf.nn.dropout(fc, config.keep_rate)
 
     out = tf.matmul(fc, config.weights['out']) + config.biases['out']
-
+    print(out)
     # (NOTE: This step could be greatly optimised by shaping the dataset once
     # input shape: (batch_size, n_steps, n_input)
     out = tf.reshape(out, [-1,config.n_steps,config.n_classes])
@@ -109,8 +114,8 @@ if __name__ == "__main__":
     config = Config(train_x)
     x = tf.placeholder(tf.float32, [None, config.img_h*config.img_w])
     y = tf.placeholder(tf.float32,[None, config.n_classes])
-    # a,b,c,d,e = CRNN(train_x,config)
-    # print(a.shape)
+    a,b,c,d,e,f = CRNN(train_x,train_y,config)
+    print(a.shape)
     '''
     prediction, W, B, weights, biases = CRNN(train_x, config)
     
@@ -135,7 +140,7 @@ if __name__ == "__main__":
     
     X = tf.placeholder(tf.float32, [None, config.n_steps, config.n_inputs])
     Y = tf.placeholder(tf.float32, [None, config.n_classes])    
-    '''
+    
     prediction, label, W, B, weights, biases = CRNN(train_x, train_y, config)
     # Loss,optimizer,evaluation
     l2 = config.lambda_loss_amount * sum(tf.nn.l2_loss(tf_var) for tf_var in tf.trainable_variables())
@@ -167,34 +172,39 @@ if __name__ == "__main__":
             
             # Test completely at every epoch: calculate accuracy
             pred_out, accuracy_out, loss_out, W, B, weights, biases = sess.run(
-                [prediction, accuracy, cost, W, B, weights, biases], feed_dict={x: train_x[start:end], y: train_y[start:end]}
+                [prediction, accuracy, cost, W, B, weights, biases], feed_dict={x: train_x, y: train_y}
             )
 
             print("training iter: {},".format(i) +
                 " test accuracy : {},".format(accuracy_out) +
                 " loss : {}".format(loss_out))
             best_accuracy = max(best_accuracy, accuracy_out)
+       
         
         
-        '''save weights and biases'''
-        '''
-        np.savez_compressed('./data/W_hidden',a=W['hidden'])
-        np.savez_compressed('./data/W_output',a=W['output'])
-        np.savez_compressed('./data/b_hidden',a=B['hidden'])
-        np.savez_compressed('./data/b_output',a=B['output'])
-        np.savez_compressed('./data/W_conv1',a=weights['W_conv1'])
-        np.savez_compressed('./data/W_conv2',a=weights['W_conv2'])
-        np.savez_compressed('./data/W_fc',a=weights['W_fc'])
-        np.savez_compressed('./data/W_out',a=weights['out'])
-        np.savez_compressed('./data/b_conv1',a=biases['b_conv1'])
-        np.savez_compressed('./data/b_conv2',a=biases['b_conv2'])
-        np.savez_compressed('./data/b_fc',a=biases['b_fc'])
-        np.savez_compressed('./data/b_out',a=biases['out'])
 
 
-        print("")
-        print("final test accuracy: {}".format(accuracy_out))
-        print("best epoch's test accuracy: {}".format(best_accuracy))
-        print("")
-        '''
+    
     sess.close()
+    '''
+    '''save weights and biases'''
+    '''
+    np.savez_compressed('./data/W_hidden',a=W['hidden'])
+    np.savez_compressed('./data/W_output',a=W['output'])
+    np.savez_compressed('./data/b_hidden',a=B['hidden'])
+    np.savez_compressed('./data/b_output',a=B['output'])
+    np.savez_compressed('./data/W_conv1',a=weights['W_conv1'])
+    np.savez_compressed('./data/W_conv2',a=weights['W_conv2'])
+    np.savez_compressed('./data/W_fc',a=weights['W_fc'])
+    np.savez_compressed('./data/W_out',a=weights['out'])
+    np.savez_compressed('./data/b_conv1',a=biases['b_conv1'])
+    np.savez_compressed('./data/b_conv2',a=biases['b_conv2'])
+    np.savez_compressed('./data/b_fc',a=biases['b_fc'])
+    np.savez_compressed('./data/b_out',a=biases['out'])
+
+
+    print("")
+    print("final test accuracy: {}".format(accuracy_out))
+    print("best epoch's test accuracy: {}".format(best_accuracy))
+    print("")
+    '''
