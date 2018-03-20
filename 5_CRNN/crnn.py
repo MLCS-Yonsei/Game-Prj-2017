@@ -112,8 +112,8 @@ if __name__ == "__main__":
     train_x = np.load('./data/train_x.npz')['a']
     train_y = np.load('./data/train_y.npz')['a']
     config = Config(train_x)
-    X = tf.placeholder(tf.float32, [None, config.img_h*config.img_w])
-    Y = tf.placeholder(tf.float32,[10, config.n_classes])
+    X = tf.placeholder(tf.float32, [100, config.img_h*config.img_w])
+    Y = tf.placeholder(tf.float32,[None, config.n_classes])
     
     # a,b,c,d,e,f = CRNN(train_x,train_y,config)
     # print(a.shape)
