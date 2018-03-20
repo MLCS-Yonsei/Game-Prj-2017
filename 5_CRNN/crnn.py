@@ -148,7 +148,7 @@ if __name__ == "__main__":
 
     # sess = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
     cfg = tf.ConfigProto()
-    cfg.gpu_options.per_process_gpu_memory_fraction = 1
+    cfg.gpu_options.per_process_gpu_memory_fraction = 0.85
     cfg.gpu_options.allow_growth = True
     sess = tf.Session(config= cfg)
     init = tf.global_variables_initializer()
