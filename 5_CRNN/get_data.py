@@ -10,8 +10,8 @@ import matplotlib.pyplot as plt
 # dir = '/Users/jehyun/Dropbox/videos/'
 dir = '/home/jhp/Dropbox/videos/'
 filenames = os.listdir(dir)
-frame_number = 10; index = 0; train_x=np.zeros((1,280000))
-
+frame_number = 1; index = 0; train_x=np.zeros((1,280000))
+'''
 for filename in filenames:
     full_filename = os.path.join(dir,filename)
 
@@ -63,4 +63,3 @@ l10 = np.concatenate((b,b,b,b,b,b,b,b,b,a), axis = 1)
 train_y = np.concatenate((l1,l2,l3,l4,l5,l6,l7,l8,l9,l10),axis = 0)
 np.savez_compressed('train_y',a=train_y)
 
-'''
