@@ -100,8 +100,8 @@ def CRNN(_X, config):
     
 
 if __name__ == "__main__":
-    train_x = np.load('./data/train_x.npz')['a']
-    train_y = np.load('./data/train_y.npz')['a']
+    train_x = np.load('./data/train_x.npz')['a'][:10]
+    train_y = np.load('./data/train_y.npz')['a'][:10]
     config = Config(train_x)
     x = tf.placeholder(tf.float32, [None, config.img_h*config.img_w])
     y = tf.placeholder(tf.float32,[None, config.n_classes])
@@ -142,7 +142,10 @@ if __name__ == "__main__":
     correct_pred = tf.equal(tf.argmax(prediction, 1), tf.argmax(y, 1))
     accuracy = tf.reduce_mean(tf.cast(correct_pred, dtype=tf.float32))
 
-    sess = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
+    # sess = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
+    config = tf.ConfigProto()
+    config.gpu_options.allocator_type = 'BFC'
+    sess = tf.InteractiveSession(config= config)
     init = tf.global_variables_initializer()
     sess.run(init)
 
