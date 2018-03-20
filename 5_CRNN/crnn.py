@@ -115,8 +115,8 @@ if __name__ == "__main__":
     X = tf.placeholder(tf.float32, [None, config.img_h*config.img_w])
     Y = tf.placeholder(tf.float32,[None, config.n_classes])
     
-    a,b,c,d,e,f = CRNN(train_x,train_y,config)
-    print(a.shape)
+    # a,b,c,d,e,f = CRNN(train_x,train_y,config)
+    # print(a.shape)
     '''
     prediction, W, B, weights, biases = CRNN(train_x, config)
     
