@@ -79,9 +79,12 @@ def CRNN(_X, _Y, config):
     # (NOTE: This step could be greatly optimised by shaping the dataset once
     # input shape: (batch_size, n_steps, n_input)
     out = tf.reshape(out, [-1,config.n_steps,config.n_classes])
+    print(out)
     out = tf.transpose(out, [1, 0, 2])  # permute n_steps and batch_size
     # Reshape to prepare input to hidden activation
+    print(out)
     out = tf.reshape(out, [-1, config.n_inputs])
+    print(out)
     # out = tf.cast(out, tf.float32)
     # new shape: (n_steps*batch_size, n_input)
     # Linear activation
@@ -112,11 +115,11 @@ if __name__ == "__main__":
     train_x = np.load('./data/train_x.npz')['a']
     train_y = np.load('./data/train_y.npz')['a']
     config = Config(train_x)
-    X = tf.placeholder(tf.float32, [None, config.img_h*config.img_w])
-    Y = tf.placeholder(tf.float32,[None, config.n_classes])
+    X = tf.placeholder(tf.float32, [100, config.img_h*config.img_w])
+    Y = tf.placeholder(tf.float32,[10, config.n_classes])
     
-    # a,b,c,d,e,f = CRNN(train_x,train_y,config)
-    # print(a.shape)
+    a,b,c,d,e,f = CRNN(train_x,train_y,config)
+    # print(b.shape)
     '''
     prediction, W, B, weights, biases = CRNN(train_x, config)
     
@@ -141,7 +144,7 @@ if __name__ == "__main__":
     
     X = tf.placeholder(tf.float32, [None, config.n_steps, config.n_inputs])
     Y = tf.placeholder(tf.float32, [None, config.n_classes])    
-    '''
+    
     prediction, label, W, B, weights, biases = CRNN(X, Y, config)
     # Loss,optimizer,evaluation
     l2 = config.lambda_loss_amount * sum(tf.nn.l2_loss(tf_var) for tf_var in tf.trainable_variables())
@@ -205,7 +208,7 @@ if __name__ == "__main__":
     
     
     sess.close()
-    
+    '''
     '''save weights and biases'''
     
  
