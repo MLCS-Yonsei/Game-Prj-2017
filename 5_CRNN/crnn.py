@@ -59,11 +59,11 @@ def CRNN(_X, _Y, config):
     _X = tf.cast(_X, tf.float32)
     conv1 = tf.nn.relu(tf.nn.conv2d(_X, config.weights['W_conv1'], strides=[1,1,1,1], padding='SAME') + config.biases['b_conv1'])
     print(conv1)
-    conv1 = tf.nn.max_pool(conv1, ksize=[1,2,2,1], strides=[1,4,4,1], padding='SAME')
+    conv1 = tf.nn.max_pool(conv1, ksize=[1,4,4,1], strides=[1,4,4,1], padding='SAME')
     print(conv1)
     conv2 = tf.nn.relu(tf.nn.conv2d(conv1, config.weights['W_conv2'], strides=[1,1,1,1], padding='SAME') + config.biases['b_conv2'])
     print(conv2)
-    conv2 = tf.nn.max_pool(conv2, ksize=[1,2,2,1], strides=[1,5,5,1], padding='SAME')
+    conv2 = tf.nn.max_pool(conv2, ksize=[1,5,5,1], strides=[1,5,5,1], padding='SAME')
     print(conv2)
     # conv3 = tf.nn.relu(tf.nn.conv2d(conv2, config.weights['W_conv3'], strides=[1,1,1,1], padding='SAME') + config.biases['b_conv3'])
     # conv3 = tf.nn.max_pool(conv3, ksize=[1,2,2,1], strides=[1,2,2,1], padding='SAME')
@@ -112,8 +112,8 @@ if __name__ == "__main__":
     train_x = np.load('./data/train_x.npz')['a']
     train_y = np.load('./data/train_y.npz')['a']
     config = Config(train_x)
-    x = tf.placeholder(tf.float32, [None, config.img_h*config.img_w])
-    y = tf.placeholder(tf.float32,[None, config.n_classes])
+    X = tf.placeholder(tf.float32, [None, config.img_h*config.img_w])
+    Y = tf.placeholder(tf.float32,[None, config.n_classes])
     # a,b,c,d,e,f = CRNN(train_x,train_y,config)
     # print(a.shape)
     '''
@@ -141,7 +141,7 @@ if __name__ == "__main__":
     X = tf.placeholder(tf.float32, [None, config.n_steps, config.n_inputs])
     Y = tf.placeholder(tf.float32, [None, config.n_classes])    
     '''
-    prediction, label, W, B, weights, biases = CRNN(train_x, train_y, config)
+    prediction, label, W, B, weights, biases = CRNN(X, Y, config)
     # Loss,optimizer,evaluation
     l2 = config.lambda_loss_amount * sum(tf.nn.l2_loss(tf_var) for tf_var in tf.trainable_variables())
     # Softmax loss and L2
