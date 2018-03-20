@@ -110,8 +110,8 @@ if __name__ == "__main__":
     config = Config(train_x)
     x = tf.placeholder(tf.float32, [None, config.img_h*config.img_w])
     y = tf.placeholder(tf.float32,[None, config.n_classes])
-    a,b,c,d,e = CRNN(train_x,config)
-    print(a.shape)
+    # a,b,c,d,e = CRNN(train_x,config)
+    # print(a.shape)
     '''
     prediction, W, B, weights, biases = CRNN(train_x, config)
     
@@ -136,7 +136,7 @@ if __name__ == "__main__":
     
     X = tf.placeholder(tf.float32, [None, config.n_steps, config.n_inputs])
     Y = tf.placeholder(tf.float32, [None, config.n_classes])    
-    
+    '''
     prediction, W, B, weights, biases = CRNN(train_x, config)
     # Loss,optimizer,evaluation
     l2 = config.lambda_loss_amount * sum(tf.nn.l2_loss(tf_var) for tf_var in tf.trainable_variables())
@@ -173,7 +173,7 @@ if __name__ == "__main__":
               " loss : {}".format(loss_out))
         best_accuracy = max(best_accuracy, accuracy_out)
     
-    '''
+    
     '''save weights and biases'''
     '''
     np.savez_compressed('./data/W_hidden',a=W['hidden'])
