@@ -112,8 +112,8 @@ def CRNN(_X, _Y, config):
     
 
 if __name__ == "__main__":
-    train_x = np.load('./data/train_x.npz')['a'][:40,:]
-    train_y = np.load('./data/train_y.npz')['a'][:4,:]
+    train_x = np.load('./data/train_x.npz')['a']#[:40,:]
+    train_y = np.load('./data/train_y.npz')['a']#[:4,:]
     config = Config(train_x)
     X = tf.placeholder(tf.float32, [None,10, config.img_h*config.img_w])
     Y = tf.placeholder(tf.float32,[None, config.n_classes])
@@ -187,18 +187,18 @@ if __name__ == "__main__":
         
         
 
-    np.savez_compressed('./data/W_hidden',a=W['hidden'])
-    np.savez_compressed('./data/W_output',a=W['output'])
-    np.savez_compressed('./data/b_hidden',a=B['hidden'])
-    np.savez_compressed('./data/b_output',a=B['output'])
-    np.savez_compressed('./data/W_conv1',a=weights['W_conv1'])
-    np.savez_compressed('./data/W_conv2',a=weights['W_conv2'])
-    np.savez_compressed('./data/W_fc',a=weights['W_fc'])
-    np.savez_compressed('./data/W_out',a=weights['out'])
-    np.savez_compressed('./data/b_conv1',a=biases['b_conv1'])
-    np.savez_compressed('./data/b_conv2',a=biases['b_conv2'])
-    np.savez_compressed('./data/b_fc',a=biases['b_fc'])
-    np.savez_compressed('./data/b_out',a=biases['out'])
+    np.savez_compressed('./data/W_hidden',a=W_['hidden'])
+    np.savez_compressed('./data/W_output',a=W_['output'])
+    np.savez_compressed('./data/b_hidden',a=B_['hidden'])
+    np.savez_compressed('./data/b_output',a=B_['output'])
+    np.savez_compressed('./data/W_conv1',a=weights_['W_conv1'])
+    np.savez_compressed('./data/W_conv2',a=weights_['W_conv2'])
+    np.savez_compressed('./data/W_fc',a=weights_['W_fc'])
+    np.savez_compressed('./data/W_out',a=weights_['out'])
+    np.savez_compressed('./data/b_conv1',a=biases_['b_conv1'])
+    np.savez_compressed('./data/b_conv2',a=biases_['b_conv2'])
+    np.savez_compressed('./data/b_fc',a=biases_['b_fc'])
+    np.savez_compressed('./data/b_out',a=biases_['out'])
 
 
     print("")
