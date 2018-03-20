@@ -146,53 +146,55 @@ if __name__ == "__main__":
     correct_pred = tf.equal(tf.argmax(prediction, 1), tf.argmax(label, 1))
     accuracy = tf.reduce_mean(tf.cast(correct_pred, dtype=tf.float32))
 
-    sess = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
-    # cfg = tf.ConfigProto()
-    # cfg.gpu_options.per_process_gpu_memory_fraction = 0.85
-    # cfg.gpu_options.allow_growth = True
-    # sess = tf.Session(config= cfg)
-    init = tf.global_variables_initializer()
-    sess.run(init)
+    # sess = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
+    cfg = tf.ConfigProto()
+    cfg.gpu_options.per_process_gpu_memory_fraction = 0.85
+    cfg.gpu_options.allow_growth = True
+    sess = tf.Session(config= cfg)
 
-    best_accuracy = 0.0
-    # Start training for each batch and loop epochs
-    for i in range(config.training_epochs):
+    with sess.as_default():
+        init = tf.global_variables_initializer()
+        sess.run(init)
+
+        best_accuracy = 0.0
+        # Start training for each batch and loop epochs
+        for i in range(config.training_epochs):
+            
+            for start, end in zip(range(0, config.train_count, config.batch_size),
+                                range(config.batch_size, config.train_count + 1, config.batch_size)):
+                sess.run(optimizer, feed_dict={x: train_x[start:end],
+                                            y: train_y[start:end]})
+            
+            # Test completely at every epoch: calculate accuracy
+            pred_out, accuracy_out, loss_out, W, B, weights, biases = sess.run(
+                [prediction, accuracy, cost, W, B, weights, biases], feed_dict={x: train_x, y: train_y}
+            )
+
+            print("training iter: {},".format(i) +
+                " test accuracy : {},".format(accuracy_out) +
+                " loss : {}".format(loss_out))
+            best_accuracy = max(best_accuracy, accuracy_out)
         
-        for start, end in zip(range(0, config.train_count, config.batch_size),
-                              range(config.batch_size, config.train_count + 1, config.batch_size)):
-            sess.run(optimizer, feed_dict={x: train_x[start:end],
-                                           y: train_y[start:end]})
         
-        # Test completely at every epoch: calculate accuracy
-        pred_out, accuracy_out, loss_out, W, B, weights, biases = sess.run(
-            [prediction, accuracy, cost, W, B, weights, biases], feed_dict={x: train_x, y: train_y}
-        )
-
-        print("training iter: {},".format(i) +
-              " test accuracy : {},".format(accuracy_out) +
-              " loss : {}".format(loss_out))
-        best_accuracy = max(best_accuracy, accuracy_out)
-    
-    
-    '''save weights and biases'''
-    '''
-    np.savez_compressed('./data/W_hidden',a=W['hidden'])
-    np.savez_compressed('./data/W_output',a=W['output'])
-    np.savez_compressed('./data/b_hidden',a=B['hidden'])
-    np.savez_compressed('./data/b_output',a=B['output'])
-    np.savez_compressed('./data/W_conv1',a=weights['W_conv1'])
-    np.savez_compressed('./data/W_conv2',a=weights['W_conv2'])
-    np.savez_compressed('./data/W_fc',a=weights['W_fc'])
-    np.savez_compressed('./data/W_out',a=weights['out'])
-    np.savez_compressed('./data/b_conv1',a=biases['b_conv1'])
-    np.savez_compressed('./data/b_conv2',a=biases['b_conv2'])
-    np.savez_compressed('./data/b_fc',a=biases['b_fc'])
-    np.savez_compressed('./data/b_out',a=biases['out'])
+        '''save weights and biases'''
+        '''
+        np.savez_compressed('./data/W_hidden',a=W['hidden'])
+        np.savez_compressed('./data/W_output',a=W['output'])
+        np.savez_compressed('./data/b_hidden',a=B['hidden'])
+        np.savez_compressed('./data/b_output',a=B['output'])
+        np.savez_compressed('./data/W_conv1',a=weights['W_conv1'])
+        np.savez_compressed('./data/W_conv2',a=weights['W_conv2'])
+        np.savez_compressed('./data/W_fc',a=weights['W_fc'])
+        np.savez_compressed('./data/W_out',a=weights['out'])
+        np.savez_compressed('./data/b_conv1',a=biases['b_conv1'])
+        np.savez_compressed('./data/b_conv2',a=biases['b_conv2'])
+        np.savez_compressed('./data/b_fc',a=biases['b_fc'])
+        np.savez_compressed('./data/b_out',a=biases['out'])
 
 
-    print("")
-    print("final test accuracy: {}".format(accuracy_out))
-    print("best epoch's test accuracy: {}".format(best_accuracy))
-    print("")
-    '''
+        print("")
+        print("final test accuracy: {}".format(accuracy_out))
+        print("best epoch's test accuracy: {}".format(best_accuracy))
+        print("")
+        '''
     sess.close()
