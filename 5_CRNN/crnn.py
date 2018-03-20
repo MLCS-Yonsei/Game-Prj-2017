@@ -175,7 +175,7 @@ if __name__ == "__main__":
             #                                 Y: train_y[start:end]})
             
             # Test completely at every epoch: calculate accuracy
-            pred_out, accuracy_out, loss_out, W, B, weights, biases = sess.run(
+            pred_out, accuracy_out, loss_out, W_, B_, weights_, biases_ = sess.run(
                 [prediction, accuracy, cost, W, B, weights, biases], feed_dict={X: np.reshape(train_x,[-1,10,280000]), Y: train_y}
             )
 
