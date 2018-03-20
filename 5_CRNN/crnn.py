@@ -107,7 +107,7 @@ if __name__ == "__main__":
     y = tf.placeholder(tf.float32,[None, config.n_classes])
     # a,b,c,d,e = CRNN(train_x,config)
     # print(a.shape)
-    
+    '''
     prediction, W, B, weights, biases = CRNN(train_x, config)
     
     cost_cnn = tf.reduce_mean( tf.nn.softmax_cross_entropy_with_logits_v2(labels = y, logits = prediction) )
@@ -131,7 +131,7 @@ if __name__ == "__main__":
     
     X = tf.placeholder(tf.float32, [None, config.n_steps, config.n_inputs])
     Y = tf.placeholder(tf.float32, [None, config.n_classes])    
-    
+    '''
     prediction, W, B, weights, biases = CRNN(train_x, config)
     # Loss,optimizer,evaluation
     l2 = config.lambda_loss_amount * sum(tf.nn.l2_loss(tf_var) for tf_var in tf.trainable_variables())
