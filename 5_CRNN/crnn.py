@@ -143,8 +143,8 @@ if __name__ == "__main__":
     accuracy = tf.reduce_mean(tf.cast(correct_pred, dtype=tf.float32))
 
     # sess = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
-    config = tf.ConfigProto()
-    config.gpu_options.allocator_type = 'BFC'
+    cfg = tf.ConfigProto()
+    cfg.gpu_options.allocator_type = 'BFC'
     sess = tf.InteractiveSession(config= config)
     init = tf.global_variables_initializer()
     sess.run(init)
