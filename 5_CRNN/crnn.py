@@ -105,9 +105,9 @@ if __name__ == "__main__":
     config = Config(train_x)
     x = tf.placeholder(tf.float32, [None, config.img_h*config.img_w])
     y = tf.placeholder(tf.float32,[None, config.n_classes])
-    a,b,c,d,e = CRNN(train_x,config)
-    print(a.shape)
-    '''
+    # a,b,c,d,e = CRNN(train_x,config)
+    # print(a.shape)
+    
     prediction, W, B, weights, biases = CRNN(train_x, config)
     
     cost_cnn = tf.reduce_mean( tf.nn.softmax_cross_entropy_with_logits_v2(labels = y, logits = prediction) )
@@ -165,7 +165,7 @@ if __name__ == "__main__":
               " loss : {}".format(loss_out))
         best_accuracy = max(best_accuracy, accuracy_out)
     
-    '''
+    
     '''save weights and biases'''
     '''
     np.savez_compressed('./data/W_hidden',a=W['hidden'])
