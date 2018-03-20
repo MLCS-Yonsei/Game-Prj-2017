@@ -14,9 +14,7 @@ def send_crest_requset(url, flag, option):
     conn.request("GET", "/crest/v1/api")
 
     res = conn.getresponse()
-
-    data = json.loads(res.read().decode('utf8', "ignore").replace("'", '"'))
-
+    data = json.loads(res.read().decode('utf8', "ignore"))
     if data["gameStates"]["mGameState"] > 1:
         if flag == 'standalone':
             file_path = './standalone.csv'
