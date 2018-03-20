@@ -140,7 +140,7 @@ if __name__ == "__main__":
     
     X = tf.placeholder(tf.float32, [None, config.n_steps, config.n_inputs])
     Y = tf.placeholder(tf.float32, [None, config.n_classes])    
-    
+    '''
     prediction, label, W, B, weights, biases = CRNN(train_x, train_y, config)
     # Loss,optimizer,evaluation
     l2 = config.lambda_loss_amount * sum(tf.nn.l2_loss(tf_var) for tf_var in tf.trainable_variables())
@@ -183,12 +183,6 @@ if __name__ == "__main__":
         
         
 
-
-    
-    sess.close()
-    '''
-    '''save weights and biases'''
-    '''
     np.savez_compressed('./data/W_hidden',a=W['hidden'])
     np.savez_compressed('./data/W_output',a=W['output'])
     np.savez_compressed('./data/b_hidden',a=B['hidden'])
@@ -207,4 +201,10 @@ if __name__ == "__main__":
     print("final test accuracy: {}".format(accuracy_out))
     print("best epoch's test accuracy: {}".format(best_accuracy))
     print("")
-    '''
+    
+    
+    sess.close()
+    
+    '''save weights and biases'''
+    
+ 
