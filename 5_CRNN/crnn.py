@@ -54,7 +54,7 @@ class Config(object):
                 'out':tf.Variable(tf.random_normal([self.n_classes]))}
         self.keep_rate = 0.8
 
-def CRNN(_X, config):
+def CRNN(_X, _Y, config):
     _X = tf.reshape(_X, shape=[-1, config.img_h, config.img_w, 1])
     _X = tf.cast(_X, tf.float32)
     conv1 = tf.nn.relu(tf.nn.conv2d(_X, config.weights['W_conv1'], strides=[1,1,1,1], padding='SAME') + config.biases['b_conv1'])
@@ -98,7 +98,7 @@ def CRNN(_X, config):
     lstm_last_output = outputs[-1]
 
     # Linear activation
-    return tf.matmul(lstm_last_output, config.W['output']) + config.b['output'], config.W, config.b, config.weights, config.biases
+    return tf.matmul(lstm_last_output, config.W['output']) + config.b['output'], _Y, config.W, config.b, config.weights, config.biases
     
   
 
@@ -137,14 +137,14 @@ if __name__ == "__main__":
     X = tf.placeholder(tf.float32, [None, config.n_steps, config.n_inputs])
     Y = tf.placeholder(tf.float32, [None, config.n_classes])    
     '''
-    prediction, W, B, weights, biases = CRNN(train_x, config)
+    prediction, label, W, B, weights, biases = CRNN(train_x, train_y, config)
     # Loss,optimizer,evaluation
-    # l2 = config.lambda_loss_amount * sum(tf.nn.l2_loss(tf_var) for tf_var in tf.trainable_variables())
+    l2 = config.lambda_loss_amount * sum(tf.nn.l2_loss(tf_var) for tf_var in tf.trainable_variables())
     # Softmax loss and L2
-    cost = tf.reduce_mean( tf.nn.softmax_cross_entropy_with_logits(labels=y, logits=prediction) ) #+ l2
+    cost = tf.reduce_mean( tf.nn.softmax_cross_entropy_with_logits(labels=label, logits=prediction) ) + l2
     optimizer = tf.train.AdamOptimizer(learning_rate=config.learning_rate).minimize(cost)
 
-    correct_pred = tf.equal(tf.argmax(prediction, 1), tf.argmax(y, 1))
+    correct_pred = tf.equal(tf.argmax(prediction, 1), tf.argmax(label, 1))
     accuracy = tf.reduce_mean(tf.cast(correct_pred, dtype=tf.float32))
 
     sess = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
