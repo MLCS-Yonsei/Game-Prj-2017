@@ -41,13 +41,15 @@ class Config(object):
             'hidden': tf.Variable(tf.random_normal([self.n_hidden], mean=1.0)),
             'output': tf.Variable(tf.random_normal([self.n_classes]))
         }
-        self.weights = {'W_conv1':tf.Variable(tf.random_normal([5,5,1,32])),
-                'W_conv2':tf.Variable(tf.random_normal([5,5,32,64])),
-                'W_fc':tf.Variable(tf.random_normal([35*125*256,512])),
+        self.weights = {'W_conv1':tf.Variable(tf.random_normal([5,5,1,16])),#[5,5,1,32]
+                'W_conv2':tf.Variable(tf.random_normal([5,5,16,16])),#[5,5,32,64]
+                # 'W_conv3':tf.Variable(tf.random_normal([10,10,64,128])),
+                'W_fc':tf.Variable(tf.random_normal([35*125*64,512])),#[35*125*256]
                 'out':tf.Variable(tf.random_normal([512, self.n_classes]))}
 
-        self.biases = {'b_conv1':tf.Variable(tf.random_normal([32])),
-                'b_conv2':tf.Variable(tf.random_normal([64])),
+        self.biases = {'b_conv1':tf.Variable(tf.random_normal([16])),
+                'b_conv2':tf.Variable(tf.random_normal([16])),
+                # 'b_conv3':tf.Variable(tf.random_normal([128])),
                 'b_fc':tf.Variable(tf.random_normal([512])),
                 'out':tf.Variable(tf.random_normal([self.n_classes]))}
         self.keep_rate = 0.8
@@ -61,7 +63,10 @@ def CRNN(_X, config):
     conv2 = tf.nn.relu(tf.nn.conv2d(conv1, config.weights['W_conv2'], strides=[1,1,1,1], padding='SAME') + config.biases['b_conv2'])
     conv2 = tf.nn.max_pool(conv2, ksize=[1,2,2,1], strides=[1,2,2,1], padding='SAME')
 
-    fc = tf.reshape(conv2,[-1, 35*125*256])
+    # conv3 = tf.nn.relu(tf.nn.conv2d(conv2, config.weights['W_conv3'], strides=[1,1,1,1], padding='SAME') + config.biases['b_conv3'])
+    # conv3 = tf.nn.max_pool(conv3, ksize=[1,2,2,1], strides=[1,2,2,1], padding='SAME')
+
+    fc = tf.reshape(conv2,[-1, 35*125*64])#[35*125*256]
     fc = tf.nn.relu(tf.matmul(fc, config.weights['W_fc']) + config.biases['b_fc'])
     fc = tf.nn.dropout(fc, config.keep_rate)
 
@@ -100,13 +105,13 @@ def CRNN(_X, config):
     
 
 if __name__ == "__main__":
-    train_x = np.load('./data/train_x.npz')['a'][:10]
-    train_y = np.load('./data/train_y.npz')['a'][:10]
+    train_x = np.load('./data/train_x.npz')['a']
+    train_y = np.load('./data/train_y.npz')['a']
     config = Config(train_x)
     x = tf.placeholder(tf.float32, [None, config.img_h*config.img_w])
     y = tf.placeholder(tf.float32,[None, config.n_classes])
-    # a,b,c,d,e = CRNN(train_x,config)
-    # print(a.shape)
+    a,b,c,d,e = CRNN(train_x,config)
+    print(a.shape)
     '''
     prediction, W, B, weights, biases = CRNN(train_x, config)
     
@@ -131,7 +136,7 @@ if __name__ == "__main__":
     
     X = tf.placeholder(tf.float32, [None, config.n_steps, config.n_inputs])
     Y = tf.placeholder(tf.float32, [None, config.n_classes])    
-    '''
+    
     prediction, W, B, weights, biases = CRNN(train_x, config)
     # Loss,optimizer,evaluation
     l2 = config.lambda_loss_amount * sum(tf.nn.l2_loss(tf_var) for tf_var in tf.trainable_variables())
@@ -142,7 +147,7 @@ if __name__ == "__main__":
     correct_pred = tf.equal(tf.argmax(prediction, 1), tf.argmax(y, 1))
     accuracy = tf.reduce_mean(tf.cast(correct_pred, dtype=tf.float32))
 
-    sess = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=True))
+    sess = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
     # cfg = tf.ConfigProto()
     # cfg.gpu_options.allocator_type = 'BFC'
     # sess = tf.InteractiveSession(config= cfg)
@@ -168,7 +173,7 @@ if __name__ == "__main__":
               " loss : {}".format(loss_out))
         best_accuracy = max(best_accuracy, accuracy_out)
     
-    
+    '''
     '''save weights and biases'''
     '''
     np.savez_compressed('./data/W_hidden',a=W['hidden'])
