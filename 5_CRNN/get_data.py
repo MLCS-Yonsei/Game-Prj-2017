@@ -64,7 +64,7 @@ for filename in filenames:
             train_x = np.concatenate((train_x, image), axis =0)
             index +=1
         
-        train_y = np.concatenate((train_y, label[b-1,:]),axis = 0)
+        train_y = np.concatenate((train_y, label[b-1,:][np.newaxis, :]),axis = 0)
 
 train_x = train_x[1:,:]
 train_y = train_y[1:,:]
