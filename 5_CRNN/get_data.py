@@ -12,7 +12,7 @@ dir = '/home/hwanmooy/code/google-AVA-Dataset-downloader-master/data/train'
 save_dir = '/home/jehyunpark/data/'
 
 filenames = os.listdir(dir)
-filenames = filenames[:10]
+filenames = filenames[:100]
 frame_number = 1; index = 0; train_x=np.zeros((1,280000)); train_y = np.zeros((1,10))
 
 l1 = np.array([1,0,0,0,0,0,0,0,0,0])
