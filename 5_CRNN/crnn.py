@@ -27,7 +27,7 @@ class Config(object):
         self.learning_rate = 0.0025
         self.lambda_loss_amount = 0.0015
         self.training_epochs = 10#100
-        self.batch_size = 10#90
+        self.batch_size = 5#90
 
         # LSTM structure
         self.n_inputs = 10#len(X_train[0])  # Features count is of 9: 3 * 3D sensors features over time
@@ -112,8 +112,8 @@ def CRNN(_X, _Y, config):
     
 
 if __name__ == "__main__":
-    train_x = np.load('./data/train_x.npz')['a'][:50,:]
-    train_y = np.load('./data/train_y.npz')['a'][:5,:]
+    train_x = np.load('./data/train_x.npz')['a']#[:50,:]
+    train_y = np.load('./data/train_y.npz')['a']#[:5,:]
     config = Config(train_x)
     X = tf.placeholder(tf.float32, [None,10, config.img_h*config.img_w])
     Y = tf.placeholder(tf.float32,[None, config.n_classes])
@@ -169,10 +169,10 @@ if __name__ == "__main__":
         # Start training for each batch and loop epochs
         for i in range(config.training_epochs):
             
-            # for start, end in zip(range(0, config.train_count, config.batch_size),
-            #                     range(config.batch_size, config.train_count + 1, config.batch_size)):
-            #     sess.run(optimizer, feed_dict={X: train_x[start:end],
-            #                                 Y: train_y[start:end]})
+            for start, end in zip(range(0, config.train_count, config.batch_size),
+                                range(config.batch_size, config.train_count + 1, config.batch_size)):
+                sess.run(optimizer, feed_dict={X: train_x[start:end],
+                                            Y: train_y[start:end]})
             
             # Test completely at every epoch: calculate accuracy
             pred_out, accuracy_out, loss_out, W_, B_, weights_, biases_ = sess.run(
