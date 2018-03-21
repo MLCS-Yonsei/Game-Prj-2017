@@ -29,11 +29,11 @@ label = np.concatenate((l1,l2,l3,l4,l5,l6,l7,l8,l9,l10),axis = 0)
 
 for filename in filenames:
     a = filename.split('_')
-    b = a[5]
+    b = float(a[5])
     if b%1 !=0:
-        b = a[6]
+        b = int(a[6])
     else:
-        b = a[5]
+        b = int(a[5])
     if 0 < b <11:
         full_filename = os.path.join(dir,filename)
 
