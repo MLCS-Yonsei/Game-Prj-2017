@@ -15,16 +15,16 @@ filenames = os.listdir(dir)
 filenames = filenames[:100]
 frame_number = 1; index = 0; train_x=np.zeros((1,280000)); train_y = np.zeros((1,10))
 
-l1 = np.array([1,0,0,0,0,0,0,0,0,0])
-l2 = np.array([0,1,0,0,0,0,0,0,0,0])
-l3 = np.array([0,0,1,0,0,0,0,0,0,0])
-l4 = np.array([0,0,0,1,0,0,0,0,0,0])
-l5 = np.array([0,0,0,0,1,0,0,0,0,0])
-l6 = np.array([0,0,0,0,0,1,0,0,0,0])
-l7 = np.array([0,0,0,0,0,0,1,0,0,0])
-l8 = np.array([0,0,0,0,0,0,0,1,0,0])
-l9 = np.array([0,0,0,0,0,0,0,0,1,0])
-l10 = np.array([0,0,0,0,0,0,0,0,0,1])
+l1 = np.array([1,0,0,0,0,0,0,0,0,0])[np.newaxis, :]
+l2 = np.array([0,1,0,0,0,0,0,0,0,0])[np.newaxis, :]
+l3 = np.array([0,0,1,0,0,0,0,0,0,0])[np.newaxis, :]
+l4 = np.array([0,0,0,1,0,0,0,0,0,0])[np.newaxis, :]
+l5 = np.array([0,0,0,0,1,0,0,0,0,0])[np.newaxis, :]
+l6 = np.array([0,0,0,0,0,1,0,0,0,0])[np.newaxis, :]
+l7 = np.array([0,0,0,0,0,0,1,0,0,0])[np.newaxis, :]
+l8 = np.array([0,0,0,0,0,0,0,1,0,0])[np.newaxis, :]
+l9 = np.array([0,0,0,0,0,0,0,0,1,0])[np.newaxis, :]
+l10 = np.array([0,0,0,0,0,0,0,0,0,1])[np.newaxis, :]
 label = np.concatenate((l1,l2,l3,l4,l5,l6,l7,l8,l9,l10),axis = 0)
 
 for filename in filenames:
@@ -64,7 +64,7 @@ for filename in filenames:
             train_x = np.concatenate((train_x, image), axis =0)
             index +=1
         
-        train_y = np.concatenate((train_y, label[b-1,:][np.newaxis,:]),axis = 0)
+        train_y = np.concatenate((train_y, label[b-1,:]),axis = 0)
 
 train_x = train_x[1:,:]
 train_y = train_y[1:,:]
