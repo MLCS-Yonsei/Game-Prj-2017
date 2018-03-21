@@ -8,7 +8,7 @@ import cv2
 
 # dir = '/Users/jehyun/Dropbox/videos/'
 # dir = '/home/jhp/Dropbox/videos/'
-dir = '/home/hwanmooy/code/google-AVA-Dataset-downloader-master/data/train'
+dir = '/home/hwanmooy/code/google-AVA-Dataset-downloader-master/data/test'
 save_dir = '/home/jehyunpark/data/'
 
 filenames = os.listdir(dir)
@@ -29,7 +29,7 @@ label = np.concatenate((l1,l2,l3,l4,l5,l6,l7,l8,l9,l10),axis = 0)
 
 for filename in filenames:
     a = filename.split('_')
-    b = int(a[5])
+    b = int(a[2])
     if 0 < b <11:
         full_filename = os.path.join(dir,filename)
 
