@@ -29,7 +29,8 @@ label = np.concatenate((l1,l2,l3,l4,l5,l6,l7,l8,l9,l10),axis = 0)
 
 for filename in filenames:
     a = filename.split('_')
-    if 0 < a[2] <11:
+    b = int(a[2])
+    if 0 < b <11:
         full_filename = os.path.join(dir,filename)
 
         cmnd = ['ffprobe', '-print_format', 'json', '-show_entries', 'stream=width,height', '-pretty', '-loglevel', 'quiet', full_filename]
@@ -63,7 +64,7 @@ for filename in filenames:
             train_x = np.concatenate((train_x, image), axis =0)
             index +=1
         
-        train_y = np.concatenate((train_y, label[(a[2]-1),:]),axis = 0)
+        train_y = np.concatenate((train_y, label[(b-1),:]),axis = 0)
 
 train_x = train_x[1:,:]
 train_y = train_y[1:,:]
