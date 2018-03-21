@@ -105,7 +105,7 @@ class pCarsAutoController(mp.Process):
                 gameState = gameData["gameStates"]["mGameState"]
 
                 if gameState > 1:
-                    s, addr = self.svrsock.recvfrom(1024)
+                    s, addr = self.svrsock.recvfrom(4096)
 
                     if s == b'Connect':
                         print('Connected')
@@ -122,6 +122,12 @@ class pCarsAutoController(mp.Process):
                         
                         if self.controlState['acc'] == False:
                             self.accOff()
+
+                        if self.controlState['brake'] == True:
+                            self.brakeOn()
+                        
+                        if self.controlState['brake'] == False:
+                            self.brakeOff()
 
 if __name__ == '__main__':
     pc = pCarsAutoController()
