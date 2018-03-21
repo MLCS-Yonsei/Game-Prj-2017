@@ -106,10 +106,6 @@ def CRNN(_X, _Y, config):
 
     # Linear activation
     return tf.matmul(lstm_last_output, config.W['output']) + config.b['output'], _Y, config.W, config.b, config.weights, config.biases
-    
-  
-
-    
 
 if __name__ == "__main__":
     train_x = np.load('./data/train_x.npz')['a']#[:50,:]
@@ -121,31 +117,7 @@ if __name__ == "__main__":
     
     # a,b,c,d,e,f = CRNN(train_x,train_y,config)
     # print(b.shape)
-    '''
-    prediction, W, B, weights, biases = CRNN(train_x, config)
     
-    cost_cnn = tf.reduce_mean( tf.nn.softmax_cross_entropy_with_logits_v2(labels = y, logits = prediction) )
-    optimizer = tf.train.AdamOptimizer().minimize(cost_cnn)
-    
-    hm_epochs = 10
-    with tf.Session() as sess:
-        sess.run(tf.global_variables_initializer())
-        # train_x = x; train_y = y
-        for epoch in range(hm_epochs):
-            _, c = sess.run([optimizer, cost_cnn], feed_dict={x: train_x, y: train_y})
-            print('Epoch', epoch, 'completed out of',hm_epochs,'loss:',c)
-
-        correct = tf.equal(tf.argmax(prediction, 1), tf.argmax(y, 1))
-
-        accuracy = tf.reduce_mean(tf.cast(correct, 'float'))
-        print(accuracy.eval())
-        # print('Accuracy:',accuracy.eval({x:mnist.test.images, y:mnist.test.labels}))
-    ###################################################################################################
-    
-    
-    X = tf.placeholder(tf.float32, [None, config.n_steps, config.n_inputs])
-    Y = tf.placeholder(tf.float32, [None, config.n_classes])    
-    '''
     prediction, label, W, B, weights, biases = CRNN(X, Y, config)
     # Loss,optimizer,evaluation
     l2 = config.lambda_loss_amount * sum(tf.nn.l2_loss(tf_var) for tf_var in tf.trainable_variables())
@@ -183,10 +155,7 @@ if __name__ == "__main__":
             print("training iter: {},".format(i) +
                 " test accuracy : {},".format(accuracy_out) +
                 " loss : {}".format(loss_out))
-            best_accuracy = max(best_accuracy, accuracy_out)
-       
-        
-        
+            best_accuracy = max(best_accuracy, accuracy_out)  
 
     np.savez_compressed('./data/W_hidden',a=W_['hidden'])
     np.savez_compressed('./data/W_output',a=W_['output'])
@@ -201,12 +170,10 @@ if __name__ == "__main__":
     np.savez_compressed('./data/b_fc',a=biases_['b_fc'])
     np.savez_compressed('./data/b_out',a=biases_['out'])
 
-
     print("")
     print("final test accuracy: {}".format(accuracy_out))
     print("best epoch's test accuracy: {}".format(best_accuracy))
     print("")
-    
     
     sess.close()
     

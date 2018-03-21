@@ -61,5 +61,5 @@ l8 = np.concatenate((b,b,b,b,b,b,b,a,b,b), axis = 1)
 l9 = np.concatenate((b,b,b,b,b,b,b,b,a,b), axis = 1)
 l10 = np.concatenate((b,b,b,b,b,b,b,b,b,a), axis = 1)
 train_y = np.concatenate((l1,l2,l3,l4,l5,l6,l7,l8,l9,l10),axis = 0)
-np.savez_compressed('train_y',a=train_y)
+np.savez_compressed('./data/train_y',a=train_y)
 
