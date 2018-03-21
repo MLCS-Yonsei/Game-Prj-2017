@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 # dir = '/Users/jehyun/Dropbox/videos/'
 # dir = '/home/jhp/Dropbox/videos/'
-dir = '/home/hwanmooy/code/google-AVA-Dataset-downloader-master/data/'
+dir = '/home/hwanmooy/code/google-AVA-Dataset-downloader-master/data/train'
 
 filenames = os.listdir(dir)
 filenames = filenames[:100]
