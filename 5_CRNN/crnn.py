@@ -113,7 +113,7 @@ def CRNN(_X, _Y, config):
 
 if __name__ == "__main__":
     train_x = np.load('./data/train_x.npz')['a']#[:50,:]
-    np.reshape(train_x,[-1,10,280000])
+    train_x = np.reshape(train_x,[-1,10,280000])
     train_y = np.load('./data/train_y.npz')['a']#[:5,:]
     config = Config(train_x)
     X = tf.placeholder(tf.float32, [None,10, config.img_h*config.img_w])
