@@ -8,11 +8,15 @@ import cv2
 import matplotlib.pyplot as plt
 
 # dir = '/Users/jehyun/Dropbox/videos/'
-dir = '/home/jhp/Dropbox/videos/'
+# dir = '/home/jhp/Dropbox/videos/'
+dir = '/home/hwanmooy/code/google-AVA-Dataset-downloader-master/data/'
+
 filenames = os.listdir(dir)
+filenames = filenames[:100]
 frame_number = 1; index = 0; train_x=np.zeros((1,280000))
-'''
+
 for filename in filenames:
+    a = filename.split('_')
     full_filename = os.path.join(dir,filename)
 
     cmnd = ['ffprobe', '-print_format', 'json', '-show_entries', 'stream=width,height', '-pretty', '-loglevel', 'quiet', full_filename]
@@ -26,7 +30,8 @@ for filename in filenames:
 
     p.stdout.close()
     p.terminate()
-    
+    print(video_h, video_w)
+    '''
     for i in range(frame_number):
         command = ['ffmpeg', '-loglevel', 'quiet','-i', full_filename, '-f','image2pipe', '-pix_fmt','rgb24', '-vcodec','rawvideo','-']
         pipe = sp.Popen(command, stdout = sp.PIPE, bufsize=10**8)
@@ -44,10 +49,12 @@ for filename in filenames:
         image = image.astype(np.float32)[np.newaxis, :]
         train_x = np.concatenate((train_x, image), axis =0)
         index +=1
+    '''
 
+'''
 train_x = train_x[1:,:]
 np.savez_compressed('./data/train_x',a=train_x)
-'''
+
 
 a = np.ones(frame_number)[:,np.newaxis]; b = np.zeros(frame_number)[:,np.newaxis]
 l1 = np.concatenate((a,b,b,b,b,b,b,b,b,b), axis = 1)
@@ -63,3 +70,4 @@ l10 = np.concatenate((b,b,b,b,b,b,b,b,b,a), axis = 1)
 train_y = np.concatenate((l1,l2,l3,l4,l5,l6,l7,l8,l9,l10),axis = 0)
 np.savez_compressed('./data/train_y',a=train_y)
 
+'''
