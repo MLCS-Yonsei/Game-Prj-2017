@@ -13,7 +13,7 @@ save_dir = '/home/jehyunpark/data/'
 
 filenames = os.listdir(dir)
 #filenames = filenames[:100]
-frame_number = 1; index = 0; train_x=np.zeros((1,280000)); train_y = np.zeros((1,10))
+frame_number = 1; index = 0; train_x=np.zeros((1,1262*720)); train_y = np.zeros((1,10))
 
 l1 = np.array([1,0,0,0,0,0,0,0,0,0])[np.newaxis, :]
 l2 = np.array([0,1,0,0,0,0,0,0,0,0])[np.newaxis, :]
@@ -63,7 +63,7 @@ for filename in filenames:
             image = image.reshape((video_h,video_w,3))
             image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
             image = cv2.copyMakeBorder(image,0, 720-video_h,0, 1262-video_w, cv2.BORDER_CONSTANT, value=[0,0,0])
-            image = image.reshape((700*400))
+            image = image.reshape((1262*720))
             image = image.astype(np.float32)[np.newaxis, :]
             train_x = np.concatenate((train_x, image), axis =0)
             index +=1
