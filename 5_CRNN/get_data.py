@@ -62,7 +62,7 @@ for filename in filenames:
             image = np.fromstring(raw_image, dtype='uint8')
             image = image.reshape((video_h,video_w,3))
             image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
-            image = cv2.copyMakeBorder(image,0, 700-video_h,0, 400-video_w, cv2.BORDER_CONSTANT, value=[0,0,0])
+            image = cv2.copyMakeBorder(image,0, 720-video_h,0, 1262-video_w, cv2.BORDER_CONSTANT, value=[0,0,0])
             image = image.reshape((700*400))
             image = image.astype(np.float32)[np.newaxis, :]
             train_x = np.concatenate((train_x, image), axis =0)
