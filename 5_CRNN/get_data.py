@@ -49,16 +49,11 @@ for filename in filenames:
         p.stdout.close()
         p.terminate()
         # print(video_h, video_w)
+        command = ['ffmpeg', '-loglevel', 'quiet','-i', full_filename, '-f','image2pipe', '-pix_fmt','rgb24', '-vcodec','rawvideo','-']
+        pipe = sp.Popen(command, stdout = sp.PIPE, bufsize=10**8)
         
         for i in range(frame_number):
-            command = ['ffmpeg', '-loglevel', 'quiet','-i', full_filename, '-f','image2pipe', '-pix_fmt','rgb24', '-vcodec','rawvideo','-']
-            pipe = sp.Popen(command, stdout = sp.PIPE, bufsize=10**8)
-
             raw_image = pipe.stdout.read(video_h*video_w*3)
-
-            pipe.stdout.flush()
-            pipe.terminate()
-
             image = np.fromstring(raw_image, dtype='uint8')
             image = image.reshape((video_h,video_w,3))
             image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
@@ -66,8 +61,11 @@ for filename in filenames:
             image = image.reshape((1262*720))
             image = image.astype(np.float32)[np.newaxis, :]
             train_x = np.concatenate((train_x, image), axis =0)
-            index +=1
-        
+
+        pipe.stdout.flush()
+        pipe.terminate()
+
+
         train_y = np.concatenate((train_y, label[b-1,:][np.newaxis, :]),axis = 0)
 
 train_x = train_x[1:,:]
