@@ -55,9 +55,6 @@ for filename in filenames:
         for i in range(frame_number):
             raw_image = pipe.stdout.read(video_h*video_w*3)
             
-            pipe.stdout.flush()
-            pipe.terminate()
-            
             image = np.fromstring(raw_image, dtype='uint8')
             image = image.reshape((video_h,video_w,3))
             image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
@@ -66,10 +63,14 @@ for filename in filenames:
             image = image.astype(np.float32)[np.newaxis, :]
             train_x = np.concatenate((train_x, image), axis =0)
 
-        
+        pipe.stdout.flush()
+        pipe.terminate()
 
 
         train_y = np.concatenate((train_y, label[b-1,:][np.newaxis, :]),axis = 0)
+        index +=1
+        if index%100 ==0:
+            print(index)
 
 train_x = train_x[1:,:]
 train_y = train_y[1:,:]
