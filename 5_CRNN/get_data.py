@@ -74,7 +74,7 @@ for filename in filenames:
         pipe.terminate()
 
 
-        train_y = np.concatenate((train_y, one_hot(b-1,n_classes),axis = 0)
+        train_y = np.concatenate((train_y, one_hot(b-1,n_classes)),axis = 0)
         index +=1
         if index%100 ==0:
             print(index)
