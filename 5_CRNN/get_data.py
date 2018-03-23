@@ -8,7 +8,7 @@ import cv2
 
 # dir = '/Users/jehyun/Dropbox/videos/'
 # dir = '/home/jhp/Dropbox/videos/'
-dir = '/home/hwanmooy/code/google-AVA-Dataset-downloader-master/data/train'
+dir = '/home/hwanmooy/code/google-AVA-Dataset-downloader-master/data/train/'
 save_dir = '/home/jehyunpark/data/'
 
 filenames = os.listdir(dir)
