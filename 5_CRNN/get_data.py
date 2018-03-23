@@ -13,7 +13,8 @@ save_dir = '/home/jehyunpark/data/'
 
 filenames = os.listdir(dir)
 #filenames = filenames[:100]
-frame_number = 1; index = 0; train_x=np.zeros((1,1262*720)); train_y = np.zeros((1,10))
+frame_number = 10; index = 0; train_x=np.zeros((1,1262*720)); train_y = np.zeros((1,10))
+n_classes = 10
 
 l1 = np.array([1,0,0,0,0,0,0,0,0,0])[np.newaxis, :]
 l2 = np.array([0,1,0,0,0,0,0,0,0,0])[np.newaxis, :]
@@ -26,6 +27,12 @@ l8 = np.array([0,0,0,0,0,0,0,1,0,0])[np.newaxis, :]
 l9 = np.array([0,0,0,0,0,0,0,0,1,0])[np.newaxis, :]
 l10 = np.array([0,0,0,0,0,0,0,0,0,1])[np.newaxis, :]
 label = np.concatenate((l1,l2,l3,l4,l5,l6,l7,l8,l9,l10),axis = 0)
+
+def one_hot(label, n_classes):
+    a = np.zeros(n_classes)[np.newaxis, :]
+    a[0,label] = 1
+    return a
+
 
 for filename in filenames:
     a = filename.split('_')
@@ -67,7 +74,7 @@ for filename in filenames:
         pipe.terminate()
 
 
-        train_y = np.concatenate((train_y, label[b-1,:][np.newaxis, :]),axis = 0)
+        train_y = np.concatenate((train_y, one_hot(b-1,n_classes),axis = 0)
         index +=1
         if index%100 ==0:
             print(index)
