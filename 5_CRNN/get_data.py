@@ -64,8 +64,8 @@ for filename in filenames:
         index2 +=1
         if index2%100 == 0:
             print('-------------')
-            np.savez_compressed(save_dir + 'train_x'+str(index2),a=train_x)
-            np.savez_compressed(save_dir + 'train_y'+str(index2),a=train_y)
+            np.savez_compressed(save_dir + 'train_x'+str(index),a=train_x)
+            np.savez_compressed(save_dir + 'train_y'+str(index),a=train_y)
     index +=1
     if index%100 == 0:
         print(index)
