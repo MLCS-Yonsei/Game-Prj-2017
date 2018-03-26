@@ -12,8 +12,8 @@ dir = '/home/hwanmooy/code/google-AVA-Dataset-downloader-master/data/train/'
 save_dir = '/home/jehyunpark/data/'
 
 filenames = os.listdir(dir)
-filenames = filenames[9200:]
-frame_number = 10; index = 9200; index2 = 0; n_classes = 10
+filenames = filenames[15800:]
+frame_number = 10; index = 15800; index2 = 0; n_classes = 10
 train_x=np.zeros((1,1262*720)); train_y = np.zeros((1,10))
 
 def one_hot(label, n_classes):
