@@ -104,10 +104,17 @@ def CRNN(_X, _Y, config):
     return tf.matmul(lstm_last_output, config.W['output']) + config.b['output'], _Y, config.W, config.b, config.weights, config.biases
 
 if __name__ == "__main__":
-    train_x = np.load('/home/jehyunpark/data/train_x.npz')['a'][:100,:]
+    train_x = np.load('/home/jehyunpark/data/train_x.npz')['a']
+    # train_x[:int(0.7*len(train_x),:]
+    # test_x[int(0.7*len(train_x):,:]
     train_x = np.reshape(train_x,[-1,10,1262*720])
-    train_y = np.load('/home/jehyunpark/data/train_y.npz')['a'][:10,:]
+    
+    train_y = np.load('/home/jehyunpark/data/train_y.npz')['a']
+    # train_y[:int(0.7*len(train_y),:]
+    # test_y[int(0.7*len(train_y):,:]
+
     print('data loading completed')
+    
     config = Config(train_x)
     X = tf.placeholder(tf.float32, [None,10, config.img_h*config.img_w])
     Y = tf.placeholder(tf.float32,[None, config.n_classes])
