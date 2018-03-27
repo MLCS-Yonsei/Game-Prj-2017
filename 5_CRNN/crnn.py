@@ -105,13 +105,13 @@ def CRNN(_X, _Y, config):
 
 if __name__ == "__main__":
     train_x = np.load('/home/jehyunpark/data/train_x.npz')['a']
-    train_x[:int(0.7*len(train_x)),:]
-    test_x[int(0.7*len(train_x)):,:]
+    train_x = train_x[:int(0.7*len(train_x)),:]
+    test_x = train_x[int(0.7*len(train_x)):,:]
     train_x = np.reshape(train_x,[-1,10,1262*720])
     
     train_y = np.load('/home/jehyunpark/data/train_y.npz')['a']
-    train_y[:int(0.7*len(train_y)),:]
-    test_y[int(0.7*len(train_y)):,:]
+    train_y = train_y[:int(0.7*len(train_y)),:]
+    test_y = train_y[int(0.7*len(train_y)):,:]
 
     print('data loading completed')
     
