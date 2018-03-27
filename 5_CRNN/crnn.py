@@ -104,16 +104,16 @@ def CRNN(_X, _Y, config):
     return tf.matmul(lstm_last_output, config.W['output']) + config.b['output'], _Y, config.W, config.b, config.weights, config.biases
 
 if __name__ == "__main__":
-    train_x = np.load('./data/train_x.npz')['a']#[:50,:]
+    train_x = np.load('/home/jehyunpark/data/train_x.npz')['a'][:100,:]
     train_x = np.reshape(train_x,[-1,10,1262*720])
-    train_y = np.load('./data/train_y.npz')['a']#[:5,:]
+    train_y = np.load('/home/jehyunpark/data/train_y.npz')['a'][:10,:]
     config = Config(train_x)
     X = tf.placeholder(tf.float32, [None,10, config.img_h*config.img_w])
     Y = tf.placeholder(tf.float32,[None, config.n_classes])
     
-    # a,b,c,d,e,f = CRNN(train_x,train_y,config)
-    # print(b.shape)
-    
+    a,b,c,d,e,f = CRNN(train_x,train_y,config)
+    print(b.shape)
+    '''
     prediction, label, W, B, weights, biases = CRNN(X, Y, config)
     # Loss,optimizer,evaluation
     l2 = config.lambda_loss_amount * sum(tf.nn.l2_loss(tf_var) for tf_var in tf.trainable_variables())
@@ -173,6 +173,6 @@ if __name__ == "__main__":
     
     sess.close()
     
-    
+    '''
     
  
