@@ -105,13 +105,13 @@ def CRNN(_X, _Y, config):
 
 if __name__ == "__main__":
     train_x = np.load('/home/jehyunpark/data/train_x.npz')['a']
-    # train_x[:int(0.7*len(train_x),:]
-    # test_x[int(0.7*len(train_x):,:]
+    train_x[:int(0.7*len(train_x)),:]
+    test_x[int(0.7*len(train_x)):,:]
     train_x = np.reshape(train_x,[-1,10,1262*720])
     
     train_y = np.load('/home/jehyunpark/data/train_y.npz')['a']
-    # train_y[:int(0.7*len(train_y),:]
-    # test_y[int(0.7*len(train_y):,:]
+    train_y[:int(0.7*len(train_y)),:]
+    test_y[int(0.7*len(train_y)):,:]
 
     print('data loading completed')
     
@@ -153,7 +153,7 @@ if __name__ == "__main__":
             
             # Test completely at every epoch: calculate accuracy
             pred_out, accuracy_out, loss_out, W_, B_, weights_, biases_ = sess.run(
-                [prediction, accuracy, cost, W, B, weights, biases], feed_dict={X: train_x, Y: train_y}
+                [prediction, accuracy, cost, W, B, weights, biases], feed_dict={X: test_x, Y: test_y}
             )
 
             print("training iter: {},".format(i) +
