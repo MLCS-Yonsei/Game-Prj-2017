@@ -43,7 +43,7 @@ class Config(object):
         }
         self.weights = {'W_conv1':tf.Variable(tf.random_normal([50,50,1,16])),#[5,5,1,32]
                 'W_conv2':tf.Variable(tf.random_normal([5,5,16,16])),#[5,5,32,64]
-                'W_fc':tf.Variable(tf.random_normal([2*4*16,256])),#[35*125*256]
+                'W_fc':tf.Variable(tf.random_normal([7*4*16,256])),#[35*125*256]
                 'out':tf.Variable(tf.random_normal([256, self.n_classes]))}
 
         self.biases = {'b_conv1':tf.Variable(tf.random_normal([16])),
@@ -64,7 +64,7 @@ def CRNN(_X, _Y, config):
     conv2 = tf.nn.max_pool(conv2, ksize=[1,2,2,1], strides=[1,2,2,1], padding='SAME')
     print(conv2)
 
-    fc = tf.reshape(conv2,[-1, 2*4*16])#[35*125*256]
+    fc = tf.reshape(conv2,[-1, 7*4*16])#[35*125*256]
     print(fc)
     fc = tf.nn.relu(tf.matmul(fc, config.weights['W_fc']) + config.biases['b_fc'])
     print(fc)
@@ -107,13 +107,14 @@ if __name__ == "__main__":
     train_x = np.load('/home/jehyunpark/data/train_x.npz')['a'][:100,:]
     train_x = np.reshape(train_x,[-1,10,1262*720])
     train_y = np.load('/home/jehyunpark/data/train_y.npz')['a'][:10,:]
+    print('data loading completed')
     config = Config(train_x)
     X = tf.placeholder(tf.float32, [None,10, config.img_h*config.img_w])
     Y = tf.placeholder(tf.float32,[None, config.n_classes])
     
-    a,b,c,d,e,f = CRNN(train_x,train_y,config)
-    print(b.shape)
-    '''
+    # a,b,c,d,e,f = CRNN(train_x,train_y,config)
+    # print(b.shape)
+    
     prediction, label, W, B, weights, biases = CRNN(X, Y, config)
     # Loss,optimizer,evaluation
     l2 = config.lambda_loss_amount * sum(tf.nn.l2_loss(tf_var) for tf_var in tf.trainable_variables())
@@ -173,6 +174,6 @@ if __name__ == "__main__":
     
     sess.close()
     
-    '''
+    
     
  
