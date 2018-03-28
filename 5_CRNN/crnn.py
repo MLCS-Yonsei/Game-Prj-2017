@@ -156,7 +156,7 @@ if __name__ == "__main__":
             
             # Test completely at every epoch: calculate accuracy
             pred_out, accuracy_out, loss_out, W_, B_, weights_, biases_ = sess.run(
-                [prediction, accuracy, cost, W, B, weights, biases], feed_dict={X: test_x, Y: test_y}
+                [prediction, accuracy, cost, W, B, weights, biases], feed_dict={X: train_x, Y: train_y}
             )
 
             print("training iter: {},".format(i) +
