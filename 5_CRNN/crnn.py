@@ -42,7 +42,7 @@ class Config(object):
             'output': tf.Variable(tf.random_normal([self.n_classes]))
         }
         self.weights = {'W_conv1':tf.Variable(tf.random_normal([50,50,1,16])),#[5,5,1,32]
-                'W_conv2':tf.Variable(tf.random_normal([5,5,16,16])),#[5,5,32,64]
+                'W_conv2':tf.Variable(tf.random_normal([50,50,16,16])),#[5,5,32,64]
                 'W_fc':tf.Variable(tf.random_normal([7*4*16,256])),#[35*125*256]
                 'out':tf.Variable(tf.random_normal([256, self.n_classes]))}
 
@@ -59,7 +59,7 @@ def CRNN(_X, _Y, config):
     print(conv1)
     conv1 = tf.nn.max_pool(conv1, ksize=[1,4,4,1], strides=[1,2,2,1], padding='SAME')
     print(conv1)
-    conv2 = tf.nn.relu(tf.nn.conv2d(conv1, config.weights['W_conv2'], strides=[1,5,5,1], padding='SAME') + config.biases['b_conv2'])
+    conv2 = tf.nn.relu(tf.nn.conv2d(conv1, config.weights['W_conv2'], strides=[1,10,10,1], padding='SAME') + config.biases['b_conv2'])
     print(conv2)
     conv2 = tf.nn.max_pool(conv2, ksize=[1,2,2,1], strides=[1,2,2,1], padding='SAME')
     print(conv2)
