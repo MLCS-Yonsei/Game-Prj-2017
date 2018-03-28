@@ -109,6 +109,7 @@ if __name__ == "__main__":
     # test_x = train_x[int(0.7*len(train_x)):,:]
     train_x = np.reshape(train_x,[-1,10,1262*720])
     test_x = np.load('/home/jehyunpark/data/test_x.npz')['a']
+    test_x = np.reshape(train_x,[-1,10,1262*720])
 
     train_y = np.load('/home/jehyunpark/data/train_y.npz')['a']
     # train_y = train_y[:int(0.7*len(train_y)),:]
