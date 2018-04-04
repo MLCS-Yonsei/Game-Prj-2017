@@ -20,19 +20,19 @@ class Config(object):
         self.train_count = X_train.shape[0]  # 7352 training series
         # self.test_data_count = len(X_test)  # 2947 testing series
         self.n_steps = 10#len(X_train[0])  # 128 time_steps per series
-        self.img_h = 720
-        self.img_w = 1262
+        self.img_h = 120
+        self.img_w = 160
 
         # Training
         self.learning_rate = 0.0025
         self.lambda_loss_amount = 0.0015
-        self.training_epochs = 10000
+        self.training_epochs = 10
         self.batch_size = 10#90
 
         # LSTM structure
-        self.n_inputs = 10#len(X_train[0])  # Features count is of 9: 3 * 3D sensors features over time
+        self.n_inputs = 6#len(X_train[0])  # Features count is of 9: 3 * 3D sensors features over time
         self.n_hidden = 32  # nb of neurons inside the neural network
-        self.n_classes = 10  # Final output classes
+        self.n_classes = 6  # Final output classes
         self.W = {
             'hidden': tf.Variable(tf.random_normal([self.n_inputs, self.n_hidden])),
             'output': tf.Variable(tf.random_normal([self.n_hidden, self.n_classes]))
@@ -104,27 +104,23 @@ def CRNN(_X, _Y, config):
     return tf.matmul(lstm_last_output, config.W['output']) + config.b['output'], _Y, config.W, config.b, config.weights, config.biases
 
 if __name__ == "__main__":
-    train_x = np.load('/home/jehyunpark/data/train_x.npz')['a'][:5000]
-    # train_x = train_x[:int(0.7*len(train_x)),:]
-    # test_x = train_x[int(0.7*len(train_x)):,:]
-    train_x = np.reshape(train_x,[-1,10,1262*720])
-    test_x = np.load('/home/jehyunpark/data/test_x.npz')['a'][:500]
-    test_x = np.reshape(test_x,[-1,10,1262*720])
+    train_x = np.load('/home/jehyunpark/data/train_x.npz')['a']
+    train_x = np.reshape(train_x,[-1,10,120,160])#[120,10,120,160]
+    test_x = np.load('/home/jehyunpark/data/test_x.npz')['a']
+    test_x = np.reshape(test_x,[-1,10,120,160])#[30,10,120,160]
 
-    train_y = np.load('/home/jehyunpark/data/train_y.npz')['a'][:500]
-    # train_y = train_y[:int(0.7*len(train_y)),:]
-    # test_y = train_y[int(0.7*len(train_y)):,:]
-    test_y = np.load('/home/jehyunpark/data/test_y.npz')['a'][:50]
+    train_y = np.load('/home/jehyunpark/data/train_y.npz')['a']
+    test_y = np.load('/home/jehyunpark/data/test_y.npz')['a']
 
     print('data loading completed')
     
     config = Config(train_x)
-    X = tf.placeholder(tf.float32, [None,10, config.img_h*config.img_w])
+    X = tf.placeholder(tf.float32, [None,10, config.img_h,config.img_w])
     Y = tf.placeholder(tf.float32,[None, config.n_classes])
     
-    # a,b,c,d,e,f = CRNN(train_x,train_y,config)
-    # print(b.shape)
-    
+    a,b,c,d,e,f = CRNN(train_x,train_y,config)
+    print(b.shape)
+    '''
     prediction, label, W, B, weights, biases = CRNN(X, Y, config)
     # Loss,optimizer,evaluation
     l2 = config.lambda_loss_amount * sum(tf.nn.l2_loss(tf_var) for tf_var in tf.trainable_variables())
@@ -183,7 +179,7 @@ if __name__ == "__main__":
     print("")
     
     sess.close()
-    
+    '''
     
     
  
