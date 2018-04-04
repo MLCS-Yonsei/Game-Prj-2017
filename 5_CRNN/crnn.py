@@ -119,7 +119,7 @@ if __name__ == "__main__":
     Y = tf.placeholder(tf.float32,[None, config.n_classes])
     
     a,b,c,d,e,f = CRNN(train_x,train_y,config)
-    print(b.shape)
+    print(a.shape)
     '''
     prediction, label, W, B, weights, biases = CRNN(X, Y, config)
     # Loss,optimizer,evaluation
