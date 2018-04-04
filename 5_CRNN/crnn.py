@@ -1,5 +1,4 @@
 import numpy as np
-import os
 import tensorflow as tf
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
@@ -24,7 +23,7 @@ class Config(object):
         self.img_w = 160
 
         # Training
-        self.learning_rate = 0.0025
+        self.learning_rate = 0.01#0.0025
         self.lambda_loss_amount = 0.0015
         self.training_epochs = 10000
         self.batch_size = 10#90
