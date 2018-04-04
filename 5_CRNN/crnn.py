@@ -43,7 +43,7 @@ class Config(object):
         }
         self.weights = {'W_conv1':tf.Variable(tf.random_normal([10,10,1,16])),#[5,5,1,32]
                 'W_conv2':tf.Variable(tf.random_normal([10,10,16,16])),#[5,5,32,64]
-                'W_fc':tf.Variable(tf.random_normal([2*4*16,256])),#[35*125*256]
+                'W_fc':tf.Variable(tf.random_normal([8*10*16,256])),#[35*125*256]
                 'out':tf.Variable(tf.random_normal([256, self.n_classes]))}
 
         self.biases = {'b_conv1':tf.Variable(tf.random_normal([16])),
@@ -64,7 +64,7 @@ def CRNN(_X, _Y, config):
     conv2 = tf.nn.max_pool(conv2, ksize=[1,2,2,1], strides=[1,2,2,1], padding='SAME')
     print(conv2)
 
-    fc = tf.reshape(conv2,[-1, 2*4*16])#[35*125*256]
+    fc = tf.reshape(conv2,[-1, 8*10*16])#[35*125*256]
     print(fc)
     fc = tf.nn.relu(tf.matmul(fc, config.weights['W_fc']) + config.biases['b_fc'])
     print(fc)
