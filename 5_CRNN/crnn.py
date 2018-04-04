@@ -118,9 +118,9 @@ if __name__ == "__main__":
     X = tf.placeholder(tf.float32, [None,10, config.img_h,config.img_w])
     Y = tf.placeholder(tf.float32,[None, config.n_classes])
     
-    a,b,c,d,e,f = CRNN(train_x,train_y,config)
-    print(a.shape)
-    '''
+    # a,b,c,d,e,f = CRNN(train_x,train_y,config)
+    # print(b.shape)
+    
     prediction, label, W, B, weights, biases = CRNN(X, Y, config)
     # Loss,optimizer,evaluation
     l2 = config.lambda_loss_amount * sum(tf.nn.l2_loss(tf_var) for tf_var in tf.trainable_variables())
@@ -179,7 +179,7 @@ if __name__ == "__main__":
     print("")
     
     sess.close()
-    '''
+    
     
     
  
