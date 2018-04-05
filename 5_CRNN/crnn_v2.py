@@ -66,7 +66,7 @@ def CRNN(_X, _Y, config):
     fc = tf.reshape(conv2,[-1, 4*5*16])#[35*125*256]
     print(fc)
     
-    out = tf.reshape(fc, [-1,config.n_steps,config.n_classes])
+    out = tf.reshape(fc, [-1,config.n_steps,320])
     print(out)
     out = tf.transpose(out, [1, 0, 2])  # permute n_steps and batch_size
     # Reshape to prepare input to hidden activation
