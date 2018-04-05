@@ -107,7 +107,7 @@ if __name__ == "__main__":
     print('data loading completed')
     
     config = Config(train_x)
-    X = tf.placeholder(tf.float32, [None,10, config.img_h*config.img_w])
+    X = tf.placeholder(tf.float32, [None,10, config.img_h,config.img_w])
     Y = tf.placeholder(tf.float32,[None, config.n_classes])
     
     # a,b,c,d,e,f = CRNN(train_x,train_y,config)
