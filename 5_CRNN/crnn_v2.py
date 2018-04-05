@@ -25,7 +25,7 @@ class Config(object):
         # Training
         self.learning_rate = 0.01#0.0025
         self.lambda_loss_amount = 0.0015
-        self.training_epochs = 10000
+        self.training_epochs = 100000
         self.batch_size = 10#90
 
         # LSTM structure
@@ -110,9 +110,10 @@ if __name__ == "__main__":
     X = tf.placeholder(tf.float32, [None,10, config.img_h,config.img_w])
     Y = tf.placeholder(tf.float32,[None, config.n_classes])
     
+    print(tf.trainable_variables())
     # a,b,c,d,e,f = CRNN(train_x,train_y,config)
     # print(a.shape)
-    
+    '''
     variables_without_cnn = [v for v in tf.trainable_variables() 
                             if v.name == config.W['hidden'].name or 
                                 v.name == config.W['output'].name or
@@ -190,5 +191,5 @@ if __name__ == "__main__":
     sess.close()
     
     
-    
+    '''
  
