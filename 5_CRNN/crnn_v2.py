@@ -29,7 +29,7 @@ class Config(object):
         self.batch_size = 10#90
 
         # LSTM structure
-        self.n_inputs = 6#len(X_train[0])  # Features count is of 9: 3 * 3D sensors features over time
+        self.n_inputs = 320#len(X_train[0])  # Features count is of 9: 3 * 3D sensors features over time
         self.n_hidden = 32  # nb of neurons inside the neural network
         self.n_classes = 6  # Final output classes
         self.W = {
