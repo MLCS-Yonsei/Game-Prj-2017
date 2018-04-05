@@ -81,8 +81,8 @@ if __name__ == "__main__":
     test_x = np.load('/home/jehyunpark/data/test_x.npz')['a']
     test_x = np.reshape(test_x,[-1,10,120,160])#[30,10,120,160]
 
-    train_y = np.load('/home/jehyunpark/data/train_y.npz')['a']
-    test_y = np.load('/home/jehyunpark/data/test_y.npz')['a']
+    train_y = np.load('/home/jehyunpark/data/cnn_train.npz')['a']
+    test_y = np.load('/home/jehyunpark/data/cnn_test.npz')['a']
 
     print('data loading completed')
     
