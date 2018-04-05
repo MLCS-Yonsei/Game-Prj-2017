@@ -110,14 +110,14 @@ if __name__ == "__main__":
     X = tf.placeholder(tf.float32, [None,10, config.img_h*config.img_w])
     Y = tf.placeholder(tf.float32,[None, config.n_classes])
     
-    a,b,c,d,e,f = CRNN(train_x,train_y,config)
-    print(a.shape)
-    '''
+    # a,b,c,d,e,f = CRNN(train_x,train_y,config)
+    # print(a.shape)
+    
     prediction, label, W, B, weights, biases = CRNN(X, Y, config)
     # Loss,optimizer,evaluation
     l2 = config.lambda_loss_amount * sum(tf.nn.l2_loss(tf_var) for tf_var in tf.trainable_variables())
     # Softmax loss and L2
-    cost = tf.reduce_mean( tf.nn.softmax_cross_entropy_with_logits(labels=label, logits=prediction) ) + l2
+    cost = tf.reduce_mean( tf.nn.softmax_cross_entropy_with_logits(labels=Y, logits=prediction) ) + l2
     optimizer = tf.train.AdamOptimizer(learning_rate=config.learning_rate).minimize(cost)
 
     correct_pred = tf.equal(tf.argmax(prediction, 1), tf.argmax(label, 1))
@@ -173,6 +173,6 @@ if __name__ == "__main__":
     
     sess.close()
     
-    '''
+    
     
  
