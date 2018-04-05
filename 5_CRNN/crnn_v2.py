@@ -42,7 +42,7 @@ class Config(object):
         }
         self.weights = {'W_conv1':tf.Variable(tf.random_normal([10,10,1,16])),#[5,5,1,32]
                 'W_conv2':tf.Variable(tf.random_normal([10,10,16,16])),#[5,5,32,64]
-                'W_fc':tf.Variable(tf.random_normal([8*10*16,256])),#[35*125*256]
+                'W_fc':tf.Variable(tf.random_normal([4*5*16,256])),#[35*125*256]
                 'out':tf.Variable(tf.random_normal([256, self.n_classes]))}
 
         self.biases = {'b_conv1':tf.Variable(tf.random_normal([16])),
@@ -63,17 +63,10 @@ def CRNN(_X, _Y, config):
     conv2 = tf.nn.max_pool(conv2, ksize=[1,2,2,1], strides=[1,2,2,1], padding='SAME')
     print(conv2)
 
-    fc = tf.reshape(conv2,[-1, 8*10*16])#[35*125*256]
+    fc = tf.reshape(conv2,[-1, 4*5*16])#[35*125*256]
     print(fc)
-    fc = tf.nn.relu(tf.matmul(fc, config.weights['W_fc']) + config.biases['b_fc'])
-    print(fc)
-    fc = tf.nn.dropout(fc, config.keep_rate)
-
-    out = tf.matmul(fc, config.weights['out']) + config.biases['out']
-    print(out)
-    # (NOTE: This step could be greatly optimised by shaping the dataset once
-    # input shape: (batch_size, n_steps, n_input)
-    out = tf.reshape(out, [-1,config.n_steps,config.n_classes])
+    
+    out = tf.reshape(fc, [-1,config.n_steps,config.n_classes])
     print(out)
     out = tf.transpose(out, [1, 0, 2])  # permute n_steps and batch_size
     # Reshape to prepare input to hidden activation
@@ -114,12 +107,12 @@ if __name__ == "__main__":
     print('data loading completed')
     
     config = Config(train_x)
-    X = tf.placeholder(tf.float32, [None,10, config.img_h,config.img_w])
+    X = tf.placeholder(tf.float32, [None,10, config.img_h*config.img_w])
     Y = tf.placeholder(tf.float32,[None, config.n_classes])
     
-    # a,b,c,d,e,f = CRNN(train_x,train_y,config)
-    # print(b.shape)
-    
+    a,b,c,d,e,f = CRNN(train_x,train_y,config)
+    print(a.shape)
+    '''
     prediction, label, W, B, weights, biases = CRNN(X, Y, config)
     # Loss,optimizer,evaluation
     l2 = config.lambda_loss_amount * sum(tf.nn.l2_loss(tf_var) for tf_var in tf.trainable_variables())
@@ -180,6 +173,6 @@ if __name__ == "__main__":
     
     sess.close()
     
-    
+    '''
     
  
