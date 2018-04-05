@@ -113,12 +113,24 @@ if __name__ == "__main__":
     # a,b,c,d,e,f = CRNN(train_x,train_y,config)
     # print(a.shape)
     
+    variables_without_cnn = [v for v in tf.trainable_variables() 
+                            if v.name == config.W['hidden'].name or 
+                                v.name == config.W['output'].name or
+                                v.name == config.b['hidden'].name or 
+                                v.name == config.b['output'].name]
+
+    variables_without_lstm = [v for v in tf.trainable_variables() 
+                            if v.name != config.W['hidden'].name or 
+                                v.name != config.W['output'].name or
+                                v.name != config.b['hidden'].name or 
+                                v.name != config.b['output'].name]
+
     prediction, label, W, B, weights, biases = CRNN(X, Y, config)
     # Loss,optimizer,evaluation
     l2 = config.lambda_loss_amount * sum(tf.nn.l2_loss(tf_var) for tf_var in tf.trainable_variables())
     # Softmax loss and L2
     cost = tf.reduce_mean( tf.nn.softmax_cross_entropy_with_logits(labels=Y, logits=prediction) ) + l2
-    optimizer = tf.train.AdamOptimizer(learning_rate=config.learning_rate).minimize(cost)
+    optimizer = tf.train.AdamOptimizer(learning_rate=config.learning_rate).minimize(cost, var_list=variables_without_lstm)
 
     correct_pred = tf.equal(tf.argmax(prediction, 1), tf.argmax(label, 1))
     accuracy = tf.reduce_mean(tf.cast(correct_pred, dtype=tf.float32))

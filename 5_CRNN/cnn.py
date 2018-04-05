@@ -33,12 +33,12 @@ class Config(object):
         self.n_hidden = 32  # nb of neurons inside the neural network
         self.n_classes = 6  # Final output classes
         self.W = {
-            'hidden': tf.random_normal([self.n_inputs, self.n_hidden]),
-            'output': tf.random_normal([self.n_hidden, self.n_classes])
+            'hidden': tf.Variable(tf.random_normal([self.n_inputs, self.n_hidden])),
+            'output': tf.Variable(tf.random_normal([self.n_hidden, self.n_classes]))
         }
         self.b = {
-            'hidden': tf.random_normal([self.n_hidden], mean=1.0),
-            'output': tf.random_normal([self.n_classes])
+            'hidden': tf.Variable(tf.random_normal([self.n_hidden], mean=1.0)),
+            'output': tf.Variable(tf.random_normal([self.n_classes]))
         }
         self.weights = {'W_conv1':tf.Variable(tf.random_normal([10,10,1,16])),#[5,5,1,32]
                 'W_conv2':tf.Variable(tf.random_normal([10,10,16,16])),#[5,5,32,64]
