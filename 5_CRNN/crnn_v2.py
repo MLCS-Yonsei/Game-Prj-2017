@@ -97,9 +97,9 @@ def CRNN(_X, _Y, config):
 
 if __name__ == "__main__":
     train_x = np.load('/home/jehyunpark/data/train_x.npz')['a']
-    train_x = np.reshape(train_x,[-1,10,120*160])#[120,10,120*160]
+    train_x = np.reshape(train_x,[-1,10,120,160])#[120,10,120*160]
     test_x = np.load('/home/jehyunpark/data/test_x.npz')['a']
-    test_x = np.reshape(test_x,[-1,10,120*160])#[30,10,120*160]
+    test_x = np.reshape(test_x,[-1,10,120,160])#[30,10,120*160]
 
     train_y = np.load('/home/jehyunpark/data/train_y.npz')['a']
     test_y = np.load('/home/jehyunpark/data/test_y.npz')['a']
