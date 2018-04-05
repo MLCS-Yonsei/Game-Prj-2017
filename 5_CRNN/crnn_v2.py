@@ -58,7 +58,7 @@ def CRNN(_X, _Y, config):
     print(conv1)
     conv1 = tf.nn.max_pool(conv1, ksize=[1,4,4,1], strides=[1,2,2,1], padding='SAME')
     print(conv1)
-    conv2 = tf.nn.relu(tf.nn.conv2d(conv1, config.weights['W_conv2'], strides=[1,4,4,1], padding='SAME') + config.biases['b_conv2'])
+    conv2 = tf.nn.relu(tf.nn.conv2d(conv1, config.weights['W_conv2'], strides=[1,2,2,1], padding='SAME') + config.biases['b_conv2'])
     print(conv2)
     conv2 = tf.nn.max_pool(conv2, ksize=[1,2,2,1], strides=[1,2,2,1], padding='SAME')
     print(conv2)
