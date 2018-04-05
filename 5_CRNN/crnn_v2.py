@@ -110,10 +110,10 @@ if __name__ == "__main__":
     X = tf.placeholder(tf.float32, [None,10, config.img_h,config.img_w])
     Y = tf.placeholder(tf.float32,[None, config.n_classes])
     
-    print(tf.trainable_variables())
+    
     # a,b,c,d,e,f = CRNN(train_x,train_y,config)
     # print(a.shape)
-    '''
+    
     variables_without_cnn = [v for v in tf.trainable_variables() 
                             if v.name == config.W['hidden'].name or 
                                 v.name == config.W['output'].name or
@@ -129,7 +129,8 @@ if __name__ == "__main__":
                                 v.name == config.biases['b_conv2'].name or
                                 v.name == config.biases['b_fc'].name or 
                                 v.name == config.biases['out'].name]
-
+    print(variables_without_lstm)
+    '''
     prediction, label, W, B, weights, biases = CRNN(X, Y, config)
     # Loss,optimizer,evaluation
     l2 = config.lambda_loss_amount * sum(tf.nn.l2_loss(tf_var) for tf_var in tf.trainable_variables())
