@@ -33,12 +33,12 @@ class Config(object):
         self.n_hidden = 32  # nb of neurons inside the neural network
         self.n_classes = 6  # Final output classes
         self.W = {
-            'hidden': tf.Variable(tf.random_normal([self.n_inputs, self.n_hidden])),
-            'output': tf.Variable(tf.random_normal([self.n_hidden, self.n_classes]))
+            'hidden': tf.random_normal([self.n_inputs, self.n_hidden]),
+            'output': tf.random_normal([self.n_hidden, self.n_classes])
         }
         self.b = {
-            'hidden': tf.Variable(tf.random_normal([self.n_hidden], mean=1.0)),
-            'output': tf.Variable(tf.random_normal([self.n_classes]))
+            'hidden': tf.random_normal([self.n_hidden], mean=1.0),
+            'output': tf.random_normal([self.n_classes])
         }
         self.weights = {'W_conv1':tf.Variable(tf.random_normal([10,10,1,16])),#[5,5,1,32]
                 'W_conv2':tf.Variable(tf.random_normal([10,10,16,16])),#[5,5,32,64]
@@ -72,8 +72,34 @@ def CNN(_X, _Y, config):
     out = tf.matmul(fc, config.weights['out']) + config.biases['out']
     print(out)
 
+    out = tf.reshape(out, [-1,config.n_steps,config.n_classes])
+    print(out)
+    out = tf.transpose(out, [1, 0, 2])  # permute n_steps and batch_size
+    # Reshape to prepare input to hidden activation
+    print(out)
+    out = tf.reshape(out, [-1, config.n_inputs])
+    print(out)
+    # out = tf.cast(out, tf.float32)
+    # new shape: (n_steps*batch_size, n_input)
     # Linear activation
-    return out, _Y,  config.weights, config.biases
+    out = tf.nn.relu(tf.matmul(out, config.W['hidden']) + config.b['hidden'])
+    # Split data because rnn cell needs a list of inputs for the RNN inner loop
+    out = tf.split(out, config.n_steps, 0)
+    # new shape: n_steps * (batch_size, n_hidden)
+
+    # Define two stacked LSTM cells (two recurrent layers deep) with tensorflow
+    lstm_cell_1 = tf.contrib.rnn.BasicLSTMCell(config.n_hidden, forget_bias=1.0, state_is_tuple=True)
+    lstm_cell_2 = tf.contrib.rnn.BasicLSTMCell(config.n_hidden, forget_bias=1.0, state_is_tuple=True)
+    lstm_cells = tf.contrib.rnn.MultiRNNCell([lstm_cell_1, lstm_cell_2], state_is_tuple=True)
+    # Get LSTM cell output
+    outputs, states = tf.contrib.rnn.static_rnn(lstm_cells, out, dtype=tf.float32)
+
+    # Get last time step's output feature for a "many to one" style classifier,
+    # as in the image describing RNNs at the top of this page
+    lstm_last_output = outputs[-1]
+
+    # Linear activation
+    return tf.matmul(lstm_last_output, config.W['output']) + config.b['output'], _Y, config.weights, config.biases
 
 if __name__ == "__main__":
     train_x = np.load('/home/jehyunpark/data/train_x.npz')['a']
@@ -81,8 +107,8 @@ if __name__ == "__main__":
     test_x = np.load('/home/jehyunpark/data/test_x.npz')['a']
     test_x = np.reshape(test_x,[-1,10,120,160])#[30,10,120,160]
 
-    train_y = np.load('/home/jehyunpark/data/cnn_train.npz')['a']
-    test_y = np.load('/home/jehyunpark/data/cnn_test.npz')['a']
+    train_y = np.load('/home/jehyunpark/data/train_y.npz')['a']
+    test_y = np.load('/home/jehyunpark/data/test_y.npz')['a']
 
     print('data loading completed')
     
