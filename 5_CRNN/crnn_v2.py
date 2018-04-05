@@ -120,10 +120,14 @@ if __name__ == "__main__":
                                 v.name == config.b['output'].name]
 
     variables_without_lstm = [v for v in tf.trainable_variables() 
-                            if v.name != config.W['hidden'].name or 
-                                v.name != config.W['output'].name or
-                                v.name != config.b['hidden'].name or 
-                                v.name != config.b['output'].name]
+                            if v.name == config.weights['W_conv1'].name or 
+                                v.name == config.weights['W_conv2'].name or
+                                v.name == config.weights['W_fc'].name or 
+                                v.name == config.weights['out'].name or
+                                v.name == config.biases['b_conv1'].name or 
+                                v.name == config.biases['b_conv2'].name or
+                                v.name == config.biases['b_fc'].name or 
+                                v.name == config.biases['out'].name]
 
     prediction, label, W, B, weights, biases = CRNN(X, Y, config)
     # Loss,optimizer,evaluation
