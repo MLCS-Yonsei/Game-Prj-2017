@@ -29,7 +29,7 @@ class chaseChecker(mp.Process):
         self.recent_fcar_distances = []
         self.recent_scar_distances = []
 
-        self.msg_rate = 0.03
+        self.msg_rate = 0.02
         
     def get_distance(self, data):
         ranks = [info['mRacePosition'] for info in data["participants"]["mParticipantInfo"]]
@@ -88,11 +88,11 @@ class chaseChecker(mp.Process):
                                     'acc': ''
                                 }  
 
-                                if self.recent_fcar_distances[0] - self.recent_fcar_distances[19] < 40 and self.recent_fcar_distances[19] < 100:
+                                if self.recent_fcar_distances[0] - self.recent_fcar_distances[19] < 100 and self.recent_fcar_distances[19] < 50:
                                     # 잘 쫓아가고 있을때
                                     print('잘 쫒아감!')
                                     result['data']['acc'] = True
-                                elif self.recent_fcar_distances[0] - self.recent_fcar_distances[19] > 40 and self.recent_fcar_distances[19] < 100:
+                                elif self.recent_fcar_distances[0] - self.recent_fcar_distances[19] > 100 and self.recent_fcar_distances[19] < 50:
                                     # 잘 쫓아가지 못할때
                                     print('잘 못쫒아감!')
                                     result['data']['acc'] = False
@@ -127,11 +127,11 @@ class chaseChecker(mp.Process):
                                     'rank': rank,
                                 }  
 
-                                if self.recent_scar_distances[0] - self.recent_scar_distances[19] > 40 and self.recent_scar_distances[19] < 100:
+                                if self.recent_scar_distances[0] - self.recent_scar_distances[19] > 100 and self.recent_scar_distances[19] < 50:
                                     # 잘 도망가고 있을때
                                     print('잘 도망가!')
                                     result['data']['acc'] = True
-                                elif  self.recent_scar_distances[0] - self.recent_scar_distances[19] < 40 and self.recent_scar_distances[19] < 100:
+                                elif  self.recent_scar_distances[0] - self.recent_scar_distances[19] < 100 and self.recent_scar_distances[19] < 50:
                                     # 따라잡히고 있을때
                                     print('쫓아와!')
                                     result['data']['acc'] = False
