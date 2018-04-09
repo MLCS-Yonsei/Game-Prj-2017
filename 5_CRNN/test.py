@@ -76,7 +76,7 @@ patch_size = 10   # img_depth or number of frames used for each video
 
 batch_size = 2
 nb_classes = 6
-nb_epoch =100
+nb_epoch =700
 
 # convert class vectors to binary class matrices
 Y_train = np_utils.to_categorical(y_train, nb_classes)
