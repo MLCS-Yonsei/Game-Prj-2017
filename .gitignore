@@ -2,6 +2,9 @@
 .__pycache__
 *.pyc
 
+4_Age_Gender/Dataset/augmented/*
+4_Age_Gender/Dataset/original/*
+
 ./DataCollect/DataCollector/video/*
 */.DS_Store
 .DS_Store

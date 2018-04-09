@@ -183,7 +183,7 @@ class pCarsAutoKiller(mp.Process):
                     self.prevLapDistance = currentLapDistance
 
 if __name__ == '__main__':
-    pc = pCarsController()
+    pc = pCarsAutoKiller()
     while True:
         123
 
