@@ -8,8 +8,8 @@ from keras.utils import np_utils, generic_utils
 
 import theano
 import os
-import matplotlib
-import matplotlib.pyplot as plt
+# import matplotlib
+# import matplotlib.pyplot as plt
 import numpy as np
 import cv2
 from sklearn.cross_validation import train_test_split
