@@ -15,18 +15,33 @@ import cv2
 from sklearn.cross_validation import train_test_split
 from sklearn import cross_validation
 from sklearn import preprocessing
+
+from keras import backend as K
+def set_keras_backend(backend):
+
+    if K.backend() != backend:
+        os.environ['KERAS_BACKEND'] = backend
+        reload(K)
+        assert K.backend() == backend
+
+set_keras_backend("theano")
+K.set_image_dim_ordering('th')
 #load data
 train_x = np.load('./data/total_train.npz')['a']
 ipt=np.rollaxis(np.rollaxis(train_x,2,0),2,0)
+frames= np.zeros((16,16,1500))
+
+img_rows,img_cols,img_depth=16,16,10
+for i in range (1500):
+    frames[:,:,i] = cv2.resize(ipt[:,:,i],(img_rows,img_cols),interpolation=cv2.INTER_AREA)
 
 
-img_rows,img_cols,img_depth=120,160,10
 X_tr=[]  
 
 
 
 for i in range(150):
-    X_tr.append(ipt[:,:,i*10:(i+1)*10])
+    X_tr.append(frames[:,:,i*10:(i+1)*10])
 
 X_tr_array = np.array(X_tr)
 
@@ -55,7 +70,7 @@ for h in range(num_samples):
 
 patch_size = 10   # img_depth or number of frames used for each video
 
-print(train_set.shape, 'train samples')
+# print(train_set.shape, 'train samples')
 
 # CNN Training parameters
 
@@ -64,7 +79,7 @@ nb_classes = 6
 nb_epoch =50
 
 # convert class vectors to binary class matrices
-# Y_train = np_utils.to_categorical(y_train, nb_classes)
+Y_train = np_utils.to_categorical(y_train, nb_classes)
 
 
 # number of convolutional filters to use at each layer
@@ -84,7 +99,41 @@ train_set -= np.mean(train_set)
 
 train_set /=np.max(train_set)
 
+# Define model
 
+model = Sequential()
+model.add(Convolution3D(nb_filters[0],(nb_conv[0], nb_conv[0], nb_conv[0]), input_shape=(1, img_rows, img_cols, patch_size), activation='relu'))
+
+model.add(MaxPooling3D(pool_size=(nb_pool[0], nb_pool[0], nb_pool[0])))
+
+model.add(Dropout(0.5))
+
+model.add(Flatten())
+
+model.add(Dense(128, activation="relu", kernel_initializer="normal"))
+
+model.add(Dropout(0.5))
+
+model.add(Dense(nb_classes,kernel_initializer='normal'))
+
+model.add(Activation('softmax'))
+
+model.compile(loss='categorical_crossentropy', optimizer='RMSprop')
+
+
+# Split the data
+
+X_train_new, X_val_new, y_train_new,y_val_new =  train_test_split(train_set, Y_train, test_size=0.2, random_state=4)
+
+
+# Train the model
+
+hist = model.fit(X_train_new, y_train_new, validation_data=(X_val_new,y_val_new), batch_size=batch_size,epochs = nb_epoch,shuffle=True)
+
+ # Evaluate the model
+score = model.evaluate(X_val_new, y_val_new, batch_size=batch_size, verbose=0)
+print('Test score:', score[0])
+print('Test accuracy:', score[1]) 
 '''
 listing = os.listdir('./dataset/boxing')[:1]
 
