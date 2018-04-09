@@ -76,7 +76,7 @@ patch_size = 10   # img_depth or number of frames used for each video
 
 batch_size = 2
 nb_classes = 6
-nb_epoch =50
+nb_epoch =2000
 
 # convert class vectors to binary class matrices
 Y_train = np_utils.to_categorical(y_train, nb_classes)
@@ -118,12 +118,12 @@ model.add(Dense(nb_classes,kernel_initializer='normal'))
 
 model.add(Activation('softmax'))
 
-model.compile(loss='categorical_crossentropy', optimizer='RMSprop')
+model.compile(loss='categorical_crossentropy', optimizer='RMSprop', metrics=['accuracy'])
 
 
 # Split the data
 
-X_train_new, X_val_new, y_train_new,y_val_new =  train_test_split(train_set, Y_train, test_size=0.2, random_state=4)
+X_train_new, X_val_new, y_train_new,y_val_new =  train_test_split(train_set, Y_train, test_size=0.4, random_state=4)
 
 
 # Train the model
@@ -131,7 +131,7 @@ X_train_new, X_val_new, y_train_new,y_val_new =  train_test_split(train_set, Y_t
 hist = model.fit(X_train_new, y_train_new, validation_data=(X_val_new,y_val_new), batch_size=batch_size,epochs = nb_epoch,shuffle=True)
 
  # Evaluate the model
-score = model.evaluate(X_val_new, y_val_new, batch_size=batch_size, verbose=0)
+score = model.evaluate(X_val_new, y_val_new, batch_size=batch_size)
 print('Test score:', score[0])
 print('Test accuracy:', score[1]) 
 '''
