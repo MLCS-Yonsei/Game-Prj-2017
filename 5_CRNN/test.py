@@ -29,11 +29,11 @@ K.set_image_dim_ordering('th')
 #load data
 train_x = np.load('./data/total_train.npz')['a']
 ipt=np.rollaxis(np.rollaxis(train_x,2,0),2,0)
-frames= np.zeros((16,16,1500))
+# frames= np.zeros((16,16,1500))
 
-img_rows,img_cols,img_depth=16,16,10
-for i in range (1500):
-    frames[:,:,i] = cv2.resize(ipt[:,:,i],(img_rows,img_cols),interpolation=cv2.INTER_AREA)
+img_rows,img_cols,img_depth=120,160,10
+# for i in range (1500):
+#     frames[:,:,i] = cv2.resize(ipt[:,:,i],(img_rows,img_cols),interpolation=cv2.INTER_AREA)
 
 
 X_tr=[]  
@@ -41,7 +41,7 @@ X_tr=[]
 
 
 for i in range(150):
-    X_tr.append(frames[:,:,i*10:(i+1)*10])
+    X_tr.append(ipt[:,:,i*10:(i+1)*10])
 
 X_tr_array = np.array(X_tr)
 
@@ -76,7 +76,7 @@ patch_size = 10   # img_depth or number of frames used for each video
 
 batch_size = 2
 nb_classes = 6
-nb_epoch =2000
+nb_epoch =100
 
 # convert class vectors to binary class matrices
 Y_train = np_utils.to_categorical(y_train, nb_classes)
@@ -123,7 +123,7 @@ model.compile(loss='categorical_crossentropy', optimizer='RMSprop', metrics=['ac
 
 # Split the data
 
-X_train_new, X_val_new, y_train_new,y_val_new =  train_test_split(train_set, Y_train, test_size=0.4, random_state=4)
+X_train_new, X_val_new, y_train_new,y_val_new =  train_test_split(train_set, Y_train, test_size=0.2, random_state=42)
 
 
 # Train the model
@@ -131,9 +131,11 @@ X_train_new, X_val_new, y_train_new,y_val_new =  train_test_split(train_set, Y_t
 hist = model.fit(X_train_new, y_train_new, validation_data=(X_val_new,y_val_new), batch_size=batch_size,epochs = nb_epoch,shuffle=True)
 
  # Evaluate the model
-score = model.evaluate(X_val_new, y_val_new, batch_size=batch_size)
-print('Test score:', score[0])
-print('Test accuracy:', score[1]) 
+# score = model.evaluate(X_val_new, y_val_new, batch_size=batch_size)
+# score = model.evaluate(X_train_new, y_train_new, batch_size=batch_size)
+
+# print('Test score:', score[0])
+# print('Test accuracy:', score[1]) 
 '''
 listing = os.listdir('./dataset/boxing')[:1]
 
