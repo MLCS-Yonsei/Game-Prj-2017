@@ -148,4 +148,4 @@ with tf.Session(graph=graph) as sess:
 
   config = Config()
   pred_Y = prediction(frames[np.newaxis,:,:], config)
-  print(np.argmax(pred_Y, 1))
+  print(np.argmax(pred_Y))
