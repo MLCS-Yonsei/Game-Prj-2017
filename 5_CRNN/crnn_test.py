@@ -22,8 +22,8 @@ import tensorflow as tf
 from tensorflow.python.platform import gfile
 # from tensorflow.python.util import compat
 
-model_dir = './results/imagenet'
-image_path = './images/handwaving/person01_01.jpg'
+model_dir = '/home/jehyunpark/Downloads/crnn/results/imagenet'
+image_path = '/home/jehyunpark/Downloads/crnn/images/handwaving/person01_01.jpg'
 
 BOTTLENECK_TENSOR_NAME = 'pool_3/_reshape:0'
 JPEG_DATA_TENSOR_NAME = 'DecodeJpeg/contents:0'
