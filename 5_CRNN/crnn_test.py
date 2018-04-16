@@ -122,4 +122,4 @@ with tf.Session(graph=graph) as sess:
 
   config = Config()
   pred_Y, W, B = crnn_train.LSTM_Network(frames[np.newaxis,:,:], config)
-  print(np.argmax(pred_Y, 1))
+  print(format(tf.argmax(pred_Y, 1)))
