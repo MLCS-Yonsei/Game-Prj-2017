@@ -124,6 +124,6 @@ with tf.Session(graph=graph) as sess:
       frames = np.concatenate((frames, run_bottleneck_on_image(sess, jpeg_data, jpeg_data_tensor, bottleneck_tensor)[np.newaxis,:]), axis = 0)
       # i +=1
 
-  config = Config(X_train, X_test)
-  pred_Y, W, B = crnn_train.LSTM_Network(frames, config)
+  # config = Config()
+  # pred_Y, W, B = crnn_train.LSTM_Network(frames, config)
   print(frames.shape)
