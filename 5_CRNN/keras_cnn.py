@@ -123,7 +123,7 @@ model.compile(loss='categorical_crossentropy', optimizer='RMSprop', metrics=['ac
 
 # Split the data
 
-X_train_new, X_val_new, y_train_new,y_val_new =  train_test_split(train_set, Y_train, test_size=0.2, random_state=42)
+X_train_new, X_val_new, y_train_new,y_val_new =  train_test_split(train_set, Y_train, test_size=0.3, random_state=42)
 
 
 # Train the model

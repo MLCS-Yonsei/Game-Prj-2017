@@ -33,7 +33,7 @@ MODEL_INPUT_WIDTH = 299
 MODEL_INPUT_HEIGHT = 299
 MODEL_INPUT_DEPTH = 3
 
-test_sample = np.load('./results/bottleneck/handwaving/person01_01.jpg.txt.npz')['a']
+# test_sample = np.load('./results/bottleneck/handwaving/person01_01.jpg.txt.npz')['a']
 
 def create_inception_graph():
   """"Creates a graph from saved GraphDef file and returns a Graph object.
