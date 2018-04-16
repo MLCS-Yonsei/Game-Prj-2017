@@ -148,4 +148,4 @@ with tf.Session(graph=graph) as sess:
 
   config = Config()
   pred_Y = prediction(frames[np.newaxis,:,:], config)
-  print(pred_Y.shape)
+  print(pred_Y)
