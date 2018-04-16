@@ -16,7 +16,6 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import numpy as np
 # from six.moves import urllib
 import tensorflow as tf
-import crnn_train
 
 # from tensorflow.python.framework import graph_util
 # from tensorflow.python.framework import tensor_shape
@@ -105,6 +104,33 @@ def run_bottleneck_on_image(sess, image_data, image_data_tensor,
   bottleneck_values = np.squeeze(bottleneck_values)
   return bottleneck_values
 
+def prediction(_X, config):
+    _X = tf.transpose(_X, [1, 0, 2])  # permute n_steps and batch_size
+    # Reshape to prepare input to hidden activation
+    _X = tf.reshape(_X, [-1, config.n_inputs])
+    # new shape: (n_steps*batch_size, n_input)
+
+    # Linear activation
+    _X = tf.nn.relu(tf.matmul(_X, config.W['hidden']) + config.biases['hidden'])
+    # Split data because rnn cell needs a list of inputs for the RNN inner loop
+    _X = tf.split(_X, config.n_steps, 0)
+    # new shape: n_steps * (batch_size, n_hidden)
+
+    # Define two stacked LSTM cells (two recurrent layers deep) with tensorflow
+    lstm_cell_1 = tf.contrib.rnn.BasicLSTMCell(config.n_hidden, forget_bias=1.0, state_is_tuple=True)
+    lstm_cell_2 = tf.contrib.rnn.BasicLSTMCell(config.n_hidden, forget_bias=1.0, state_is_tuple=True)
+    lstm_cells = tf.contrib.rnn.MultiRNNCell([lstm_cell_1, lstm_cell_2], state_is_tuple=True)
+    # Get LSTM cell output
+    outputs, states = tf.contrib.rnn.static_rnn(lstm_cells, _X, dtype=tf.float32)
+
+    # Get last time step's output feature for a "many to one" style classifier,
+    # as in the image describing RNNs at the top of this page
+    lstm_last_output = outputs[-1]
+
+    # Linear activation
+    return tf.matmul(lstm_last_output, config.W['output']) + config.biases['output']
+
+
 graph, bottleneck_tensor, jpeg_data_tensor, resized_image_tensor = (
       create_inception_graph())
 
@@ -121,5 +147,5 @@ with tf.Session(graph=graph) as sess:
       # i +=1
 
   config = Config()
-  pred_Y, W, B = crnn_train.LSTM_Network(frames[np.newaxis,:,:], config)
-  print(format(tf.argmax(pred_Y, 1)))
+  pred_Y = prediction(frames[np.newaxis,:,:], config)
+  print(np.argmax(pred_Y, 1))
