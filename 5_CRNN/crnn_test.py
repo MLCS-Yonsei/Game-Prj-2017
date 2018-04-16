@@ -16,6 +16,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import numpy as np
 # from six.moves import urllib
 import tensorflow as tf
+import crnn_train
 
 # from tensorflow.python.framework import graph_util
 # from tensorflow.python.framework import tensor_shape
@@ -25,27 +26,53 @@ from tensorflow.python.platform import gfile
 model_dir = '/home/jehyunpark/Downloads/crnn/results/imagenet'
 image_path = '/home/jehyunpark/Downloads/crnn/images/handwaving/'
 
+
+#load weights
+np.load('./data/weight_hidden1.npy')
+np.load('./data/weight_output1.npy')
+np.load('./data/biases_hidden1.npy')
+np.load('./data/biases_output1.npy')
+
+
 BOTTLENECK_TENSOR_NAME = 'pool_3/_reshape:0'
 JPEG_DATA_TENSOR_NAME = 'DecodeJpeg/contents:0'
 RESIZED_INPUT_TENSOR_NAME = 'ResizeBilinear:0'
-BOTTLENECK_TENSOR_SIZE = 2048
-MODEL_INPUT_WIDTH = 299
-MODEL_INPUT_HEIGHT = 299
-MODEL_INPUT_DEPTH = 3
+# BOTTLENECK_TENSOR_SIZE = 2048
+# MODEL_INPUT_WIDTH = 299
+# MODEL_INPUT_HEIGHT = 299
+# MODEL_INPUT_DEPTH = 3
 i = 0
 
 filenames = sorted(os.listdir(image_path), key = lambda a:a[6:11])[:10]
 
-# frame1 = os.path.join(image_path,'person01_01.jpg')
-# frame2 = os.path.join(image_path,'person01_02.jpg')
-# frame3 = os.path.join(image_path,'person01_03.jpg')
-# frame4 = os.path.join(image_path,'person01_04.jpg')
-# frame5 = os.path.join(image_path,'person01_05.jpg')
-# frame6 = os.path.join(image_path,'person01_06.jpg')
-# frame7 = os.path.join(image_path,'person01_07.jpg')
-# frame8 = os.path.join(image_path,'person01_08.jpg')
-# frame9 = os.path.join(image_path,'person01_09.jpg')
-# frame10 = os.path.join(image_path,'person01_10.jpg')
+
+class Config(object):
+
+  def __init__(self):
+      # Input data
+      W_h=np.load('../track_data/data/weight_hidden1.npy')
+      W_o=np.load('../track_data/data/weight_output1.npy')
+      B_h=np.load('../track_data/data/biases_hidden1.npy')
+      B_o=np.load('../track_data/data/biases_output1.npy')
+      self.n_steps = 5
+
+      # Training
+      self.learning_rate = 0.0025
+      self.lambda_loss_amount = 0.0015
+      self.training_epochs = 200
+      self.batch_size = 90
+
+      # LSTM structure
+      self.n_hidden = 32#32  # nb of neurons inside the neural network
+      self.n_classes = 6  # Final output classes
+      self.W = {
+          'hidden': tf.Variable(W_h),
+          'output': tf.Variable(W_o)
+      }
+      self.biases = {
+          'hidden': tf.Variable(B_h),
+          'output': tf.Variable(B_o)
+      }
 
 def create_inception_graph():
   """"Creates a graph from saved GraphDef file and returns a Graph object.
@@ -96,6 +123,7 @@ with tf.Session(graph=graph) as sess:
       jpeg_data = gfile.FastGFile(full_filename, 'rb').read()
       frames = np.concatenate((frames, run_bottleneck_on_image(sess, jpeg_data, jpeg_data_tensor, bottleneck_tensor)[np.newaxis,:]), axis = 0)
       # i +=1
-  
-  
+
+  config = Config(X_train, X_test)
+  pred_Y, W, B = crnn_train.LSTM_Network(frames, config)
   print(frames.shape)
