@@ -121,5 +121,5 @@ with tf.Session(graph=graph) as sess:
       # i +=1
 
   config = Config()
-  pred_Y, W, B = crnn_train.LSTM_Network(frames, config)
+  pred_Y, W, B = crnn_train.LSTM_Network(frames[np.newaxis,:,:], config)
   print(frames.shape)
