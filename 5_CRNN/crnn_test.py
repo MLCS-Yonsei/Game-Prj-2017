@@ -42,10 +42,10 @@ class Config(object):
 
   def __init__(self):
     # Input data
-    W_h=np.load('./data/weight_hidden1.npy')
-    W_o=np.load('./data/weight_output1.npy')
-    B_h=np.load('./data/biases_hidden1.npy')
-    B_o=np.load('./data/biases_output1.npy')
+    W_h=np.load('./weights/weight_hidden1.npy')
+    W_o=np.load('./weights/weight_output1.npy')
+    B_h=np.load('./weights/biases_hidden1.npy')
+    B_o=np.load('./weights/biases_output1.npy')
     self.n_steps = 5
 
     # Training
