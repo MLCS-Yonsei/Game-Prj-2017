@@ -4,17 +4,41 @@ import os
 import json
 import tensorflow as tf
 import cv2
+from tensorflow.python.platform import gfile
 
 
-# dir = '/Users/jehyun/Dropbox/videos/'
-# dir = '/home/jhp/Dropbox/videos/'
-dir = '/home/hwanmooy/code/google-AVA-Dataset-downloader-master/data/train/'
+
 save_dir = '/home/jehyunpark/data/'
+model_dir = '/home/jehyunpark/Downloads/crnn/results/imagenet'
+image_path = '/home/jehyunpark/Downloads/crnn/images/boxing/'
 
 filenames = os.listdir(dir)
 filenames = filenames[51014:]
 frame_number = 10; index = 51014; index2 = 0; n_classes = 10
 train_x=np.zeros((1,1262*720)); train_y = np.zeros((1,10))
+
+
+
+
+def create_inception_graph():
+    BOTTLENECK_TENSOR_NAME = 'pool_3/_reshape:0'
+    JPEG_DATA_TENSOR_NAME = 'DecodeJpeg/contents:0'
+    RESIZED_INPUT_TENSOR_NAME = 'ResizeBilinear:0'
+    with tf.Graph().as_default() as graph:
+        model_filename = os.path.join(model_dir, 'classify_image_graph_def.pb')
+        with gfile.FastGFile(model_filename, 'rb') as f:
+            graph_def = tf.GraphDef()
+            graph_def.ParseFromString(f.read())
+            bottleneck_tensor, jpeg_data_tensor, resized_input_tensor = (
+                tf.import_graph_def(graph_def, name='', return_elements=[
+                    BOTTLENECK_TENSOR_NAME, JPEG_DATA_TENSOR_NAME,
+                    RESIZED_INPUT_TENSOR_NAME]))
+    return graph, bottleneck_tensor, jpeg_data_tensor, resized_input_tensor
+
+def run_bottleneck_on_image(sess, image_data, image_data_tensor, bottleneck_tensor):
+    bottleneck_values = sess.run(bottleneck_tensor, {image_data_tensor: image_data})
+    bottleneck_values = np.squeeze(bottleneck_values)
+    return bottleneck_values
 
 def one_hot(label, n_classes):
     a = np.zeros(n_classes)[np.newaxis, :]

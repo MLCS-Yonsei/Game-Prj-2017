@@ -150,10 +150,10 @@ if __name__ == "__main__":
               " loss : {}".format(loss_out))
         best_accuracy = max(best_accuracy, accuracy_out)
         if best_accuracy == accuracy_out:
-            np.save('./data/weight_hidden1',weight_trained['hidden'])
-            np.save('./data/weight_output1',weight_trained['output'])
-            np.save('./data/biases_hidden1',biases_trained['hidden'])
-            np.save('./data/biases_output1',biases_trained['output'])
+            np.save('./weights/weight_hidden1',weight_trained['hidden'])
+            np.save('./weights/weight_output1',weight_trained['output'])
+            np.save('./weights/biases_hidden1',biases_trained['hidden'])
+            np.save('./weights/biases_output1',biases_trained['output'])
         
     
     print("")
