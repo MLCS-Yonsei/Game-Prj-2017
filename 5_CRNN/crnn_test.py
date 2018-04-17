@@ -104,7 +104,7 @@ def run_bottleneck_on_image(sess, image_data, image_data_tensor,
   bottleneck_values = np.squeeze(bottleneck_values)
   return bottleneck_values
 
-def prediction(_X, config):
+def LSTM(_X, config):
     _X = tf.transpose(_X, [1, 0, 2])  # permute n_steps and batch_size
     # Reshape to prepare input to hidden activation
     _X = tf.reshape(_X, [-1, config.n_inputs])
@@ -130,9 +130,22 @@ def prediction(_X, config):
     # Linear activation
     return tf.matmul(lstm_last_output, config.W['output']) + config.biases['output']
 
+def predict(frames):
+  X = tf.placeholder(tf.float32, [None, config.n_steps, config.n_inputs])
+  
+  pred_Y = LSTM(X, config)   
+  sess = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
+  init = tf.global_variables_initializer()
+  sess.run(init)
+  pred_out = sess.run([pred_Y],feed_dict={X: frames})
+
+  return pred_out
+
+
 
 graph, bottleneck_tensor, jpeg_data_tensor, resized_image_tensor = (
       create_inception_graph())
+config = Config()
 
 with tf.Session(graph=graph) as sess:
   for filename in filenames:
@@ -146,6 +159,5 @@ with tf.Session(graph=graph) as sess:
       frames = np.concatenate((frames, run_bottleneck_on_image(sess, jpeg_data, jpeg_data_tensor, bottleneck_tensor)[np.newaxis,:]), axis = 0)
       # i +=1
 
-  config = Config()
-  pred_Y = prediction(frames[np.newaxis,:,:], config)
-  print(np.argmax(pred_Y))
+prediction = predict(frames[np.newaxis,:,:])
+print(prediction,np.argmax(prediction))
