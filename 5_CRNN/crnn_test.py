@@ -41,33 +41,33 @@ filenames = sorted(os.listdir(image_path), key = lambda a:a[6:11])[:10]
 class Config(object):
 
   def __init__(self):
-      # Input data
-      W_h=np.load('./data/weight_hidden1.npy')
-      W_o=np.load('./data/weight_output1.npy')
-      B_h=np.load('./data/biases_hidden1.npy')
-      B_o=np.load('./data/biases_output1.npy')
-      self.n_steps = 5
+    # Input data
+    W_h=np.load('./data/weight_hidden1.npy')
+    W_o=np.load('./data/weight_output1.npy')
+    B_h=np.load('./data/biases_hidden1.npy')
+    B_o=np.load('./data/biases_output1.npy')
+    self.n_steps = 5
 
-      # Training
-      self.learning_rate = 0.0025
-      self.lambda_loss_amount = 0.0015
-      self.training_epochs = 200
-      self.batch_size = 90
-      self.n_steps = 10  # 128 time_steps per series
+    # Training
+    self.learning_rate = 0.0025
+    self.lambda_loss_amount = 0.0015
+    self.training_epochs = 200
+    self.batch_size = 90
+    self.n_steps = 10  # 128 time_steps per series
 
 
-      # LSTM structure
-      self.n_inputs = 2048  # Features count is of 9: 3 * 3D sensors features over time
-      self.n_hidden = 32#32  # nb of neurons inside the neural network
-      self.n_classes = 6  # Final output classes
-      self.W = {
-          'hidden': tf.Variable(W_h),
-          'output': tf.Variable(W_o)
-      }
-      self.biases = {
-          'hidden': tf.Variable(B_h),
-          'output': tf.Variable(B_o)
-      }
+    # LSTM structure
+    self.n_inputs = 2048  # Features count is of 9: 3 * 3D sensors features over time
+    self.n_hidden = 32#32  # nb of neurons inside the neural network
+    self.n_classes = 6  # Final output classes
+    self.W = {
+        'hidden': tf.Variable(W_h),
+        'output': tf.Variable(W_o)
+    }
+    self.biases = {
+        'hidden': tf.Variable(B_h),
+        'output': tf.Variable(B_o)
+    }
 
 def create_inception_graph():
   """"Creates a graph from saved GraphDef file and returns a Graph object.

@@ -149,14 +149,13 @@ if __name__ == "__main__":
               " test accuracy : {},".format(accuracy_out) +
               " loss : {}".format(loss_out))
         best_accuracy = max(best_accuracy, accuracy_out)
+        if best_accuracy == accuracy_out:
+            np.save('./data/weight_hidden1',weight_trained['hidden'])
+            np.save('./data/weight_output1',weight_trained['output'])
+            np.save('./data/biases_hidden1',biases_trained['hidden'])
+            np.save('./data/biases_output1',biases_trained['output'])
         
     
-    '''save weights and biases'''
-    np.save('./data/weight_hidden1',weight_trained['hidden'])
-    np.save('./data/weight_output1',weight_trained['output'])
-    np.save('./data/biases_hidden1',biases_trained['hidden'])
-    np.save('./data/biases_output1',biases_trained['output'])
-
     print("")
     print("final test accuracy: {}".format(accuracy_out))
     print("best epoch's test accuracy: {}".format(best_accuracy))
