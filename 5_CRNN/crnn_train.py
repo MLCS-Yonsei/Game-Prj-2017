@@ -95,21 +95,7 @@ if __name__ == "__main__":
     y_train=np.load('/home/jehyunpark/Downloads/crnn/data/train_y.npz')['a']
     X_test=np.load('/home/jehyunpark/Downloads/crnn/data/test_x.npz')['a']
     X_test=np.reshape(X_test,(-1,10,2048))
-    y_test=np.load('/home/jehyunpark/Downloads/crnn/data/test_y.npz')['a']
-#change dimension of training set and test set into 1260*5*24, 540*5*24 
-    #X_train=X_train.transpose(2,0,1)
-    # a=np.append([X_train[1]],X_train[39:43],axis=0)
-    # a=np.append(a,X_train[47:66],axis=0)
-    #a=X_train[2:21]#################################################################################################
-    #X_train=a.transpose(1,2,0)
-
-    #X_test=X_test.transpose(2,0,1)
-    # b=np.append([X_test[1]],X_test[39:43],axis=0)
-    # b=np.append(b,X_test[47:66],axis=0)
-    #b=X_test[2:21]#################################################################################################
-    #X_test=b.transpose(1,2,0)
-
-    
+    y_test=np.load('/home/jehyunpark/Downloads/crnn/data/test_y.npz')['a']    
 
     config = Config(X_train, X_test)
 
@@ -163,6 +149,7 @@ if __name__ == "__main__":
               " test accuracy : {},".format(accuracy_out) +
               " loss : {}".format(loss_out))
         best_accuracy = max(best_accuracy, accuracy_out)
+        
     
     '''save weights and biases'''
     np.save('./data/weight_hidden1',weight_trained['hidden'])
