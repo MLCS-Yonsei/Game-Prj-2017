@@ -22,7 +22,7 @@ import tensorflow as tf
 from tensorflow.python.platform import gfile
 # from tensorflow.python.util import compat
 
-model_dir = '/home/jehyunpark/Downloads/crnn/results/imagenet'
+model_dir = '/home/jehyunpark/Downloads/crnn/results/'
 image_path = '/home/jehyunpark/Downloads/crnn/images/boxing/'
 
 
@@ -77,7 +77,7 @@ def create_inception_graph():
   """
   with tf.Graph().as_default() as graph:
     model_filename = os.path.join(
-        model_dir, 'classify_image_graph_def.pb')
+        model_dir, 'output_graph.pb')
     with gfile.FastGFile(model_filename, 'rb') as f:
       graph_def = tf.GraphDef()
       graph_def.ParseFromString(f.read())
