@@ -158,6 +158,6 @@ with tf.Session(graph=graph) as sess:
       jpeg_data = gfile.FastGFile(full_filename, 'rb').read()
       frames = np.concatenate((frames, run_bottleneck_on_image(sess, jpeg_data, jpeg_data_tensor, bottleneck_tensor)[np.newaxis,:]), axis = 0)
       # i +=1
-
+print(frames)
 prediction = predict(frames[np.newaxis,:,:])
-print(prediction,np.argmax(prediction))
+print(np.argmax(prediction))
