@@ -148,34 +148,35 @@ if __name__ == "__main__":
       elif len(frames) < 10:
         jpeg_data = gfile.FastGFile(full_filename, 'rb').read()
         frames = np.concatenate((frames, run_bottleneck_on_image(sess, jpeg_data, jpeg_data_tensor, bottleneck_tensor)[np.newaxis,:]), axis = 0)
+  sess.close()
+  
+  frames = tf.transpose(frames[np.newaxis,:,:], [1, 0, 2])  # permute n_steps and batch_size
+  # Reshape to prepare input to hidden activation
+  frames = tf.reshape(frames, [-1, config.n_inputs])
+  # new shape: (n_steps*batch_size, n_input)
 
-    frames = tf.transpose(frames[np.newaxis,:,:], [1, 0, 2])  # permute n_steps and batch_size
-    # Reshape to prepare input to hidden activation
-    frames = tf.reshape(frames, [-1, config.n_inputs])
-    # new shape: (n_steps*batch_size, n_input)
+  # Linear activation
+  frames = tf.nn.relu(tf.matmul(frames, config.W['hidden']) + config.biases['hidden'])
+  # Split data because rnn cell needs a list of inputs for the RNN inner loop
+  frames = tf.split(frames, config.n_steps, 0)
+  # new shape: n_steps * (batch_size, n_hidden)
 
-    # Linear activation
-    frames = tf.nn.relu(tf.matmul(frames, config.W['hidden']) + config.biases['hidden'])
-    # Split data because rnn cell needs a list of inputs for the RNN inner loop
-    frames = tf.split(frames, config.n_steps, 0)
-    # new shape: n_steps * (batch_size, n_hidden)
+  # Define two stacked LSTM cells (two recurrent layers deep) with tensorflow
+  lstm_cell_1 = tf.contrib.rnn.BasicLSTMCell(config.n_hidden, forget_bias=1.0, state_is_tuple=True)
+  lstm_cell_2 = tf.contrib.rnn.BasicLSTMCell(config.n_hidden, forget_bias=1.0, state_is_tuple=True)
+  lstm_cells = tf.contrib.rnn.MultiRNNCell([lstm_cell_1, lstm_cell_2], state_is_tuple=True)
+  # Get LSTM cell output
+  outputs, states = tf.contrib.rnn.static_rnn(lstm_cells, frames, dtype=tf.float32)
 
-    # Define two stacked LSTM cells (two recurrent layers deep) with tensorflow
-    lstm_cell_1 = tf.contrib.rnn.BasicLSTMCell(config.n_hidden, forget_bias=1.0, state_is_tuple=True)
-    lstm_cell_2 = tf.contrib.rnn.BasicLSTMCell(config.n_hidden, forget_bias=1.0, state_is_tuple=True)
-    lstm_cells = tf.contrib.rnn.MultiRNNCell([lstm_cell_1, lstm_cell_2], state_is_tuple=True)
-    # Get LSTM cell output
-    outputs, states = tf.contrib.rnn.static_rnn(lstm_cells, frames, dtype=tf.float32)
+  # Get last time step's output feature for a "many to one" style classifier,
+  # as in the image describing RNNs at the top of this page
+  lstm_last_output = outputs[-1]
 
-    # Get last time step's output feature for a "many to one" style classifier,
-    # as in the image describing RNNs at the top of this page
-    lstm_last_output = outputs[-1]
-
-    # Linear activation
-    prediction = tf.matmul(lstm_last_output, config.W['output']) + config.biases['output']    
+  # Linear activation
+  prediction = tf.matmul(lstm_last_output, config.W['output']) + config.biases['output']    
       
     # sess = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
     
 
   print(np.argmax(prediction))
-  sess.close()
+  
