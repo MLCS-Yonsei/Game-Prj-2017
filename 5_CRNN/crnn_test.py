@@ -126,6 +126,7 @@ def LSTM(_X, config):
     # Get last time step's output feature for a "many to one" style classifier,
     # as in the image describing RNNs at the top of this page
     lstm_last_output = outputs[-1]
+    print(config.W['hidden'].eval())
 
     # Linear activation
     return tf.matmul(lstm_last_output, config.W['output']) + config.biases['output']
@@ -160,5 +161,4 @@ with tf.Session(graph=graph) as sess:
       # i +=1
 
 prediction = predict(frames[np.newaxis,:,:])
-print(config.W['hidden'].eval())
 print(np.argmax(prediction))
