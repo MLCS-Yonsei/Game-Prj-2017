@@ -130,7 +130,7 @@ def LSTM(_X, config):
     # Linear activation
     return tf.matmul(lstm_last_output, config.W['output']) + config.biases['output']
 
-def predict(frames, config):
+def predict(frames):
   X = tf.placeholder(tf.float32, [None, config.n_steps, config.n_inputs])
   
   pred_Y = LSTM(X, config)   
@@ -159,5 +159,6 @@ with tf.Session(graph=graph) as sess:
       frames = np.concatenate((frames, run_bottleneck_on_image(sess, jpeg_data, jpeg_data_tensor, bottleneck_tensor)[np.newaxis,:]), axis = 0)
       # i +=1
 
-prediction = predict(frames[np.newaxis,:,:], config)
+prediction = predict(frames[np.newaxis,:,:])
+print(config.W[hidden])
 print(np.argmax(prediction))
