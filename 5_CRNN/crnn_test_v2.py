@@ -128,11 +128,11 @@ if __name__ == "__main__":
         jpeg_data = gfile.FastGFile(full_filename, 'rb').read()
         frames = np.concatenate((frames, run_bottleneck_on_image(sess, jpeg_data, jpeg_data_tensor, bottleneck_tensor)[np.newaxis,:]), axis = 0)
   frames = frames[np.newaxis,:,:]
-  sess.close()
+  print(frames.shape)
 
   config = Config()
 
-  X = tf.placeholder(tf.float32, [None, config.n_steps, config.n_inputs])
+  X = tf.placeholder(tf.float32, [1, config.n_steps, config.n_inputs])
   X = tf.transpose(X, [1, 0, 2])  # permute n_steps and batch_size
   # Reshape to prepare input to hidden activation
   X = tf.reshape(X, [-1, config.n_inputs])
@@ -158,13 +158,11 @@ if __name__ == "__main__":
   # Linear activation
   pred_out = tf.matmul(lstm_last_output, config.W['output']) + config.biases['output']    
   
-  # session = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
-  # init = tf.global_variables_initializer()
-  # session.run(init)    
+  session = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
+  init = tf.global_variables_initializer()
+  session.run(init)    
 
-  # prediction = session.run(pred_out, feed_dict={X: frames})
-  
-  session = tf.Session()
   prediction = session.run(pred_out, feed_dict={X: frames})
+  
   print(np.argmax(prediction))
   
