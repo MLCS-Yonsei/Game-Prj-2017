@@ -146,7 +146,9 @@ if __name__ == "__main__":
       elif len(frames) < 10:
         jpeg_data = gfile.FastGFile(full_filename, 'rb').read()
         frames = np.concatenate((frames, run_bottleneck_on_image(sess, jpeg_data, jpeg_data_tensor, bottleneck_tensor)[np.newaxis,:]), axis = 0)
+  print(type(frames))
   frames = frames[np.newaxis,:,:]
+  print(type(frames))
   sess.close()
 
   config = Config()
