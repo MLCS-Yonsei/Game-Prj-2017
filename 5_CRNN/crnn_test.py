@@ -160,5 +160,5 @@ with tf.Session(graph=graph) as sess:
       frames = np.concatenate((frames, run_bottleneck_on_image(sess, jpeg_data, jpeg_data_tensor, bottleneck_tensor)[np.newaxis,:]), axis = 0)
       # i +=1
 
-prediction = predict(frames[np.newaxis,:,:])
+  prediction = predict(frames[np.newaxis,:,:])
 print(np.argmax(prediction))
