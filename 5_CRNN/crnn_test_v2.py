@@ -177,5 +177,5 @@ if __name__ == "__main__":
     # sess = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
     
 
-  print(prediction,np.argmax(prediction,axis=1))
+  print(prediction,np.argmax(prediction))
   sess.close()
