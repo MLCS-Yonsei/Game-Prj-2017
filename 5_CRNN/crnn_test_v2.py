@@ -27,7 +27,6 @@ class Config(object):
     W_o=np.load('./weights/weight_output1.npy')
     B_h=np.load('./weights/biases_hidden1.npy')
     B_o=np.load('./weights/biases_output1.npy')
-    self.n_steps = 5
 
     # Training
     self.learning_rate = 0.0025
@@ -135,7 +134,7 @@ if __name__ == "__main__":
   init = tf.global_variables_initializer()
   session.run(init)    
 
-  prediction = session.run(pred_out, feed_dict={i: d for i, d in zip(X, frames)})
+  prediction = session.run(pred_out, feed_dict={X: frames})
   
   print(np.argmax(prediction))
   
