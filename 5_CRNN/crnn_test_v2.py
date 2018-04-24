@@ -135,8 +135,8 @@ if __name__ == "__main__":
         create_inception_graph())
 
   with tf.Session(graph=graph) as sess:
-    init = tf.global_variables_initializer()
-    sess.run(init)
+    # init = tf.global_variables_initializer()
+    # sess.run(init)
     for filename in filenames:
       full_filename = os.path.join(image_path,filename)
       if i == 0:
@@ -184,7 +184,7 @@ if __name__ == "__main__":
   prediction = sess.run(
             [pred_out],
             feed_dict={
-                X: frames,
+                X: frames
                             }
         )
 
