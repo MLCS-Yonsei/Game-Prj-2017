@@ -157,12 +157,14 @@ if __name__ == "__main__":
 
   # Linear activation
   pred_out = tf.matmul(lstm_last_output, config.W['output']) + config.biases['output']    
+  
+  # session = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
+  # init = tf.global_variables_initializer()
+  # session.run(init)    
 
-  session = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
-  init = tf.global_variables_initializer()
-  session.run(init)    
-
+  # prediction = session.run(pred_out, feed_dict={X: frames})
+  
+  session = tf.Session()
   prediction = session.run(pred_out, feed_dict={X: frames})
-
   print(np.argmax(prediction))
   
