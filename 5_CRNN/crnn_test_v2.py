@@ -149,7 +149,7 @@ if __name__ == "__main__":
         jpeg_data = gfile.FastGFile(full_filename, 'rb').read()
         frames = np.concatenate((frames, run_bottleneck_on_image(sess, jpeg_data, jpeg_data_tensor, bottleneck_tensor)[np.newaxis,:]), axis = 0)
 
-    frames = tf.transpose(frames, [1, 0, 2])  # permute n_steps and batch_size
+    frames = tf.transpose(frames[np.newaxis,:,:], [1, 0, 2])  # permute n_steps and batch_size
     # Reshape to prepare input to hidden activation
     frames = tf.reshape(frames, [-1, config.n_inputs])
     # new shape: (n_steps*batch_size, n_input)
