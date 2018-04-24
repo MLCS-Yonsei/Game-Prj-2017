@@ -160,5 +160,5 @@ with tf.Session(graph=graph) as sess:
       # i +=1
 
 prediction = predict(frames[np.newaxis,:,:])
-print(config.W['hidden'])
+print(config.W['hidden'].eval())
 print(np.argmax(prediction))
