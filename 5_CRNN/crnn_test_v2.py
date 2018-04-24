@@ -23,7 +23,7 @@ from tensorflow.python.platform import gfile
 # from tensorflow.python.util import compat
 
 model_dir = '/home/jehyunpark/Downloads/crnn/results/'
-image_path = '/home/jehyunpark/Downloads/crnn/images/handwaving/'
+image_path = '/home/jehyunpark/Downloads/crnn/images/running/'
 
 
 BOTTLENECK_TENSOR_NAME = 'pool_3/_reshape:0'
@@ -178,5 +178,5 @@ if __name__ == "__main__":
     # sess = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
     
 
-  print(prediction.eval(),np.argmax(prediction))
+  print(np.argmax(prediction,axis=1))
   
