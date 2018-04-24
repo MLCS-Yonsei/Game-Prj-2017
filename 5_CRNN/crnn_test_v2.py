@@ -148,7 +148,6 @@ if __name__ == "__main__":
       elif len(frames) < 10:
         jpeg_data = gfile.FastGFile(full_filename, 'rb').read()
         frames = np.concatenate((frames, run_bottleneck_on_image(sess, jpeg_data, jpeg_data_tensor, bottleneck_tensor)[np.newaxis,:]), axis = 0)
-  sess.close()
 
   frames = tf.transpose(frames[np.newaxis,:,:], [1, 0, 2])  # permute n_steps and batch_size
   # Reshape to prepare input to hidden activation
@@ -178,5 +177,5 @@ if __name__ == "__main__":
     # sess = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
     
 
-  print(np.argmax(prediction,axis=1))
-  
+  print(prediction,np.argmax(prediction,axis=1))
+  sess.close()
