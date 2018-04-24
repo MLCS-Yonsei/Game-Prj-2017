@@ -23,7 +23,7 @@ from tensorflow.python.platform import gfile
 # from tensorflow.python.util import compat
 
 model_dir = '/home/jehyunpark/Downloads/crnn/results/'
-image_path = '/home/jehyunpark/Downloads/crnn/images/handclapping/'
+image_path = '/home/jehyunpark/Downloads/crnn/images/handwaving/'
 
 
 BOTTLENECK_TENSOR_NAME = 'pool_3/_reshape:0'
@@ -149,7 +149,7 @@ if __name__ == "__main__":
         jpeg_data = gfile.FastGFile(full_filename, 'rb').read()
         frames = np.concatenate((frames, run_bottleneck_on_image(sess, jpeg_data, jpeg_data_tensor, bottleneck_tensor)[np.newaxis,:]), axis = 0)
   sess.close()
-  
+
   frames = tf.transpose(frames[np.newaxis,:,:], [1, 0, 2])  # permute n_steps and batch_size
   # Reshape to prepare input to hidden activation
   frames = tf.reshape(frames, [-1, config.n_inputs])
