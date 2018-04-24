@@ -1,26 +1,8 @@
-# from __future__ import absolute_import
-# from __future__ import division
-# from __future__ import print_function
-
-# import argparse
-# from datetime import datetime
-import hashlib
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
-# import random
-# import re
-# import struct
-# import sys
-# import tarfile
-
 import numpy as np
-# from six.moves import urllib
 import tensorflow as tf
-
-# from tensorflow.python.framework import graph_util
-# from tensorflow.python.framework import tensor_shape
 from tensorflow.python.platform import gfile
-# from tensorflow.python.util import compat
 
 model_dir = '/home/jehyunpark/Downloads/crnn/results/'
 image_path = '/home/jehyunpark/Downloads/crnn/images/running/'
@@ -36,7 +18,6 @@ RESIZED_INPUT_TENSOR_NAME = 'ResizeBilinear:0'
 i = 0
 
 filenames = sorted(os.listdir(image_path), key = lambda a:a[6:11])[:10]
-
 
 class Config(object):
 
@@ -182,7 +163,7 @@ if __name__ == "__main__":
   sess.run(init)    
 
   prediction = sess.run(
-            [pred_out],
+            pred_out,
             feed_dict={
                 X: frames
             }    
