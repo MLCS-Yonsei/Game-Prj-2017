@@ -112,7 +112,7 @@ if __name__ == "__main__":
   # Linear activation
   X = tf.nn.relu(tf.matmul(X, config.W['hidden']) + config.biases['hidden'])
   # Split data because rnn cell needs a list of inputs for the RNN inner loop
-  X = tf.split(X, config.n_steps, 0)
+  split = tf.split(X, config.n_steps, 0)
   # new shape: n_steps * (batch_size, n_hidden)
 
   # Define two stacked LSTM cells (two recurrent layers deep) with tensorflow
@@ -120,7 +120,7 @@ if __name__ == "__main__":
   lstm_cell_2 = tf.contrib.rnn.BasicLSTMCell(config.n_hidden, forget_bias=1.0, state_is_tuple=True)
   lstm_cells = tf.contrib.rnn.MultiRNNCell([lstm_cell_1, lstm_cell_2], state_is_tuple=True)
   # Get LSTM cell output
-  outputs, states = tf.contrib.rnn.static_rnn(lstm_cells, X, dtype=tf.float32)
+  outputs, states = tf.contrib.rnn.static_rnn(lstm_cells, split, dtype=tf.float32)
 
   # Get last time step's output feature for a "many to one" style classifier,
   # as in the image describing RNNs at the top of this page
@@ -129,14 +129,12 @@ if __name__ == "__main__":
   # Linear activation
   pred_out = tf.matmul(lstm_last_output, config.W['output']) + config.biases['output']    
   
-  # session = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
-  # init = tf.global_variables_initializer()
-  # session.run(init)    
+  session = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
+  init = tf.global_variables_initializer()
+  session.run(init)    
 
-  # prediction = session.run([pred_out], feed_dict={X: frames[np.newaxis,:,:]})
+  prediction = session.run([pred_out], feed_dict={X: frames[np.newaxis,:,:]})
   
-  # print(np.argmax(prediction))
-  with tf.Session() as sess:
-    prediction = sess.run([pred_out], feed_dict={X: frames[np.newaxis,:,:]})
-    print(np.argmax(prediction))
+  print(np.argmax(prediction))
+ 
   
