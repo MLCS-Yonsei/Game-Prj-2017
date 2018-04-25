@@ -134,7 +134,19 @@ if __name__ == "__main__":
   session.run(init)    
 
   prediction = session.run([pred_out], feed_dict={X: frames[np.newaxis,:,:]})
-  
-  print(prediction, np.argmax(prediction))
+  a = np.argmax(prediction)
+  if a == 0:
+    result = 'walking'
+  elif a == 1:
+    result = 'boxing'
+  elif a == 2:
+    result = 'jogging'
+  elif a == 3:
+    result = 'running'
+  elif a == 4:
+    result = 'handwaving'
+  elif a == 5:
+    result = 'handclapping'
+  print(result)
  
   
