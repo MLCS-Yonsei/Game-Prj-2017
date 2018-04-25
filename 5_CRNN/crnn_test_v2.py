@@ -140,11 +140,11 @@ if __name__ == "__main__":
   elif a == 1:
     result = 'boxing'
   elif a == 2:
-    result = 'jogging'
+    result = 'handwaving'
   elif a == 3:
     result = 'running'
   elif a == 4:
-    result = 'handwaving'
+    result = 'jogging'
   elif a == 5:
     result = 'handclapping'
   print(result)
