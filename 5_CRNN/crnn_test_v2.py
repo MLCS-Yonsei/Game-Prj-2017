@@ -135,6 +135,6 @@ if __name__ == "__main__":
 
   prediction = session.run([pred_out], feed_dict={X: frames[np.newaxis,:,:]})
   
-  print(np.argmax(prediction))
+  print(prediction, np.argmax(prediction))
  
   
