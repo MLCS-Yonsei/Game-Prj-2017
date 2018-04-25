@@ -93,6 +93,7 @@ if __name__ == "__main__":
     # sess.run(init)
     for filename in filenames:
       full_filename = os.path.join(image_path,filename)
+      print(filename)
       if i == 0:
         jpeg_data = gfile.FastGFile(full_filename, 'rb').read()
         frames = run_bottleneck_on_image(sess, jpeg_data, jpeg_data_tensor, bottleneck_tensor)[np.newaxis,:]
