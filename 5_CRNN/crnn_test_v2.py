@@ -17,7 +17,7 @@ RESIZED_INPUT_TENSOR_NAME = 'ResizeBilinear:0'
 # MODEL_INPUT_DEPTH = 3
 i = 0
 
-filenames = sorted(os.listdir(image_path), key = lambda a:a[6:11])[:10]
+filenames = sorted(os.listdir(image_path), key = lambda a:a[6:11])[20:30]
 
 class Config(object):
 
