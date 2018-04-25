@@ -5,7 +5,7 @@ import tensorflow as tf
 from tensorflow.python.platform import gfile
 
 model_dir = '/home/jehyunpark/Downloads/crnn/results/'
-image_path = '/home/jehyunpark/Downloads/crnn/images/running/'
+image_path = '/home/jehyunpark/Downloads/crnn/images/boxing/'
 
 
 BOTTLENECK_TENSOR_NAME = 'pool_3/_reshape:0'
