@@ -101,7 +101,6 @@ if __name__ == "__main__":
         jpeg_data = gfile.FastGFile(full_filename, 'rb').read()
         frames = np.concatenate((frames, run_bottleneck_on_image(sess, jpeg_data, jpeg_data_tensor, bottleneck_tensor)[np.newaxis,:]), axis = 0)
   sess.close()
-
   config = Config()
 
   X = tf.placeholder(tf.float32, [1, config.n_steps, config.n_inputs])
@@ -130,11 +129,14 @@ if __name__ == "__main__":
   # Linear activation
   pred_out = tf.matmul(lstm_last_output, config.W['output']) + config.biases['output']    
   
-  session = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
-  init = tf.global_variables_initializer()
-  session.run(init)    
+  # session = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
+  # init = tf.global_variables_initializer()
+  # session.run(init)    
 
-  prediction = session.run([pred_out], feed_dict={X: frames[np.newaxis,:,:]})
+  # prediction = session.run([pred_out], feed_dict={X: frames[np.newaxis,:,:]})
   
-  print(np.argmax(prediction))
+  # print(np.argmax(prediction))
+  with tf.Session() as sess:
+    prediction = sess.run([pred_out], feed_dict={X: frames[np.newaxis,:,:]})
+    print(np.argmax(prediction))
   
