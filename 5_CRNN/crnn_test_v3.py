@@ -114,68 +114,53 @@ def run_bottleneck_on_image(sess, image_data, image_data_tensor,
   return bottleneck_values
 
 if __name__ == "__main__":
-  graph, bottleneck_tensor, jpeg_data_tensor, resized_image_tensor = (
-        create_inception_graph())
+    graph, bottleneck_tensor, jpeg_data_tensor, resized_image_tensor = (
+            create_inception_graph())
 
-  with tf.Session(graph=graph) as sess:
-    # init = tf.global_variables_initializer()
-    # sess.run(init)
-    for filename in filenames:
-      full_filename = os.path.join(image_path,filename)
-      if i == 0:
-        jpeg_data = gfile.FastGFile(full_filename, 'rb').read()
-        frames = run_bottleneck_on_image(sess, jpeg_data, jpeg_data_tensor, bottleneck_tensor)[np.newaxis,:]
-        i +=1
-      elif len(frames) < 10:
-        jpeg_data = gfile.FastGFile(full_filename, 'rb').read()
-        frames = np.concatenate((frames, run_bottleneck_on_image(sess, jpeg_data, jpeg_data_tensor, bottleneck_tensor)[np.newaxis,:]), axis = 0)
-    sess.close()
-  config = Config()
+    with tf.Session(graph=graph) as sess:
+        # init = tf.global_variables_initializer()
+        # sess.run(init)
+        for filename in filenames:
+        full_filename = os.path.join(image_path,filename)
+        if i == 0:
+            jpeg_data = gfile.FastGFile(full_filename, 'rb').read()
+            frames = run_bottleneck_on_image(sess, jpeg_data, jpeg_data_tensor, bottleneck_tensor)[np.newaxis,:]
+            i +=1
+        elif len(frames) < 10:
+            jpeg_data = gfile.FastGFile(full_filename, 'rb').read()
+            frames = np.concatenate((frames, run_bottleneck_on_image(sess, jpeg_data, jpeg_data_tensor, bottleneck_tensor)[np.newaxis,:]), axis = 0)
+        sess.close()
+    config = Config()
 
-  X = tf.placeholder(tf.float32, [1, config.n_steps, config.n_inputs])
-  _X = tf.transpose(X, [1, 0, 2])  # permute n_steps and batch_size
-  # Reshape to prepare input to hidden activation
-  _X = tf.reshape(X, [-1, config.n_inputs])
-  # new shape: (n_steps*batch_size, n_input)
+    X = tf.placeholder(tf.float32, [1, config.n_steps, config.n_inputs])
+    pred_Y = LSTM_Network(X, config)    
+    
+    sess = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
+    init = tf.global_variables_initializer()
+    sess.run(init)
 
-  # Linear activation
-  _X = tf.nn.relu(tf.matmul(_X, config.W['hidden']) + config.biases['hidden'])
-  # Split data because rnn cell needs a list of inputs for the RNN inner loop
-  _X = tf.split(_X, config.n_steps, 0)
-  # new shape: n_steps * (batch_size, n_hidden)
+    for i in range(1):
+        pred_out = sess.run(
+            [pred_Y],
+            feed_dict={
+                X: X_test
+            }
+        )
 
-  # Define two stacked LSTM cells (two recurrent layers deep) with tensorflow
-  lstm_cell_1 = tf.contrib.rnn.BasicLSTMCell(config.n_hidden, forget_bias=1.0, state_is_tuple=True)
-  lstm_cell_2 = tf.contrib.rnn.BasicLSTMCell(config.n_hidden, forget_bias=1.0, state_is_tuple=True)
-  lstm_cells = tf.contrib.rnn.MultiRNNCell([lstm_cell_1, lstm_cell_2], state_is_tuple=True)
-  # Get LSTM cell output
-  outputs, states = tf.contrib.rnn.static_rnn(lstm_cells, _X, dtype=tf.float32)
-
-  # Get last time step's output feature for a "many to one" style classifier,
-  # as in the image describing RNNs at the top of this page
-  lstm_last_output = outputs[-1]
-
-  # Linear activation
-  pred_out = tf.matmul(lstm_last_output, config.W['output']) + config.biases['output']    
-  
-  session = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
-  init = tf.global_variables_initializer()
-  session.run(init)    
-
-  prediction = session.run([pred_out], feed_dict={X: frames[np.newaxis,:,:]})
-  a = np.argmax(prediction)
-  if a == 0:
-    result = 'walking'
-  elif a == 1:
-    result = 'boxing'
-  elif a == 2:
-    result = 'handwaving'
-  elif a == 3:
-    result = 'running'
-  elif a == 4:
-    result = 'jogging'
-  elif a == 5:
-    result = 'handclapping'
-  print(result)
- 
-  
+    prediction = session.run([pred_out], feed_dict={X: frames[np.newaxis,:,:]})
+    a = np.argmax(prediction)
+    if a == 0:
+        result = 'walking'
+    elif a == 1:
+        result = 'boxing'
+    elif a == 2:
+        result = 'handwaving'
+    elif a == 3:
+        result = 'running'
+    elif a == 4:
+        result = 'jogging'
+    elif a == 5:
+        result = 'handclapping'
+    print(result)
+    
+    

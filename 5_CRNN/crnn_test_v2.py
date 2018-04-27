@@ -107,7 +107,7 @@ if __name__ == "__main__":
   X = tf.placeholder(tf.float32, [1, config.n_steps, config.n_inputs])
   _X = tf.transpose(X, [1, 0, 2])  # permute n_steps and batch_size
   # Reshape to prepare input to hidden activation
-  _X = tf.reshape(X, [-1, config.n_inputs])
+  _X = tf.reshape(_X, [-1, config.n_inputs])
   # new shape: (n_steps*batch_size, n_input)
 
   # Linear activation
