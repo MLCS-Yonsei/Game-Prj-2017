@@ -49,6 +49,35 @@ class Config(object):
         'output': tf.Variable(B_o)
     }
 
+def LSTM_Network(_X, config):
+    # (NOTE: This step could be greatly optimised by shaping the dataset once
+    # input shape: (batch_size, n_steps, n_input)
+    _X = tf.transpose(_X, [1, 0, 2])  # permute n_steps and batch_size
+    # Reshape to prepare input to hidden activation
+    _X = tf.reshape(_X, [-1, config.n_inputs])
+    # new shape: (n_steps*batch_size, n_input)
+
+    # Linear activation
+    _X = tf.nn.relu(tf.matmul(_X, config.W['hidden']) + config.biases['hidden'])
+    # Split data because rnn cell needs a list of inputs for the RNN inner loop
+    _X = tf.split(_X, config.n_steps, 0)
+    # new shape: n_steps * (batch_size, n_hidden)
+
+    # Define two stacked LSTM cells (two recurrent layers deep) with tensorflow
+    lstm_cell_1 = tf.contrib.rnn.BasicLSTMCell(config.n_hidden, forget_bias=1.0, state_is_tuple=True)
+    lstm_cell_2 = tf.contrib.rnn.BasicLSTMCell(config.n_hidden, forget_bias=1.0, state_is_tuple=True)
+    lstm_cells = tf.contrib.rnn.MultiRNNCell([lstm_cell_1, lstm_cell_2], state_is_tuple=True)
+    # Get LSTM cell output
+    outputs, states = tf.contrib.rnn.static_rnn(lstm_cells, _X, dtype=tf.float32)
+
+    # Get last time step's output feature for a "many to one" style classifier,
+    # as in the image describing RNNs at the top of this page
+    lstm_last_output = outputs[-1]
+
+    # Linear activation
+    return tf.matmul(lstm_last_output, config.W['output']) + config.biases['output']
+
+
 def create_inception_graph():
   """"Creates a graph from saved GraphDef file and returns a Graph object.
   Returns:
@@ -93,7 +122,6 @@ if __name__ == "__main__":
     # sess.run(init)
     for filename in filenames:
       full_filename = os.path.join(image_path,filename)
-      print(filename)
       if i == 0:
         jpeg_data = gfile.FastGFile(full_filename, 'rb').read()
         frames = run_bottleneck_on_image(sess, jpeg_data, jpeg_data_tensor, bottleneck_tensor)[np.newaxis,:]
