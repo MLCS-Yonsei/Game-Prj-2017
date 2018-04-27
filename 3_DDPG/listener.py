@@ -21,11 +21,17 @@ while True:
         i = i + 1
 
         n = i / 20
-        if n < 0.5:
+        if n < 0.3:
             controlState = {
-                'acc': False,
+                'acc': True,
                 'brake': False,
                 'steer': n
+            }
+        elif n >= 0.3 and n < 0.7:
+            controlState = {
+                'acc': False,
+                'brake': True,
+                'steer': -n
             }
         else:
             controlState = {
