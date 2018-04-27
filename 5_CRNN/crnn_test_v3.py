@@ -143,12 +143,11 @@ if __name__ == "__main__":
         pred_out = sess.run(
             [pred_Y],
             feed_dict={
-                X: X_test
+                X: frames[np.newaxis,:,:]
             }
         )
 
-    prediction = session.run([pred_out], feed_dict={X: frames[np.newaxis,:,:]})
-    a = np.argmax(prediction)
+    pred_Y = np.argmax(prediction)
     if a == 0:
         result = 'walking'
     elif a == 1:
