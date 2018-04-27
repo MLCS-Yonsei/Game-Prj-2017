@@ -1,5 +1,8 @@
+# coding=utf8
 import os, errno
 import cv2
+import numpy as np
+
 import argparse
 
 ap = argparse.ArgumentParser()
@@ -9,12 +12,15 @@ ap.add_argument("-d", "--dir", type=str, default="",
 	help="path to images")
 ap.add_argument("-a", "--rotate_angle", nargs='+', type=int, default=[5, -5],
 	help="path to images")
+ap.add_argument("-g", "--gamma", nargs='+', type=float, default=[0.3, 1.6],
+	help="path to images")
 args = vars(ap.parse_args())
 
 class photoAugmentor:
-    def __init__(self, rotate_angle):
+    def __init__(self, rotate_angle, gamma):
         self.isList = False
-        self.rotate_angle = rotate_angle # [5, -5] 
+        self.rotate_angle = rotate_angle # [5, -5]
+        self.gamma = gamma
 
     def generate(self, input):
         if isinstance(input, list):
@@ -40,6 +46,14 @@ class photoAugmentor:
         save_path = os.path.join(augmented_dir,_id + _ext)
         cv2.imwrite(save_path, _img)
         augmented_list.append(save_path)
+
+        # Change Gamma on Images
+        for g in self.gamma:
+            _decreased_gamma_img = self.adjust_gamma(_img, gamma=g)
+            if _decreased_gamma_img is not False:
+                save_path = os.path.join(augmented_dir,_id + '_g_' + str(g) + _ext)
+                cv2.imwrite(save_path, _decreased_gamma_img)
+                augmented_list.append(save_path)
 
         # # Save Horizontally flipped Image
         _horizontal_img = cv2.flip( _img, 1)
@@ -71,8 +85,18 @@ class photoAugmentor:
         
         return augmented_list
 
+    def adjust_gamma(self, image, gamma=1.0):
+        if gamma > 0:
+            invGamma = 1.0 / gamma
+            table = np.array([((i / 255.0) ** invGamma) * 255
+                for i in np.arange(0, 256)]).astype("uint8")
+
+            return cv2.LUT(image, table)
+
+        return false
+
 if __name__ == '__main__':
-    pa = photoAugmentor(args["rotate_angle"])
+    pa = photoAugmentor(args["rotate_angle"], args["gamma"])
     path = args["image"]
     r = pa.generate(path)
 
