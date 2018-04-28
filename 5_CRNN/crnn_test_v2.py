@@ -5,7 +5,7 @@ import tensorflow as tf
 from tensorflow.python.platform import gfile
 
 model_dir = '/home/jehyunpark/Downloads/crnn/results/'
-image_path = '/home/jehyunpark/Downloads/crnn/images/boxing/'
+image_path = '/home/jehyunpark/Downloads/crnn/images/running/'
 
 
 BOTTLENECK_TENSOR_NAME = 'pool_3/_reshape:0'
@@ -143,9 +143,9 @@ if __name__ == "__main__":
   elif a == 2:
     result = 'handwaving'
   elif a == 3:
-    result = 'running'
-  elif a == 4:
     result = 'jogging'
+  elif a == 4:
+    result = 'running'
   elif a == 5:
     result = 'handclapping'
   print(prediction,result)
