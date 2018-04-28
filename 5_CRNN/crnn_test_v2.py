@@ -39,7 +39,7 @@ class Config(object):
     # LSTM structure
     self.n_inputs = 2048  # Features count is of 9: 3 * 3D sensors features over time
     self.n_hidden = 32#32  # nb of neurons inside the neural network
-    self.n_classes = 6  # Final output classes
+    self.n_classes = 3  # Final output classes
     self.W = {
         'hidden': tf.Variable(W_h),
         'output': tf.Variable(W_o)
