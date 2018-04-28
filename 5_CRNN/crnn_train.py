@@ -75,7 +75,9 @@ def LSTM_Network(_X, config):
 
     # Define two stacked LSTM cells (two recurrent layers deep) with tensorflow
     lstm_cell_1 = tf.contrib.rnn.BasicLSTMCell(config.n_hidden, forget_bias=1.0, state_is_tuple=True)
+    lstm_cell_1 = tf.nn.rnn_cell.DropoutWrapper(lstm_cell_1, output_keep_prob=0.7)
     lstm_cell_2 = tf.contrib.rnn.BasicLSTMCell(config.n_hidden, forget_bias=1.0, state_is_tuple=True)
+    lstm_cell_2 = tf.nn.rnn_cell.DropoutWrapper(lstm_cell_2, output_keep_prob=0.7)
     lstm_cells = tf.contrib.rnn.MultiRNNCell([lstm_cell_1, lstm_cell_2], state_is_tuple=True)
     # Get LSTM cell output
     outputs, states = tf.contrib.rnn.static_rnn(lstm_cells, _X, dtype=tf.float32)
@@ -92,25 +94,10 @@ if __name__ == "__main__":
   #load data, training set dimension is 1260*5*66, test set dimension is 540*5*66
     X_train=np.load('/home/jehyunpark/Downloads/crnn/data/train_x.npz')['a']
     X_train=np.reshape(X_train,(-1,10,2048))
-    np.take(X_train,np.random.permutation(10),axis=1,out=X_train)
-    np.take(X_train,np.random.permutation(10),axis=1,out=X_train)
-    np.take(X_train,np.random.permutation(10),axis=1,out=X_train)
-    np.take(X_train,np.random.permutation(10),axis=1,out=X_train)
-    np.take(X_train,np.random.permutation(10),axis=1,out=X_train)
-    np.take(X_train,np.random.permutation(10),axis=1,out=X_train)
-    np.take(X_train,np.random.permutation(10),axis=1,out=X_train)
-    np.take(X_train,np.random.permutation(10),axis=1,out=X_train)
+    # np.take(X_train,np.random.permutation(10),axis=1,out=X_train)
     y_train=np.load('/home/jehyunpark/Downloads/crnn/data/train_y.npz')['a']
     X_test=np.load('/home/jehyunpark/Downloads/crnn/data/test_x.npz')['a']
     X_test=np.reshape(X_test,(-1,10,2048))
-    np.take(X_test,np.random.permutation(10),axis=1,out=X_test)
-    np.take(X_test,np.random.permutation(10),axis=1,out=X_test)
-    np.take(X_test,np.random.permutation(10),axis=1,out=X_test)
-    np.take(X_test,np.random.permutation(10),axis=1,out=X_test)
-    np.take(X_test,np.random.permutation(10),axis=1,out=X_test)
-    np.take(X_test,np.random.permutation(10),axis=1,out=X_test)
-    np.take(X_test,np.random.permutation(10),axis=1,out=X_test)
-    np.take(X_test,np.random.permutation(10),axis=1,out=X_test)
     y_test=np.load('/home/jehyunpark/Downloads/crnn/data/test_y.npz')['a']    
 
     config = Config(X_train, X_test)
