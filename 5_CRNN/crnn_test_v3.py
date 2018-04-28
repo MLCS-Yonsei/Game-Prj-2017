@@ -121,14 +121,14 @@ if __name__ == "__main__":
         # init = tf.global_variables_initializer()
         # sess.run(init)
         for filename in filenames:
-        full_filename = os.path.join(image_path,filename)
-        if i == 0:
-            jpeg_data = gfile.FastGFile(full_filename, 'rb').read()
-            frames = run_bottleneck_on_image(sess, jpeg_data, jpeg_data_tensor, bottleneck_tensor)[np.newaxis,:]
-            i +=1
-        elif len(frames) < 10:
-            jpeg_data = gfile.FastGFile(full_filename, 'rb').read()
-            frames = np.concatenate((frames, run_bottleneck_on_image(sess, jpeg_data, jpeg_data_tensor, bottleneck_tensor)[np.newaxis,:]), axis = 0)
+            full_filename = os.path.join(image_path,filename)
+            if i == 0:
+                jpeg_data = gfile.FastGFile(full_filename, 'rb').read()
+                frames = run_bottleneck_on_image(sess, jpeg_data, jpeg_data_tensor, bottleneck_tensor)[np.newaxis,:]
+                i +=1
+            elif len(frames) < 10:
+                jpeg_data = gfile.FastGFile(full_filename, 'rb').read()
+                frames = np.concatenate((frames, run_bottleneck_on_image(sess, jpeg_data, jpeg_data_tensor, bottleneck_tensor)[np.newaxis,:]), axis = 0)
         sess.close()
     config = Config()
 
@@ -147,7 +147,7 @@ if __name__ == "__main__":
             }
         )
 
-    pred_Y = np.argmax(prediction)
+    a = np.argmax(pred_Y)
     if a == 0:
         result = 'walking'
     elif a == 1:
