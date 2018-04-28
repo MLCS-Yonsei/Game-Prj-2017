@@ -21,12 +21,12 @@ class Config(object):
         self.learning_rate = 0.0025
         self.lambda_loss_amount = 0.0015
         self.training_epochs = 20000
-        self.batch_size = 60
+        self.batch_size = 150
 
         # LSTM structure
         self.n_inputs = len(X_train[0][0])  # Features count is of 9: 3 * 3D sensors features over time
         self.n_hidden = 32#32  # nb of neurons inside the neural network
-        self.n_classes = 3  # Final output classes
+        self.n_classes = 6  # Final output classes
         self.W = {
             'hidden': tf.Variable(tf.random_normal([self.n_inputs, self.n_hidden])),
             'output': tf.Variable(tf.random_normal([self.n_hidden, self.n_classes]))
@@ -90,12 +90,12 @@ def LSTM_Network(_X, config):
 
 if __name__ == "__main__":
   #load data, training set dimension is 1260*5*66, test set dimension is 540*5*66
-    X_train=np.load('/home/jehyunpark/Downloads/crnn/data/3train_x.npz')['a']
+    X_train=np.load('/home/jehyunpark/Downloads/crnn/data/train_x.npz')['a']
     X_train=np.reshape(X_train,(-1,10,2048))
-    y_train=np.load('/home/jehyunpark/Downloads/crnn/data/3train_y.npz')['a']
-    X_test=np.load('/home/jehyunpark/Downloads/crnn/data/3test_x.npz')['a']
+    y_train=np.load('/home/jehyunpark/Downloads/crnn/data/train_y.npz')['a']
+    X_test=np.load('/home/jehyunpark/Downloads/crnn/data/test_x.npz')['a']
     X_test=np.reshape(X_test,(-1,10,2048))
-    y_test=np.load('/home/jehyunpark/Downloads/crnn/data/3test_y.npz')['a']    
+    y_test=np.load('/home/jehyunpark/Downloads/crnn/data/test_y.npz')['a']    
 
     config = Config(X_train, X_test)
 
@@ -150,10 +150,10 @@ if __name__ == "__main__":
               " loss : {}".format(loss_out))
         best_accuracy = max(best_accuracy, accuracy_out)
         if best_accuracy == accuracy_out:
-            np.save('./weights/weight_hidden1',weight_trained['hidden'])
-            np.save('./weights/weight_output1',weight_trained['output'])
-            np.save('./weights/biases_hidden1',biases_trained['hidden'])
-            np.save('./weights/biases_output1',biases_trained['output'])
+            np.save('./weights/weight_hidden2',weight_trained['hidden'])
+            np.save('./weights/weight_output2',weight_trained['output'])
+            np.save('./weights/biases_hidden2',biases_trained['hidden'])
+            np.save('./weights/biases_output2',biases_trained['output'])
         
     
     print("")
