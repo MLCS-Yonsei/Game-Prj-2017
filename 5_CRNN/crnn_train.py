@@ -21,7 +21,7 @@ class Config(object):
         self.learning_rate = 0.0025
         self.lambda_loss_amount = 0.0015
         self.training_epochs = 20000
-        self.batch_size = 90
+        self.batch_size = 75
 
         # LSTM structure
         self.n_inputs = len(X_train[0][0])  # Features count is of 9: 3 * 3D sensors features over time
@@ -127,14 +127,14 @@ if __name__ == "__main__":
     best_accuracy = 0.0
     # Start training for each batch and loop epochs
     for i in range(config.training_epochs):
-        #for start, end in zip(range(0, config.train_count, config.batch_size),
-        #                      range(config.batch_size, config.train_count + 1, config.batch_size)):
-        #    sess.run(optimizer, feed_dict={X: X_train[start:end],
-        #                                   Y: y_train[start:end]})
+        for start, end in zip(range(0, config.train_count, config.batch_size),
+                             range(config.batch_size, config.train_count + 1, config.batch_size)):
+            sess.run(optimizer, feed_dict={X: X_train[start:end],
+                                          Y: y_train[start:end]})
 
         # Test completely at every epoch: calculate accuracy
-        sess.run(optimizer, feed_dict={X: X_train,
-                                           Y: y_train})
+        # sess.run(optimizer, feed_dict={X: X_train,
+        #                                    Y: y_train})
         pred_out, accuracy_out, loss_out, weight_trained, biases_trained = sess.run(
             [pred_Y, accuracy, cost, W, B],
             feed_dict={
