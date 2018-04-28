@@ -148,6 +148,6 @@ if __name__ == "__main__":
     result = 'jogging'
   elif a == 5:
     result = 'handclapping'
-  print(result)
+  print(prediction,result)
  
   
