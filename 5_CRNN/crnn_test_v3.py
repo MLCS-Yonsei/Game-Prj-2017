@@ -155,9 +155,9 @@ if __name__ == "__main__":
     elif a == 2:
         result = 'handwaving'
     elif a == 3:
-        result = 'running'
-    elif a == 4:
         result = 'jogging'
+    elif a == 4:
+        result = 'running'
     elif a == 5:
         result = 'handclapping'
     print(result)
