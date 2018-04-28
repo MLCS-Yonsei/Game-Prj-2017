@@ -92,9 +92,25 @@ if __name__ == "__main__":
   #load data, training set dimension is 1260*5*66, test set dimension is 540*5*66
     X_train=np.load('/home/jehyunpark/Downloads/crnn/data/train_x.npz')['a']
     X_train=np.reshape(X_train,(-1,10,2048))
+    np.take(X_train,np.random.permutation(10),axis=1,out=X_train)
+    np.take(X_train,np.random.permutation(10),axis=1,out=X_train)
+    np.take(X_train,np.random.permutation(10),axis=1,out=X_train)
+    np.take(X_train,np.random.permutation(10),axis=1,out=X_train)
+    np.take(X_train,np.random.permutation(10),axis=1,out=X_train)
+    np.take(X_train,np.random.permutation(10),axis=1,out=X_train)
+    np.take(X_train,np.random.permutation(10),axis=1,out=X_train)
+    np.take(X_train,np.random.permutation(10),axis=1,out=X_train)
     y_train=np.load('/home/jehyunpark/Downloads/crnn/data/train_y.npz')['a']
     X_test=np.load('/home/jehyunpark/Downloads/crnn/data/test_x.npz')['a']
     X_test=np.reshape(X_test,(-1,10,2048))
+    np.take(X_test,np.random.permutation(10),axis=1,out=X_test)
+    np.take(X_test,np.random.permutation(10),axis=1,out=X_test)
+    np.take(X_test,np.random.permutation(10),axis=1,out=X_test)
+    np.take(X_test,np.random.permutation(10),axis=1,out=X_test)
+    np.take(X_test,np.random.permutation(10),axis=1,out=X_test)
+    np.take(X_test,np.random.permutation(10),axis=1,out=X_test)
+    np.take(X_test,np.random.permutation(10),axis=1,out=X_test)
+    np.take(X_test,np.random.permutation(10),axis=1,out=X_test)
     y_test=np.load('/home/jehyunpark/Downloads/crnn/data/test_y.npz')['a']    
 
     config = Config(X_train, X_test)
@@ -150,10 +166,10 @@ if __name__ == "__main__":
               " loss : {}".format(loss_out))
         best_accuracy = max(best_accuracy, accuracy_out)
         if best_accuracy == accuracy_out:
-            np.save('./weights/weight_hidden2',weight_trained['hidden'])
-            np.save('./weights/weight_output2',weight_trained['output'])
-            np.save('./weights/biases_hidden2',biases_trained['hidden'])
-            np.save('./weights/biases_output2',biases_trained['output'])
+            np.save('./weights/weight_hidden3',weight_trained['hidden'])
+            np.save('./weights/weight_output3',weight_trained['output'])
+            np.save('./weights/biases_hidden3',biases_trained['hidden'])
+            np.save('./weights/biases_output3',biases_trained['output'])
         
     
     print("")
