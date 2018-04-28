@@ -5,7 +5,7 @@ import tensorflow as tf
 from tensorflow.python.platform import gfile
 
 model_dir = '/home/jehyunpark/Downloads/crnn/results/'
-image_path = '/home/jehyunpark/Downloads/crnn/images/handclapping/'
+image_path = '/home/jehyunpark/Downloads/crnn/images/handwaving/'
 
 
 BOTTLENECK_TENSOR_NAME = 'pool_3/_reshape:0'
@@ -17,7 +17,7 @@ RESIZED_INPUT_TENSOR_NAME = 'ResizeBilinear:0'
 # MODEL_INPUT_DEPTH = 3
 i = 0
 
-filenames = sorted(os.listdir(image_path), key = lambda a:a[6:11])[20:30]
+filenames = sorted(os.listdir(image_path), key = lambda a:a[6:11])[230:240]
 
 class Config(object):
 
@@ -93,7 +93,7 @@ if __name__ == "__main__":
     # sess.run(init)
     for filename in filenames:
       full_filename = os.path.join(image_path,filename)
-      print(filename)
+      # print(filename)
       if i == 0:
         jpeg_data = gfile.FastGFile(full_filename, 'rb').read()
         frames = run_bottleneck_on_image(sess, jpeg_data, jpeg_data_tensor, bottleneck_tensor)[np.newaxis,:]
