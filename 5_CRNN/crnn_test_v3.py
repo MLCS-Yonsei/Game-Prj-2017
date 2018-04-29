@@ -49,6 +49,20 @@ class Config(object):
         'output': tf.Variable(B_o)
     }
 
+tf.reset_default_graph()
+config = Config()
+# Class used to save and/or restore Tensor Variables
+saver = tf.train.Saver()
+
+with tf.Session() as sess:
+    # Load the weights and bias
+    saver.restore(sess, save_file)
+
+    # Show the values of weights and bias
+  
+    print(sess.run(config.W['hidden']),sess.run(config.W['output']),sess.run(config.biases['hidden']),sess.run(config.biases['output']))
+   
+'''
 def LSTM_Network(_X, config):
     # (NOTE: This step could be greatly optimised by shaping the dataset once
     # input shape: (batch_size, n_steps, n_input)
@@ -163,3 +177,4 @@ if __name__ == "__main__":
     print(result, pred_out)
     
     
+'''
