@@ -101,7 +101,6 @@ if __name__ == "__main__":
       elif len(frames) < 10:
         jpeg_data = gfile.FastGFile(full_filename, 'rb').read()
         frames = np.concatenate((frames, run_bottleneck_on_image(sess, jpeg_data, jpeg_data_tensor, bottleneck_tensor)[np.newaxis,:]), axis = 0)
-    sess.close()
   config = Config()
 
   X = tf.placeholder(tf.float32, [1, config.n_steps, config.n_inputs])

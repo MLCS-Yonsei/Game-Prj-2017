@@ -6,7 +6,6 @@ from tensorflow.python.platform import gfile
 
 model_dir = '/home/jehyunpark/Downloads/crnn/results/'
 image_path = '/home/jehyunpark/Downloads/crnn/images/boxing/'
-save_file = 'model.ckpt'
 
 
 BOTTLENECK_TENSOR_NAME = 'pool_3/_reshape:0'
@@ -50,20 +49,7 @@ class Config(object):
         'output': tf.Variable(B_o)
     }
 
-tf.reset_default_graph()
-config = Config()
-# Class used to save and/or restore Tensor Variables
-saver = tf.train.Saver()
 
-with tf.Session() as sess:
-    # Load the weights and bias
-    saver.restore(sess, save_file)
-
-    # Show the values of weights and bias
-  
-    print(sess.run(config.W['hidden']),sess.run(config.W['output']),sess.run(config.biases['hidden']),sess.run(config.biases['output']))
-   
-'''
 def LSTM_Network(_X, config):
     # (NOTE: This step could be greatly optimised by shaping the dataset once
     # input shape: (batch_size, n_steps, n_input)
@@ -144,7 +130,7 @@ if __name__ == "__main__":
             elif len(frames) < 10:
                 jpeg_data = gfile.FastGFile(full_filename, 'rb').read()
                 frames = np.concatenate((frames, run_bottleneck_on_image(sess, jpeg_data, jpeg_data_tensor, bottleneck_tensor)[np.newaxis,:]), axis = 0)
-        sess.close()
+
     config = Config()
 
     X = tf.placeholder(tf.float32, [1, config.n_steps, config.n_inputs])
@@ -178,4 +164,3 @@ if __name__ == "__main__":
     print(result, pred_out)
     
     
-'''

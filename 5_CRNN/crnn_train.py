@@ -1,7 +1,6 @@
 import tensorflow as tf
 import numpy as np
 
-save_file = 'model.ckpt'
 
 class Config(object):
     """
@@ -22,7 +21,7 @@ class Config(object):
         # Training
         self.learning_rate = 0.0025
         self.lambda_loss_amount = 0.0015
-        self.training_epochs = 100#20000
+        self.training_epochs = 20000
         self.batch_size = 60
 
         # LSTM structure
@@ -161,8 +160,7 @@ if __name__ == "__main__":
             np.save('./weights/weight_output3',weight_trained['output'])
             np.save('./weights/biases_hidden3',biases_trained['hidden'])
             np.save('./weights/biases_output3',biases_trained['output'])
-            saver.save(sess, save_file)
-            print(sess.run(config.W),sess.run(config.biases))
+            
         
     
     print("")
