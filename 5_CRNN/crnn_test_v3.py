@@ -140,7 +140,6 @@ if __name__ == "__main__":
     sess = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
     init = tf.global_variables_initializer()
     sess.run(init)
-    print(sess.run(config.W['hidden']),sess.run(config.W['output']),sess.run(config.biases['hidden']),sess.run(config.biases['output']))
     for i in range(1):
         pred_out = sess.run(
             [pred_Y],
