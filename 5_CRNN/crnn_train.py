@@ -124,7 +124,6 @@ if __name__ == "__main__":
     # --------------------------------------------
     # Step 4: Hooray, now train the neural network
     # --------------------------------------------
-    saver = tf.train.Saver()
     # Note that log_device_placement can be turned ON but will cause console spam with RNNs.
     sess = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
     init = tf.global_variables_initializer()
