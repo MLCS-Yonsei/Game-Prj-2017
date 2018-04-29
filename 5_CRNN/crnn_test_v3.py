@@ -147,7 +147,7 @@ if __name__ == "__main__":
             }
         )
 
-    a = np.argmax(pred_Y)
+    a = np.argmax(pred_out)
     if a == 0:
         result = 'walking'
     elif a == 1:
@@ -160,6 +160,6 @@ if __name__ == "__main__":
         result = 'running'
     elif a == 5:
         result = 'handclapping'
-    print(result)
+    print(result, pred_out)
     
     
