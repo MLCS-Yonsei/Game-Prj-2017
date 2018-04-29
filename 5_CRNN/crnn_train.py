@@ -20,8 +20,8 @@ class Config(object):
         # Training
         self.learning_rate = 0.0025
         self.lambda_loss_amount = 0.0015
-        self.training_epochs = 1000000
-        self.batch_size = 100
+        self.training_epochs = 20000
+        self.batch_size = 60
 
         # LSTM structure
         self.n_inputs = len(X_train[0][0])  # Features count is of 9: 3 * 3D sensors features over time
@@ -78,9 +78,7 @@ def LSTM_Network(_X, config):
     lstm_cell_1 = tf.nn.rnn_cell.DropoutWrapper(lstm_cell_1, output_keep_prob=0.7)
     lstm_cell_2 = tf.contrib.rnn.BasicLSTMCell(config.n_hidden, forget_bias=1.0, state_is_tuple=True)
     lstm_cell_2 = tf.nn.rnn_cell.DropoutWrapper(lstm_cell_2, output_keep_prob=0.7)
-    lstm_cell_3 = tf.contrib.rnn.BasicLSTMCell(config.n_hidden, forget_bias=1.0, state_is_tuple=True)
-    lstm_cell_3 = tf.nn.rnn_cell.DropoutWrapper(lstm_cell_3, output_keep_prob=0.7)
-    lstm_cells = tf.contrib.rnn.MultiRNNCell([lstm_cell_1, lstm_cell_2, lstm_cell_3], state_is_tuple=True)
+    lstm_cells = tf.contrib.rnn.MultiRNNCell([lstm_cell_1, lstm_cell_2], state_is_tuple=True)
     # Get LSTM cell output
     outputs, states = tf.contrib.rnn.static_rnn(lstm_cells, _X, dtype=tf.float32)
 
@@ -100,7 +98,9 @@ if __name__ == "__main__":
     y_train=np.load('/home/jehyunpark/Downloads/crnn/data/train_y.npz')['a']
     X_test=np.load('/home/jehyunpark/Downloads/crnn/data/test_x.npz')['a']
     X_test=np.reshape(X_test,(-1,10,2048))
-    y_test=np.load('/home/jehyunpark/Downloads/crnn/data/test_y.npz')['a']    
+    y_test=np.load('/home/jehyunpark/Downloads/crnn/data/test_y.npz')['a']
+    X_train = np.concatenate((X_train,X_test),axis=0)
+    y_train = np.concatenate((y_train,y_test),axis=0)    
 
     config = Config(X_train, X_test)
 
