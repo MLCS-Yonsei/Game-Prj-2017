@@ -75,7 +75,7 @@ def LSTM_Network(_X, config):
     # Get last time step's output feature for a "many to one" style classifier,
     # as in the image describing RNNs at the top of this page
     lstm_last_output = outputs[-1]
-    print(config.W['hidden'],config.W['output'],config.biases['hidden'],config.biases['output'])
+    
     # Linear activation
     return tf.matmul(lstm_last_output, config.W['output']) + config.biases['output']
 
@@ -140,7 +140,7 @@ if __name__ == "__main__":
     sess = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
     init = tf.global_variables_initializer()
     sess.run(init)
-
+    print(config.W['hidden'],config.W['output'],config.biases['hidden'],config.biases['output'])
     for i in range(1):
         pred_out = sess.run(
             [pred_Y],
