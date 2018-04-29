@@ -162,7 +162,7 @@ if __name__ == "__main__":
             np.save('./weights/biases_hidden3',biases_trained['hidden'])
             np.save('./weights/biases_output3',biases_trained['output'])
             saver.save(sess, save_file)
-            print(sess.run(config.W),sess.run(config.biases)
+            print(sess.run(config.W),sess.run(config.biases))
         
     
     print("")
