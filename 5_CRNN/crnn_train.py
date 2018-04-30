@@ -1,6 +1,7 @@
 import tensorflow as tf
 import numpy as np
 
+saver = tf.train.Saver()
 
 class Config(object):
     """
@@ -159,7 +160,7 @@ if __name__ == "__main__":
             np.save('./weights/weight_output3',weight_trained['output'])
             np.save('./weights/biases_hidden3',biases_trained['hidden'])
             np.save('./weights/biases_output3',biases_trained['output'])
-            
+            saver.save(sess,'model')
         
     
     print("")
