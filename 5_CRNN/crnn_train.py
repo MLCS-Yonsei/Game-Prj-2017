@@ -132,7 +132,8 @@ if __name__ == "__main__":
             np.save('./weights/biases_hidden',biases_trained['hidden'])
             np.save('./weights/biases_output',biases_trained['output'])
             # saver.save(sess,'model')
-            print(pred_out)
+            
+    print(pred_out)
         
     
     print("")
