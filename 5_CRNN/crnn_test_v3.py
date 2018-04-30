@@ -143,7 +143,7 @@ if __name__ == "__main__":
         pred_out = sess.run(
             [pred_Y],
             feed_dict={
-                X: frames)
+                X: frames
             }
         )
 
