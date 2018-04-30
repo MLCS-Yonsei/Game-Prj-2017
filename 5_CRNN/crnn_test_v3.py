@@ -134,7 +134,7 @@ if __name__ == "__main__":
     frames = frames[np.newaxis,:,:]
     config = Config()
 
-    X = tf.placeholder(tf.float32, [1, config.n_steps, config.n_inputs])
+    X = tf.placeholder(tf.float32, [None, config.n_steps, config.n_inputs])
     pred_Y = LSTM_Network(X, config)    
     
     sess = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
