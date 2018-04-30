@@ -66,10 +66,10 @@ if __name__ == "__main__":
     X_train=np.load('/home/jehyunpark/Downloads/crnn/data/train_x.npz')['a']
     X_train=np.reshape(X_train,(-1,10,2048))
     # np.take(X_train,np.random.permutation(10),axis=1,out=X_train)
-    y_train=1000*np.load('/home/jehyunpark/Downloads/crnn/data/train_y.npz')['a']
+    y_train=np.load('/home/jehyunpark/Downloads/crnn/data/train_y.npz')['a']
     X_test=np.load('/home/jehyunpark/Downloads/crnn/data/test_x.npz')['a']
     X_test=np.reshape(X_test,(-1,10,2048))
-    y_test=1000*np.load('/home/jehyunpark/Downloads/crnn/data/test_y.npz')['a']
+    y_test=np.load('/home/jehyunpark/Downloads/crnn/data/test_y.npz')['a']
     X_train = np.concatenate((X_train,X_test),axis=0)
     y_train = np.concatenate((y_train,y_test),axis=0)    
     config = Config(X_train, X_test)
