@@ -17,7 +17,7 @@ RESIZED_INPUT_TENSOR_NAME = 'ResizeBilinear:0'
 # MODEL_INPUT_DEPTH = 3
 i = 0
 
-filenames = sorted(os.listdir(image_path), key = lambda a:a[6:11])[20:30]
+filenames = sorted(os.listdir(image_path), key = lambda a:a[6:11])[200:210]
 
 class Config(object):
 
@@ -147,8 +147,8 @@ if __name__ == "__main__":
             }
         )
 
-    a = np.argmax(pred_out)
-    print(a)
+    print(pred_out)
+    # a = np.argmax(pred_out)
     # if a == 0:
     #     result = 'walking'
     # elif a == 1:
