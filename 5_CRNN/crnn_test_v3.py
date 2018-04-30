@@ -131,7 +131,7 @@ if __name__ == "__main__":
             elif len(frames) < 10:
                 jpeg_data = gfile.FastGFile(full_filename, 'rb').read()
                 frames = np.concatenate((frames, run_bottleneck_on_image(sess, jpeg_data, jpeg_data_tensor, bottleneck_tensor)[np.newaxis,:]), axis = 0)
-
+    frames = frames[np.newaxis,:,:]
     config = Config()
 
     X = tf.placeholder(tf.float32, [1, config.n_steps, config.n_inputs])
@@ -144,23 +144,24 @@ if __name__ == "__main__":
         pred_out = sess.run(
             [pred_Y],
             feed_dict={
-                X: frames[np.newaxis,:,:]
+                X: np.concatenate((frames,frames,frames),axis=0)
             }
         )
 
-    a = np.argmax(pred_out)
-    if a == 0:
-        result = 'walking'
-    elif a == 1:
-        result = 'boxing'
-    elif a == 2:
-        result = 'handwaving'
-    elif a == 3:
-        result = 'jogging'
-    elif a == 4:
-        result = 'running'
-    elif a == 5:
-        result = 'handclapping'
-    print(result, pred_out)
+    a = np.argmax(pred_out,axis=1)
+    print(a)
+    # if a == 0:
+    #     result = 'walking'
+    # elif a == 1:
+    #     result = 'boxing'
+    # elif a == 2:
+    #     result = 'handwaving'
+    # elif a == 3:
+    #     result = 'jogging'
+    # elif a == 4:
+    #     result = 'running'
+    # elif a == 5:
+    #     result = 'handclapping'
+    # print(result, pred_out)
     
     
