@@ -60,7 +60,6 @@ def LSTM_Network(_X, config):
 
     # Linear activation
     _X = tf.nn.relu(tf.matmul(_X, config.W['hidden']) + config.biases['hidden'])
-    print(config.W['hidden'],config.W['output'],config.biases['hidden'],config.biases['output'])
     # Split data because rnn cell needs a list of inputs for the RNN inner loop
     _X = tf.split(_X, config.n_steps, 0)
     # new shape: n_steps * (batch_size, n_hidden)
@@ -144,11 +143,11 @@ if __name__ == "__main__":
         pred_out = sess.run(
             [pred_Y],
             feed_dict={
-                X: np.concatenate((frames,frames,frames),axis=0)
+                X: frames)
             }
         )
 
-    a = np.argmax(pred_out,axis=1)
+    a = np.argmax(pred_out)
     print(a)
     # if a == 0:
     #     result = 'walking'
