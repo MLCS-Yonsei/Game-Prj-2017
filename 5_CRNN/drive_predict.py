@@ -46,7 +46,6 @@ def LSTM_Network(_X, config):
 
     # Linear activation
     _X = tf.nn.relu(tf.matmul(_X, config.W['hidden']) + config.biases['hidden'])
-    print(config.W['hidden'],config.W['output'],config.biases['hidden'],config.biases['output'])
     # Split data because rnn cell needs a list of inputs for the RNN inner loop
     _X = tf.split(_X, config.n_steps, 0)
     # new shape: n_steps * (batch_size, n_hidden)

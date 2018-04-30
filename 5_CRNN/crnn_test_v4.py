@@ -6,7 +6,7 @@ from tensorflow.python.platform import gfile
 import drive_predict
 
 model_dir = '/home/jehyunpark/Downloads/crnn/results/'
-image_path = '/home/jehyunpark/Downloads/crnn/images/boxing/'
+image_path = '/home/jehyunpark/Downloads/crnn/images/handwaving/'
 
 
 BOTTLENECK_TENSOR_NAME = 'pool_3/_reshape:0'
