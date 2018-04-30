@@ -23,10 +23,10 @@ class Config(object):
 
   def __init__(self):
     # Input data
-    W_h=np.load('./weights/weight_hidden1000.npy')
-    W_o=np.load('./weights/weight_output1000.npy')
-    B_h=np.load('./weights/biases_hidden1000.npy')
-    B_o=np.load('./weights/biases_output1000.npy')
+    W_h=np.load('./weights/weight_hidden3.npy')
+    W_o=np.load('./weights/weight_output3.npy')
+    B_h=np.load('./weights/biases_hidden3.npy')
+    B_o=np.load('./weights/biases_output3.npy')
 
     # Training
     self.learning_rate = 0.0025
