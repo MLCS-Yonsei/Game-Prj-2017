@@ -3,14 +3,6 @@ import numpy as np
 
 
 class Config(object):
-    """
-    define a class to store parameters,
-    the input should be feature mat of training and testing
-
-    Note: it would be more interesting to use a HyperOpt search space:
-    https://github.com/hyperopt/hyperopt
-    """
-
     def __init__(self, X_train, X_test):
         # Input data
         
@@ -21,7 +13,7 @@ class Config(object):
         # Training
         self.learning_rate = 0.0025
         self.lambda_loss_amount = 0.0015
-        self.training_epochs = 10000
+        self.training_epochs = 100#10000
         self.batch_size = 60
 
         # LSTM structure
@@ -38,29 +30,7 @@ class Config(object):
         }
 
 def LSTM_Network(_X, config):
-    """Function returns a TensorFlow RNN with two stacked LSTM cells
-
-    Two LSTM cells are stacked which adds deepness to the neural network.
-    Note, some code of this notebook is inspired from an slightly different
-    RNN architecture used on another dataset, some of the credits goes to
-    "aymericdamien".
-
-    Args:
-        _X:     ndarray feature matrix, shape: [batch_size, time_steps, n_inputs]
-        config: Config for the neural network.
-
-    Returns:
-        This is a description of what is returned.
-
-    Raises:
-        KeyError: Raises an exception.
-
-      Args:
-        feature_mat: ndarray fature matrix, shape=[batch_size,time_steps,n_inputs]
-        config: class containing config of network
-      return:
-              : matrix  output shape [batch_size,n_classes]
-    """
+ 
     # (NOTE: This step could be greatly optimised by shaping the dataset once
     # input shape: (batch_size, n_steps, n_input)
     _X = tf.transpose(_X, [1, 0, 2])  # permute n_steps and batch_size
@@ -104,7 +74,7 @@ if __name__ == "__main__":
     y_train = np.concatenate((y_train,y_test),axis=0)    
     config = Config(X_train, X_test)
 
-    saver = tf.train.Saver()
+    # saver = tf.train.Saver()
 
     X = tf.placeholder(tf.float32, [None, config.n_steps, config.n_inputs])
     Y = tf.placeholder(tf.float32, [None, config.n_classes])    
@@ -161,7 +131,8 @@ if __name__ == "__main__":
             np.save('./weights/weight_output1000',weight_trained['output'])
             np.save('./weights/biases_hidden1000',biases_trained['hidden'])
             np.save('./weights/biases_output1000',biases_trained['output'])
-            saver.save(sess,'model')
+            # saver.save(sess,'model')
+            print(pred_out)
         
     
     print("")
