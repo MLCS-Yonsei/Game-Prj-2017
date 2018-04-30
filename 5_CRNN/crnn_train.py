@@ -1,7 +1,6 @@
 import tensorflow as tf
 import numpy as np
 
-saver = tf.train.Saver()
 
 class Config(object):
     """
@@ -103,8 +102,9 @@ if __name__ == "__main__":
     y_test=np.load('/home/jehyunpark/Downloads/crnn/data/test_y.npz')['a']
     X_train = np.concatenate((X_train,X_test),axis=0)
     y_train = np.concatenate((y_train,y_test),axis=0)    
-
     config = Config(X_train, X_test)
+
+    saver = tf.train.Saver()
 
     X = tf.placeholder(tf.float32, [None, config.n_steps, config.n_inputs])
     Y = tf.placeholder(tf.float32, [None, config.n_classes])    
@@ -129,6 +129,7 @@ if __name__ == "__main__":
     sess = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
     init = tf.global_variables_initializer()
     sess.run(init)
+    
 
     best_accuracy = 0.0
     # Start training for each batch and loop epochs
