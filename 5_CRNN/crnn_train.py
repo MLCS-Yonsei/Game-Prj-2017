@@ -96,10 +96,10 @@ if __name__ == "__main__":
     X_train=np.load('/home/jehyunpark/Downloads/crnn/data/train_x.npz')['a']
     X_train=np.reshape(X_train,(-1,10,2048))
     # np.take(X_train,np.random.permutation(10),axis=1,out=X_train)
-    y_train=np.load('/home/jehyunpark/Downloads/crnn/data/train_y.npz')['a']
+    y_train=1000*np.load('/home/jehyunpark/Downloads/crnn/data/train_y.npz')['a']
     X_test=np.load('/home/jehyunpark/Downloads/crnn/data/test_x.npz')['a']
     X_test=np.reshape(X_test,(-1,10,2048))
-    y_test=np.load('/home/jehyunpark/Downloads/crnn/data/test_y.npz')['a']
+    y_test=1000*np.load('/home/jehyunpark/Downloads/crnn/data/test_y.npz')['a']
     X_train = np.concatenate((X_train,X_test),axis=0)
     y_train = np.concatenate((y_train,y_test),axis=0)    
     config = Config(X_train, X_test)
@@ -157,10 +157,10 @@ if __name__ == "__main__":
               " loss : {}".format(loss_out))
         best_accuracy = max(best_accuracy, accuracy_out)
         if best_accuracy == accuracy_out:
-            np.save('./weights/weight_hidden3',weight_trained['hidden'])
-            np.save('./weights/weight_output3',weight_trained['output'])
-            np.save('./weights/biases_hidden3',biases_trained['hidden'])
-            np.save('./weights/biases_output3',biases_trained['output'])
+            np.save('./weights/weight_hidden1000',weight_trained['hidden'])
+            np.save('./weights/weight_output1000',weight_trained['output'])
+            np.save('./weights/biases_hidden1000',biases_trained['hidden'])
+            np.save('./weights/biases_output1000',biases_trained['output'])
             saver.save(sess,'model')
         
     
