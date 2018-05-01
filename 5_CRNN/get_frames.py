@@ -112,6 +112,7 @@ def run_bottleneck_on_image(sess, image_data, image_data_tensor,
   return bottleneck_values
 
 def get_frames():
+    i = 0
     graph, bottleneck_tensor, jpeg_data_tensor, resized_image_tensor = (
             create_inception_graph())
 
