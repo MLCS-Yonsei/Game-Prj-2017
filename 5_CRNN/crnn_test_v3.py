@@ -135,7 +135,7 @@ if __name__ == "__main__":
     '''
     X_test = np.load('/home/jehyunpark/Downloads/crnn/data/test_x.npz')['a']
     X_test = np.reshape(X_test,(-1,10,2048))
-    frames = X_test[7][np.newaxis,:,:]
+    frames = X_test[11][np.newaxis,:,:]
     config = Config()
 
     X = tf.placeholder(tf.float32, [None, config.n_steps, config.n_inputs])
