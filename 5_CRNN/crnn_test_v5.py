@@ -112,22 +112,22 @@ if __name__ == "__main__":
             sess.run(optimizer, feed_dict={X: X_train[start:end],
                                           Y: y_train[start:end]})
 
-        pred_out, accuracy_out = sess.run(
-            [pred_Y, accuracy],
-            feed_dict={
-                X: X_test,
-                Y: y_test
-            }
-        )
-        # pred_out = sess.run(
-        #     [pred_Y],
+        # pred_out, accuracy_out = sess.run(
+        #     [pred_Y, accuracy],
         #     feed_dict={
-        #         X: X_test
-                
+        #         X: X_test,
+        #         Y: y_test
         #     }
         # )
+        pred_out = sess.run(
+            [pred_Y],
+            feed_dict={
+                X: X_test[0][np.newaxis,:,:]
+                
+            }
+        )
 
-    # print(np.argmax(pred_out))
-    print(accuracy_out)
+    print(np.argmax(pred_out))
+    # print(accuracy_out)
         
     
