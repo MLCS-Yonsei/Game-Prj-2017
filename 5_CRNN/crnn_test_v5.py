@@ -1,5 +1,7 @@
 import tensorflow as tf
 import numpy as np
+import get_frames
+
 tf.reset_default_graph()
 
 class Config(object):
@@ -105,6 +107,7 @@ if __name__ == "__main__":
     sess.run(init_op)
     saver.restore(sess, './model')
     best_accuracy = 0.0
+    frames = get_frames.get_frames()
     # Start training for each batch and loop epochs
     for i in range(1):
         for start, end in zip(range(0, config.train_count, config.batch_size),
@@ -122,7 +125,7 @@ if __name__ == "__main__":
         pred_out = sess.run(
             [pred_Y],
             feed_dict={
-                X: X_test[10][np.newaxis,:,:]
+                X: frames
                 
             }
         )
