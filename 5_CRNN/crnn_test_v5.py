@@ -103,7 +103,7 @@ if __name__ == "__main__":
     
     sess = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
     sess.run(init_op)
-    saver.restore(sess, './model/model')
+    saver.restore(sess, './model')
     best_accuracy = 0.0
     # Start training for each batch and loop epochs
     for i in range(config.training_epochs):
