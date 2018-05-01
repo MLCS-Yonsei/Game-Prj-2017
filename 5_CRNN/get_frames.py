@@ -5,7 +5,7 @@ import tensorflow as tf
 from tensorflow.python.platform import gfile
 
 model_dir = '/home/jehyunpark/Downloads/crnn/results/'
-image_path = '/home/jehyunpark/Downloads/crnn/images/jogging/'
+image_path = '/home/jehyunpark/Downloads/crnn/images/running/'
 
 
 BOTTLENECK_TENSOR_NAME = 'pool_3/_reshape:0'
@@ -16,64 +16,64 @@ i = 0
 
 filenames = sorted(os.listdir(image_path), key = lambda a:a[6:11])[200:210]
 
-class Config(object):
+# class Config(object):
 
-  def __init__(self):
-    # Input data
-    W_h=np.load('./weights/weight_hidden.npy')
-    W_o=np.load('./weights/weight_output.npy')
-    B_h=np.load('./weights/biases_hidden.npy')
-    B_o=np.load('./weights/biases_output.npy')
+#   def __init__(self):
+#     # Input data
+#     W_h=np.load('./weights/weight_hidden.npy')
+#     W_o=np.load('./weights/weight_output.npy')
+#     B_h=np.load('./weights/biases_hidden.npy')
+#     B_o=np.load('./weights/biases_output.npy')
 
-    # Training
-    self.learning_rate = 0.0025
-    self.lambda_loss_amount = 0.0015
-    self.training_epochs = 200
-    self.batch_size = 90
-    self.n_steps = 10  # 128 time_steps per series
-
-
-    # LSTM structure
-    self.n_inputs = 2048  # Features count is of 9: 3 * 3D sensors features over time
-    self.n_hidden = 32#32  # nb of neurons inside the neural network
-    self.n_classes = 6  # Final output classes
-    self.W = {
-        'hidden': tf.Variable(W_h),
-        'output': tf.Variable(W_o)
-    }
-    self.biases = {
-        'hidden': tf.Variable(B_h),
-        'output': tf.Variable(B_o)
-    }
+#     # Training
+#     self.learning_rate = 0.0025
+#     self.lambda_loss_amount = 0.0015
+#     self.training_epochs = 200
+#     self.batch_size = 90
+#     self.n_steps = 10  # 128 time_steps per series
 
 
-def LSTM_Network(_X, config):
-    # (NOTE: This step could be greatly optimised by shaping the dataset once
-    # input shape: (batch_size, n_steps, n_input)
-    _X = tf.transpose(_X, [1, 0, 2])  # permute n_steps and batch_size
-    # Reshape to prepare input to hidden activation
-    _X = tf.reshape(_X, [-1, config.n_inputs])
-    # new shape: (n_steps*batch_size, n_input)
+#     # LSTM structure
+#     self.n_inputs = 2048  # Features count is of 9: 3 * 3D sensors features over time
+#     self.n_hidden = 32#32  # nb of neurons inside the neural network
+#     self.n_classes = 6  # Final output classes
+#     self.W = {
+#         'hidden': tf.Variable(W_h),
+#         'output': tf.Variable(W_o)
+#     }
+#     self.biases = {
+#         'hidden': tf.Variable(B_h),
+#         'output': tf.Variable(B_o)
+#     }
 
-    # Linear activation
-    _X = tf.nn.relu(tf.matmul(_X, config.W['hidden']) + config.biases['hidden'])
-    # Split data because rnn cell needs a list of inputs for the RNN inner loop
-    _X = tf.split(_X, config.n_steps, 0)
-    # new shape: n_steps * (batch_size, n_hidden)
 
-    # Define two stacked LSTM cells (two recurrent layers deep) with tensorflow
-    lstm_cell_1 = tf.contrib.rnn.BasicLSTMCell(config.n_hidden, forget_bias=1.0, state_is_tuple=True)
-    lstm_cell_2 = tf.contrib.rnn.BasicLSTMCell(config.n_hidden, forget_bias=1.0, state_is_tuple=True)
-    lstm_cells = tf.contrib.rnn.MultiRNNCell([lstm_cell_1, lstm_cell_2], state_is_tuple=True)
-    # Get LSTM cell output
-    outputs, states = tf.contrib.rnn.static_rnn(lstm_cells, _X, dtype=tf.float32)
+# def LSTM_Network(_X, config):
+#     # (NOTE: This step could be greatly optimised by shaping the dataset once
+#     # input shape: (batch_size, n_steps, n_input)
+#     _X = tf.transpose(_X, [1, 0, 2])  # permute n_steps and batch_size
+#     # Reshape to prepare input to hidden activation
+#     _X = tf.reshape(_X, [-1, config.n_inputs])
+#     # new shape: (n_steps*batch_size, n_input)
 
-    # Get last time step's output feature for a "many to one" style classifier,
-    # as in the image describing RNNs at the top of this page
-    lstm_last_output = outputs[-1]
+#     # Linear activation
+#     _X = tf.nn.relu(tf.matmul(_X, config.W['hidden']) + config.biases['hidden'])
+#     # Split data because rnn cell needs a list of inputs for the RNN inner loop
+#     _X = tf.split(_X, config.n_steps, 0)
+#     # new shape: n_steps * (batch_size, n_hidden)
+
+#     # Define two stacked LSTM cells (two recurrent layers deep) with tensorflow
+#     lstm_cell_1 = tf.contrib.rnn.BasicLSTMCell(config.n_hidden, forget_bias=1.0, state_is_tuple=True)
+#     lstm_cell_2 = tf.contrib.rnn.BasicLSTMCell(config.n_hidden, forget_bias=1.0, state_is_tuple=True)
+#     lstm_cells = tf.contrib.rnn.MultiRNNCell([lstm_cell_1, lstm_cell_2], state_is_tuple=True)
+#     # Get LSTM cell output
+#     outputs, states = tf.contrib.rnn.static_rnn(lstm_cells, _X, dtype=tf.float32)
+
+#     # Get last time step's output feature for a "many to one" style classifier,
+#     # as in the image describing RNNs at the top of this page
+#     lstm_last_output = outputs[-1]
     
-    # Linear activation
-    return tf.matmul(lstm_last_output, config.W['output']) + config.biases['output']
+#     # Linear activation
+#     return tf.matmul(lstm_last_output, config.W['output']) + config.biases['output']
 
 
 def create_inception_graph():
