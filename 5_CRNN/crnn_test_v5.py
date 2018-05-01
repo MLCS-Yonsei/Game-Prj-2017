@@ -76,7 +76,6 @@ if __name__ == "__main__":
 
     config = Config(X_train, X_test)
 
-    saver = tf.train.Saver()
 
     X = tf.placeholder(tf.float32, [None, config.n_steps, config.n_inputs])
     Y = tf.placeholder(tf.float32, [None, config.n_classes])    
