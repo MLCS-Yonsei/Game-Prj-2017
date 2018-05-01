@@ -100,7 +100,7 @@ if __name__ == "__main__":
     saver = tf.train.Saver()
     init_op = tf.global_variables_initializer()
     
-    
+    tf.reset_default_graph()
     sess = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
     sess.run(init_op)
     saver.restore(sess, './model/model')
@@ -136,7 +136,7 @@ if __name__ == "__main__":
             np.save('./weights/biases_output',biases_trained['output'])
             # saver.save(sess,'model',write_meta_graph=False)
             
-    print(pred_out)
+    print(np.argmax(pred_out))
         
     
     print("")
