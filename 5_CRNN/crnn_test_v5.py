@@ -97,11 +97,13 @@ if __name__ == "__main__":
     # Step 4: Hooray, now train the neural network
     # --------------------------------------------
     # Note that log_device_placement can be turned ON but will cause console spam with RNNs.
-    sess = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
-    saver = tf.train.import_meta_graph('./model/model.meta')
-    saver.restore(sess, tf.train.latest_checkpoint('./model/'))
+    saver = tf.train.Saver()
+    init_op = tf.global_variables_initializer()
     
-
+    
+    sess = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
+    sess.run(init_op)
+    saver.restore(sess, './model/model')
     best_accuracy = 0.0
     # Start training for each batch and loop epochs
     for i in range(config.training_epochs):
