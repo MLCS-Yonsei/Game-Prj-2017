@@ -78,7 +78,6 @@ if __name__ == "__main__":
 
     config = Config(X_train, X_test)
 
-
     X = tf.placeholder(tf.float32, [None, config.n_steps, config.n_inputs])
     Y = tf.placeholder(tf.float32, [None, config.n_classes])    
     
@@ -95,18 +94,15 @@ if __name__ == "__main__":
     correct_pred = tf.equal(tf.argmax(pred_Y, 1), tf.argmax(Y, 1))
     accuracy = tf.reduce_mean(tf.cast(correct_pred, dtype=tf.float32))
 
-    # --------------------------------------------
-    # Step 4: Hooray, now train the neural network
-    # --------------------------------------------
-    # Note that log_device_placement can be turned ON but will cause console spam with RNNs.
     saver = tf.train.Saver()
     init_op = tf.global_variables_initializer()
     
     
     sess = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
     sess.run(init_op)
+
     saver.restore(sess, './model')
-    best_accuracy = 0.0
+
     frames = get_frames.get_frames()
     # Start training for each batch and loop epochs
     for i in range(1):
@@ -115,13 +111,6 @@ if __name__ == "__main__":
             sess.run(optimizer, feed_dict={X: X_train[start:end],
                                           Y: y_train[start:end]})
 
-        # pred_out, accuracy_out = sess.run(
-        #     [pred_Y, accuracy],
-        #     feed_dict={
-        #         X: X_test,
-        #         Y: y_test
-        #     }
-        # )
         pred_out = sess.run(
             [pred_Y],
             feed_dict={
@@ -131,6 +120,5 @@ if __name__ == "__main__":
         )
 
     print(np.argmax(pred_out))
-    # print(accuracy_out)
         
     
