@@ -127,6 +127,7 @@ if __name__ == "__main__":
         #     }
         # )
 
-    print(np.argmax(pred_out))
+    # print(np.argmax(pred_out))
+    print(accuracy_out)
         
     
