@@ -74,7 +74,6 @@ if __name__ == "__main__":
     y_train = np.concatenate((y_train,y_test),axis=0)    
     config = Config(X_train, X_test)
 
-    # saver = tf.train.Saver()
 
     X = tf.placeholder(tf.float32, [None, config.n_steps, config.n_inputs])
     Y = tf.placeholder(tf.float32, [None, config.n_classes])    
@@ -100,6 +99,7 @@ if __name__ == "__main__":
     init = tf.global_variables_initializer()
     sess.run(init)
     
+    saver = tf.train.Saver()
 
     best_accuracy = 0.0
     # Start training for each batch and loop epochs
@@ -131,7 +131,7 @@ if __name__ == "__main__":
             np.save('./weights/weight_output',weight_trained['output'])
             np.save('./weights/biases_hidden',biases_trained['hidden'])
             np.save('./weights/biases_output',biases_trained['output'])
-            # saver.save(sess,'model',write_meta_graph=False)
+            saver.save(sess,'model',write_meta_graph=False)
             
     print(pred_out)
         

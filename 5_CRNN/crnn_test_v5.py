@@ -1,6 +1,6 @@
 import tensorflow as tf
 import numpy as np
-
+tf.reset_default_graph()
 
 class Config(object):
     def __init__(self, X_train, X_test):
@@ -62,7 +62,7 @@ def LSTM_Network(_X, config):
 
 
 if __name__ == "__main__":
-    tf.reset_default_graph()
+    
   #load data, training set dimension is 1260*5*66, test set dimension is 540*5*66
     X_train=np.load('/home/jehyunpark/Downloads/crnn/data/train_x.npz')['a']
     X_train=np.reshape(X_train,(-1,10,2048))
