@@ -152,8 +152,8 @@ if __name__ == "__main__":
             }
         )
 
-    print(pred_out)
-    # a = np.argmax(pred_out)
+    a = np.argmax(pred_out)
+    print(a)
     # if a == 0:
     #     result = 'walking'
     # elif a == 1:

@@ -106,40 +106,27 @@ if __name__ == "__main__":
     saver.restore(sess, './model')
     best_accuracy = 0.0
     # Start training for each batch and loop epochs
-    for i in range(config.training_epochs):
+    for i in range(1):
         for start, end in zip(range(0, config.train_count, config.batch_size),
                              range(config.batch_size, config.train_count + 1, config.batch_size)):
             sess.run(optimizer, feed_dict={X: X_train[start:end],
                                           Y: y_train[start:end]})
 
-        # Test completely at every epoch: calculate accuracy
-        # sess.run(optimizer, feed_dict={X: X_train,
-        #                                    Y: y_train})
-        pred_out, accuracy_out, loss_out, weight_trained, biases_trained = sess.run(
-            [pred_Y, accuracy, cost, W, B],
+        pred_out, accuracy_out = sess.run(
+            [pred_Y, accuracy],
             feed_dict={
                 X: X_test,
                 Y: y_test
             }
         )
-        
-    
-    
-        print("training iter: {},".format(i) +
-              " test accuracy : {},".format(accuracy_out) +
-              " loss : {}".format(loss_out))
-        best_accuracy = max(best_accuracy, accuracy_out)
-        if best_accuracy == accuracy_out:
-            np.save('./weights/weight_hidden',weight_trained['hidden'])
-            np.save('./weights/weight_output',weight_trained['output'])
-            np.save('./weights/biases_hidden',biases_trained['hidden'])
-            np.save('./weights/biases_output',biases_trained['output'])
-            # saver.save(sess,'model',write_meta_graph=False)
-            
+        # pred_out = sess.run(
+        #     [pred_Y],
+        #     feed_dict={
+        #         X: X_test
+                
+        #     }
+        # )
+
     print(np.argmax(pred_out))
         
     
-    print("")
-    print("final test accuracy: {}".format(accuracy_out))
-    print("best epoch's test accuracy: {}".format(best_accuracy))
-    print("")
