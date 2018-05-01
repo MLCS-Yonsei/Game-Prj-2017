@@ -62,6 +62,7 @@ def LSTM_Network(_X, config):
 
 
 if __name__ == "__main__":
+    tf.reset_default_graph()
   #load data, training set dimension is 1260*5*66, test set dimension is 540*5*66
     X_train=np.load('/home/jehyunpark/Downloads/crnn/data/train_x.npz')['a']
     X_train=np.reshape(X_train,(-1,10,2048))
@@ -100,7 +101,7 @@ if __name__ == "__main__":
     saver = tf.train.Saver()
     init_op = tf.global_variables_initializer()
     
-    tf.reset_default_graph()
+    
     sess = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
     sess.run(init_op)
     saver.restore(sess, './model/model')
