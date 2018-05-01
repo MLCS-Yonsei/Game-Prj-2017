@@ -98,7 +98,7 @@ if __name__ == "__main__":
     # --------------------------------------------
     # Note that log_device_placement can be turned ON but will cause console spam with RNNs.
     sess = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
-    saver.restore(sess, './model')
+    saver.restore(sess, './model/model')
     
 
     best_accuracy = 0.0
