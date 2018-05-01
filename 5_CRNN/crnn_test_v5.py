@@ -98,7 +98,8 @@ if __name__ == "__main__":
     # --------------------------------------------
     # Note that log_device_placement can be turned ON but will cause console spam with RNNs.
     sess = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
-    saver.restore(sess, './model/model')
+    saver = tf.train.import_meta_graph('./model/model.meta')
+    saver.restore(sess, tf.train.latest_checkpoint('./model/'))
     
 
     best_accuracy = 0.0
