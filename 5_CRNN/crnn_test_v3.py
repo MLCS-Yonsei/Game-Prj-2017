@@ -115,6 +115,7 @@ def run_bottleneck_on_image(sess, image_data, image_data_tensor,
   return bottleneck_values
 
 if __name__ == "__main__":
+    '''
     graph, bottleneck_tensor, jpeg_data_tensor, resized_image_tensor = (
             create_inception_graph())
 
@@ -131,6 +132,10 @@ if __name__ == "__main__":
                 jpeg_data = gfile.FastGFile(full_filename, 'rb').read()
                 frames = np.concatenate((frames, run_bottleneck_on_image(sess, jpeg_data, jpeg_data_tensor, bottleneck_tensor)[np.newaxis,:]), axis = 0)
     frames = frames[np.newaxis,:,:]
+    '''
+    X_test = np.load('/home/jehyunpark/Downloads/crnn/data/test_x.npz')['a']
+    X_test = np.reshape(X_test,(-1,10,2048))
+    frames = X_test[5]
     config = Config()
 
     X = tf.placeholder(tf.float32, [None, config.n_steps, config.n_inputs])
