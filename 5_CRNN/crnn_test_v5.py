@@ -119,6 +119,20 @@ if __name__ == "__main__":
             }
         )
 
-    print(np.argmax(pred_out))
-        
+    a = np.argmax(pred_out)
+    print(a)
+    if a == 0:
+        result = 'walking'
+    elif a == 1:
+        result = 'boxing'
+    elif a == 2:
+        result = 'handwaving'
+    elif a == 3:
+        result = 'jogging'
+    elif a == 4:
+        result = 'running'
+    elif a == 5:
+        result = 'handclapping'
+    print(result)
+    
     
