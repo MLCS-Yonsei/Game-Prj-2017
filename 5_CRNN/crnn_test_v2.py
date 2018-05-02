@@ -17,16 +17,16 @@ RESIZED_INPUT_TENSOR_NAME = 'ResizeBilinear:0'
 # MODEL_INPUT_DEPTH = 3
 i = 0
 
-filenames = sorted(os.listdir(image_path), key = lambda a:a[6:11])[20:30]
+filenames = sorted(os.listdir(image_path), key = lambda a:a[6:11])[230:240]
 
 class Config(object):
 
   def __init__(self):
     # Input data
-    W_h=np.load('./weights/weight_hidden1.npy')
-    W_o=np.load('./weights/weight_output1.npy')
-    B_h=np.load('./weights/biases_hidden1.npy')
-    B_o=np.load('./weights/biases_output1.npy')
+    W_h=np.load('./weights/weight_hidden3.npy')
+    W_o=np.load('./weights/weight_output3.npy')
+    B_h=np.load('./weights/biases_hidden3.npy')
+    B_o=np.load('./weights/biases_output3.npy')
 
     # Training
     self.learning_rate = 0.0025
@@ -39,7 +39,7 @@ class Config(object):
     # LSTM structure
     self.n_inputs = 2048  # Features count is of 9: 3 * 3D sensors features over time
     self.n_hidden = 32#32  # nb of neurons inside the neural network
-    self.n_classes = 6  # Final output classes
+    self.n_classes = 3  # Final output classes
     self.W = {
         'hidden': tf.Variable(W_h),
         'output': tf.Variable(W_o)
@@ -93,7 +93,7 @@ if __name__ == "__main__":
     # sess.run(init)
     for filename in filenames:
       full_filename = os.path.join(image_path,filename)
-      print(filename)
+      # print(filename)
       if i == 0:
         jpeg_data = gfile.FastGFile(full_filename, 'rb').read()
         frames = run_bottleneck_on_image(sess, jpeg_data, jpeg_data_tensor, bottleneck_tensor)[np.newaxis,:]
@@ -101,13 +101,12 @@ if __name__ == "__main__":
       elif len(frames) < 10:
         jpeg_data = gfile.FastGFile(full_filename, 'rb').read()
         frames = np.concatenate((frames, run_bottleneck_on_image(sess, jpeg_data, jpeg_data_tensor, bottleneck_tensor)[np.newaxis,:]), axis = 0)
-  sess.close()
   config = Config()
 
   X = tf.placeholder(tf.float32, [1, config.n_steps, config.n_inputs])
   _X = tf.transpose(X, [1, 0, 2])  # permute n_steps and batch_size
   # Reshape to prepare input to hidden activation
-  _X = tf.reshape(X, [-1, config.n_inputs])
+  _X = tf.reshape(_X, [-1, config.n_inputs])
   # new shape: (n_steps*batch_size, n_input)
 
   # Linear activation
@@ -143,11 +142,11 @@ if __name__ == "__main__":
   elif a == 2:
     result = 'handwaving'
   elif a == 3:
-    result = 'running'
-  elif a == 4:
     result = 'jogging'
+  elif a == 4:
+    result = 'running'
   elif a == 5:
     result = 'handclapping'
-  print(result)
+  print(prediction,result)
  
   

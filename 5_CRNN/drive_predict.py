@@ -1,11 +1,18 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 import tensorflow as tf
 import numpy as np
 
-
 class Config(object):
+
     def __init__(self, X_train, X_test):
         # Input data
-        
+        W_h=np.load('./weights/weight_hidden3.npy')
+        W_o=np.load('./weights/weight_output3.npy')
+        B_h=np.load('./weights/biases_hidden3.npy')
+        B_o=np.load('./weights/biases_output3.npy')
         self.train_count = len(X_train)  # 7352 training series
         self.test_data_count = len(X_test)  # 2947 testing series
         self.n_steps = len(X_train[0])  # 128 time_steps per series
@@ -13,7 +20,7 @@ class Config(object):
         # Training
         self.learning_rate = 0.0025
         self.lambda_loss_amount = 0.0015
-        self.training_epochs = 5000
+        self.training_epochs = 200
         self.batch_size = 60
 
         # LSTM structure
@@ -21,16 +28,15 @@ class Config(object):
         self.n_hidden = 32#32  # nb of neurons inside the neural network
         self.n_classes = 6  # Final output classes
         self.W = {
-            'hidden': tf.Variable(tf.random_normal([self.n_inputs, self.n_hidden])),
-            'output': tf.Variable(tf.random_normal([self.n_hidden, self.n_classes]))
+            'hidden': tf.Variable(W_h),
+            'output': tf.Variable(W_o)
         }
         self.biases = {
-            'hidden': tf.Variable(tf.random_normal([self.n_hidden], mean=1.0)),
-            'output': tf.Variable(tf.random_normal([self.n_classes]))
+            'hidden': tf.Variable(B_h),
+            'output': tf.Variable(B_o)
         }
 
 def LSTM_Network(_X, config):
- 
     # (NOTE: This step could be greatly optimised by shaping the dataset once
     # input shape: (batch_size, n_steps, n_input)
     _X = tf.transpose(_X, [1, 0, 2])  # permute n_steps and batch_size
@@ -56,29 +62,26 @@ def LSTM_Network(_X, config):
     # Get last time step's output feature for a "many to one" style classifier,
     # as in the image describing RNNs at the top of this page
     lstm_last_output = outputs[-1]
-
+    
     # Linear activation
-    return tf.matmul(lstm_last_output, config.W['output']) + config.biases['output'], config.W, config.biases
+    return tf.matmul(lstm_last_output, config.W['output']) + config.biases['output']
 
 
-if __name__ == "__main__":
+def setup():
   #load data, training set dimension is 1260*5*66, test set dimension is 540*5*66
     X_train=np.load('/home/jehyunpark/Downloads/crnn/data/train_x.npz')['a']
     X_train=np.reshape(X_train,(-1,10,2048))
-    # np.take(X_train,np.random.permutation(10),axis=1,out=X_train)
-    y_train=np.load('/home/jehyunpark/Downloads/crnn/data/train_y.npz')['a']
     X_test=np.load('/home/jehyunpark/Downloads/crnn/data/test_x.npz')['a']
     X_test=np.reshape(X_test,(-1,10,2048))
-    y_test=np.load('/home/jehyunpark/Downloads/crnn/data/test_y.npz')['a']
-    X_train = np.concatenate((X_train,X_test),axis=0)
-    y_train = np.concatenate((y_train,y_test),axis=0)    
+    y_train=np.load('/home/jehyunpark/Downloads/crnn/data/train_y.npz')['a']
+    y_test=np.load('/home/jehyunpark/Downloads/crnn/data/test_y.npz')['a'] 
+    
     config = Config(X_train, X_test)
-
 
     X = tf.placeholder(tf.float32, [None, config.n_steps, config.n_inputs])
     Y = tf.placeholder(tf.float32, [None, config.n_classes])    
     
-    pred_Y, W, B = LSTM_Network(X, config)
+    pred_Y = LSTM_Network(X, config)
     # Loss,optimizer,evaluation
     l2 = config.lambda_loss_amount * \
         sum(tf.nn.l2_loss(tf_var) for tf_var in tf.trainable_variables())
@@ -90,54 +93,32 @@ if __name__ == "__main__":
 
     correct_pred = tf.equal(tf.argmax(pred_Y, 1), tf.argmax(Y, 1))
     accuracy = tf.reduce_mean(tf.cast(correct_pred, dtype=tf.float32))
-
-    # --------------------------------------------
-    # Step 4: Hooray, now train the neural network
-    # --------------------------------------------
-    # Note that log_device_placement can be turned ON but will cause console spam with RNNs.
+       
     sess = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
     init = tf.global_variables_initializer()
     sess.run(init)
     
-    saver = tf.train.Saver()
+    return X_train,X_test,y_train,optimizer,config,pred_Y,sess,X,Y
 
-    best_accuracy = 0.0
-    # Start training for each batch and loop epochs
-    for i in range(config.training_epochs):
+
+
+def runpredict(X_train,X_test,y_train,optimizer,config,pred_Y,sess,X,Y):
+
+    for i in range(1):   
         for start, end in zip(range(0, config.train_count, config.batch_size),
-                             range(config.batch_size, config.train_count + 1, config.batch_size)):
+                          range(config.batch_size, config.train_count + 1, config.batch_size)):
             sess.run(optimizer, feed_dict={X: X_train[start:end],
-                                          Y: y_train[start:end]})
+                                       Y: y_train[start:end]})
+        
+    # Test completely at every epoch: calculate accuracy
+        pred_out = sess.run(
+                [pred_Y],
+                feed_dict={
+                        X: X_test
+                        }
+                )
+        
+        
 
-        # Test completely at every epoch: calculate accuracy
-        # sess.run(optimizer, feed_dict={X: X_train,
-        #                                    Y: y_train})
-        pred_out, accuracy_out, loss_out, weight_trained, biases_trained = sess.run(
-            [pred_Y, accuracy, cost, W, B],
-            feed_dict={
-                X: X_test,
-                Y: y_test
-            }
-        )
-        
-    
-    
-        print("training iter: {},".format(i) +
-              " test accuracy : {},".format(accuracy_out) +
-              " loss : {}".format(loss_out))
-        best_accuracy = max(best_accuracy, accuracy_out)
-        if best_accuracy == accuracy_out:
-            np.save('./weights/weight_hidden',weight_trained['hidden'])
-            np.save('./weights/weight_output',weight_trained['output'])
-            np.save('./weights/biases_hidden',biases_trained['hidden'])
-            np.save('./weights/biases_output',biases_trained['output'])
-            saver.save(sess,'model')
-            
-    print(pred_out)
-        
-    
-    print("")
-    print("final test accuracy: {}".format(accuracy_out))
-    print("best epoch's test accuracy: {}".format(best_accuracy))
-    print("")
+        return pred_out
     

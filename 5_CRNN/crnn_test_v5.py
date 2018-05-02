@@ -1,6 +1,8 @@
 import tensorflow as tf
 import numpy as np
+import get_frames
 
+tf.reset_default_graph()
 
 class Config(object):
     def __init__(self, X_train, X_test):
@@ -62,6 +64,7 @@ def LSTM_Network(_X, config):
 
 
 if __name__ == "__main__":
+    
   #load data, training set dimension is 1260*5*66, test set dimension is 540*5*66
     X_train=np.load('/home/jehyunpark/Downloads/crnn/data/train_x.npz')['a']
     X_train=np.reshape(X_train,(-1,10,2048))
@@ -72,8 +75,8 @@ if __name__ == "__main__":
     y_test=np.load('/home/jehyunpark/Downloads/crnn/data/test_y.npz')['a']
     X_train = np.concatenate((X_train,X_test),axis=0)
     y_train = np.concatenate((y_train,y_test),axis=0)    
-    config = Config(X_train, X_test)
 
+    config = Config(X_train, X_test)
 
     X = tf.placeholder(tf.float32, [None, config.n_steps, config.n_inputs])
     Y = tf.placeholder(tf.float32, [None, config.n_classes])    
@@ -91,53 +94,45 @@ if __name__ == "__main__":
     correct_pred = tf.equal(tf.argmax(pred_Y, 1), tf.argmax(Y, 1))
     accuracy = tf.reduce_mean(tf.cast(correct_pred, dtype=tf.float32))
 
-    # --------------------------------------------
-    # Step 4: Hooray, now train the neural network
-    # --------------------------------------------
-    # Note that log_device_placement can be turned ON but will cause console spam with RNNs.
-    sess = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
-    init = tf.global_variables_initializer()
-    sess.run(init)
-    
     saver = tf.train.Saver()
+    init_op = tf.global_variables_initializer()
+    
+    
+    sess = tf.InteractiveSession(config=tf.ConfigProto(log_device_placement=False))
+    sess.run(init_op)
 
-    best_accuracy = 0.0
+    saver.restore(sess, './model')
+
+    frames = get_frames.get_frames()
     # Start training for each batch and loop epochs
-    for i in range(config.training_epochs):
+    for i in range(1):
         for start, end in zip(range(0, config.train_count, config.batch_size),
                              range(config.batch_size, config.train_count + 1, config.batch_size)):
             sess.run(optimizer, feed_dict={X: X_train[start:end],
                                           Y: y_train[start:end]})
 
-        # Test completely at every epoch: calculate accuracy
-        # sess.run(optimizer, feed_dict={X: X_train,
-        #                                    Y: y_train})
-        pred_out, accuracy_out, loss_out, weight_trained, biases_trained = sess.run(
-            [pred_Y, accuracy, cost, W, B],
+        pred_out = sess.run(
+            [pred_Y],
             feed_dict={
-                X: X_test,
-                Y: y_test
+                X: frames
+                
             }
         )
-        
+
+    a = np.argmax(pred_out)
+    print(a)
+    if a == 0:
+        result = 'walking'
+    elif a == 1:
+        result = 'boxing'
+    elif a == 2:
+        result = 'handwaving'
+    elif a == 3:
+        result = 'jogging'
+    elif a == 4:
+        result = 'running'
+    elif a == 5:
+        result = 'handclapping'
+    print(result)
     
-    
-        print("training iter: {},".format(i) +
-              " test accuracy : {},".format(accuracy_out) +
-              " loss : {}".format(loss_out))
-        best_accuracy = max(best_accuracy, accuracy_out)
-        if best_accuracy == accuracy_out:
-            np.save('./weights/weight_hidden',weight_trained['hidden'])
-            np.save('./weights/weight_output',weight_trained['output'])
-            np.save('./weights/biases_hidden',biases_trained['hidden'])
-            np.save('./weights/biases_output',biases_trained['output'])
-            saver.save(sess,'model')
-            
-    print(pred_out)
-        
-    
-    print("")
-    print("final test accuracy: {}".format(accuracy_out))
-    print("best epoch's test accuracy: {}".format(best_accuracy))
-    print("")
     
